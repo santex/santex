@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title></title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <script src="js/d3.v3.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+    
+
+            
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Data visualisation</h1> slide-show
+					<h5>A selection of work by Hagen Geissler</h5>
+					<p>
+						<small>Created by <a href="#multistagecorre">santex</a> / <a href="http://twitter.com/multistagecorre">@multistagecorre</a></small>
+					</p>
+				</section>
+        <!--//
+				<section>
+					<h2>Hello There</h2>
+					<p>
+					
+					</p>
+				</section>
+
+
+				<section data-markdown>
+					<script type="text/template">
+						## Markdown support
+
+						Write content using inline or external Markdown.
+						Instructions and more info available in the [readme](https://github.com/santex/reveal.js#markdown).
+
+						```
+						<section data-markdown>
+						  ## Markdown support
+
+						  Write content using inline or external Markdown.
+						  Instructions and more info available in the [readme](https://github.com/santex/reveal.js#markdown).
+						</section>
+						```
+					</script>
+				</section>
+
+				<section>
+					<section id="fragments">
+						<h2>Fragments</h2>
+						<p>Hit the next arrow...</p>
+						<p class="fragment">... to step through ...</p>
+						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
+
+						<aside class="notes">
+							This slide has fragments which are also stepped through in the notes window.
+						</aside>
+					</section>
+					<section>
+						<h2>Fragment Styles</h2>
+						<p>There's different types of fragments, like:</p>
+						<p class="fragment grow">grow</p>
+						<p class="fragment shrink">shrink</p>
+						<p class="fragment roll-in">roll-in</p>
+						<p class="fragment fade-out">fade-out</p>
+						<p class="fragment current-visible">current-visible</p>
+						<p class="fragment highlight-red">highlight-red</p>
+						<p class="fragment highlight-blue">highlight-blue</p>
+					</section>
+				</section>
+
+				<section id="transitions">
+					<h2>Transition Styles</h2>
+					<p>
+						You can select from different transitions, like: <br>
+						<a href="?transition=none#/transitions">None</a> -
+						<a href="?transition=fade#/transitions">Fade</a> -
+						<a href="?transition=slide#/transitions">Slide</a> -
+						<a href="?transition=convex#/transitions">Convex</a> -
+						<a href="?transition=concave#/transitions">Concave</a> -
+						<a href="?transition=zoom#/transitions">Zoom</a>
+					</p>
+				</section>
+        
+
+				<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+					<h2>Background Transitions</h2>
+					<p>
+						Different background transitions are available via the backgroundTransition option. This one's called "zoom".
+					</p>
+					<pre><code>Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
+				</section>
+
+				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+					<h2>Background Transitions</h2>
+					<p>
+						You can override background transitions per-slide.
+					</p>
+					<pre><code style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
+				</section>
+
+				<section>
+					<h2>Pretty Code</h2>
+					<pre><code data-trim contenteditable>
+function linkify( selector ) {
+  if( supports3DTransforms ) {
+
+    var nodes = document.querySelectorAll( selector );
+
+    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+      var node = nodes[i];
+
+      if( !node.className ) {
+        node.className += ' roll';
+      }
+    }
+  }
+}
+					</code></pre>
+					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+				</section>
+
+
+				<section id="themes">
+					<h2>Themes</h2>
+					<p>
+						reveal.js comes with a few themes built in: <br>
+						
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+					</p>
+				</section>
+
+
+        -->
+
+    <script id="graph1" src="js/vis/1.js"></script>
+    <script id="graph2" src="js/vis/2.js"></script>
+    <script id="graph3" src="js/vis/3.js"></script>
+    <script id="graph4" src="js/vis/4.js"></script>
+    <script id="graph5" src="js/vis/5.js"></script>
+    <script id="graph6" src="js/vis/6.js"></script>
+    <script id="graph7" src="js/vis/7.js"></script>
+    <script id="graph8" src="js/vis/8.js"></script>
+    <script id="graph9" src="js/vis/9.js"></script>
+    <script id="graph10" src="js/vis/10.js"></script>
+    <script id="graph11" src="js/vis/11.js"></script>
+    <script id="graph12" src="js/vis/12.js"></script>
+    <script id="graph13" src="js/vis/13.js"></script>
+    <script id="graph14" src="js/vis/14.js"></script>
+    <script id="graph15" src="js/vis/15.js"></script>
+    <script id="graph16" src="js/vis/16.js"></script>
+    <script id="graph17" src="js/vis/17.js"></script>
+    <script id="graph18" src="js/vis/18.js"></script>
+    <script id="graph19" src="js/vis/19.js"></script>
+    <script id="graph20" src="js/vis/20.js"></script>
+    <script id="graph21" src="js/vis/21.js"></script>
+    <script id="graph22" src="js/vis/22.js"></script>
+    <script id="graph23" src="js/vis/23.js"></script>
+    <script id="graph24" src="js/vis/24.js"></script>
+    <script id="graph25" src="js/vis/25.js"></script>
+    <script id="graph26" src="js/vis/26.js"></script>
+    <script id="graph27" src="js/vis/27.js"></script>
+    <script id="graph28" src="js/vis/28.js"></script>
+    <script id="graph29" src="js/vis/29.js"></script>
+    <script id="graph30" src="js/vis/30.js"></script>
+    <script id="graph31" src="js/vis/31.js"></script>
+    <script id="graph32" src="js/vis/32.js"></script>
+    <script id="graph33" src="js/vis/33.js"></script>
+    <script id="graph34" src="js/vis/34.js"></script>
+    <script id="graph35" src="js/vis/35.js"></script>
+    <script id="graph36" src="js/vis/36.js"></script>
+    <script id="graph37" src="js/vis/37.js"></script>
+    <script id="graph38" src="js/vis/38.js"></script>
+    <script id="graph39" src="js/vis/39.js"></script>
+    <script id="graph40" src="js/vis/40.js"></script>
+    <script id="graph41" src="js/vis/41.js"></script>
+    <script id="graph42" src="js/vis/42.js"></script>
+    <script id="graph43" src="js/vis/43.js"></script>
+    <script id="graph44" src="js/vis/44.js"></script>
+    <script id="graph45" src="js/vis/45.js"></script>
+    <script id="graph46" src="js/vis/46.js"></script>
+    <script id="graph47" src="js/vis/47.js"></script>
+    <script id="graph48" src="js/vis/48.js"></script>
+    <script id="graph49" src="js/vis/49.js"></script>
+
+
+				<section id="themes">
+        
+          
+					<p>
+            <div id="vis"></div>
+            
+            
+						<section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+            <section><small class="fragment"></small></section>
+        
+                        
+            
+            
+					</p>
+				</section>
+
+
+			</div>
+
+		</div>
+    <script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+    <script>
+			// Full list of configuration options available at:
+			// https://github.com/santex/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+   
+	</body>
+</html>
