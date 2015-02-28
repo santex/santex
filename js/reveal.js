@@ -223,6 +223,8 @@ function hideMenu(){
     
         var next = document.getElementById("menue");
      next.innerHTML='';
+        var canvas = document.getElementById("canvas");
+     canvas.innerHTML='';
       
     }
 function showMenu(x){
@@ -263,9 +265,17 @@ function showMenu(x){
   function cleanAnimation(h, v, f, o) {
     
     
+    document.location="#"+h+"/"+v;
+    
+    
+    
     var statusVis = document.getElementById( 'vis' );
     
     statusVis.innerHTML="";
+    
+    var statusCanvas = document.getElementById( 'canvas' );
+    
+    statusCanvas.innerHTML="";
     
     
  var   d3="";
@@ -286,8 +296,7 @@ function showMenu(x){
       
         hideMenu();      
        
-        
-        eval("if (typeof graph"+v+" == 'function') { graph"+v+"('"+getColor()+"'); }");
+        eval("if (typeof graph"+v+" == 'function') { graph"+v+"('"+getColor()+"');  }");
         
       }
     
