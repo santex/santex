@@ -275,8 +275,9 @@ function showMenu(x){
     
     var statusCanvas = document.getElementById( 'canvas' );
     
-    statusCanvas.innerHTML="";
-    
+    statusCanvas.setAttribute('width', '0');
+    statusCanvas.setAttribute('height', '0');
+      
     
  var   d3="";
     
