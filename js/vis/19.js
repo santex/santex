@@ -1,4 +1,4 @@
-function graph19(){
+function graph19(color){
 
 // Math from https://github.com/d3/d3-plugins/tree/master/hexbin
 var width = 500,
@@ -11,7 +11,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background",color);
 
 var data = [];
 
@@ -29,7 +29,7 @@ var hexes = svg.selectAll("g")
     })
     .append("path")
     .attr("transform", "scale(1.02)")
-    .attr("fill", "#111")
+    .attr("fill", "#"+((1<<24)*Math.random()|0).toString(16))
     .attr("fill-opacity", 1)
     .attr("d", "M" + hexagon(r).join("l") + "Z");
 

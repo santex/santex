@@ -1,4 +1,4 @@
-function graph4(){
+function graph4(color){
 var data = d3.range(0, 45).map(function () { return 1; });
 
 var width = 500,
@@ -8,7 +8,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111")
+    .style("background", color)
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -21,7 +21,7 @@ var arc = d3.svg.arc()
 var path = svg.selectAll("path")
     .data(data)
     .enter().append("path")
-    .attr("fill", "#d1d1d1");
+    .attr("fill", "#000");
 
 var ease = d3.ease("linear"),
     duration = 7500;

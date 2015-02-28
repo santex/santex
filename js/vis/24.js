@@ -9,7 +9,7 @@ var width =window.innerHeight*0.65,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", color)
+    .style("background",color)
     .append("g")
     .attr("transform", "translate(" + [width / 2, height / 2] + ")");
 
@@ -36,3 +36,4 @@ d3.timer(function(t) {
     });
 })
 }
+  

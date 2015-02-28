@@ -27,7 +27,7 @@ var spiral = svg.selectAll("path")
         return "translate(" + [scale(d.x - 1), scale(d.y - 1)] + ")";
     })
     .attr("fill", "none")
-    .attr("stroke", "#111")
+    .attr("stroke", "#"+((1<<24)*Math.random()|0).toString(16))
     .attr("stroke-opacity", 1)
     .attr("stroke-width", 0.5);
 

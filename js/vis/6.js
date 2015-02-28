@@ -1,4 +1,5 @@
-function graph6(){
+
+function graph6(color){
 
 var width = 500,
     height = 500,
@@ -10,7 +11,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1")
+    .style("background", color)
     .append("g")
     .attr("transform", "translate(" + [-width / 2, -height / 2] + ")");
 
@@ -51,7 +52,7 @@ var hexes = svg.selectAll("g")
         return "translate(" + [d[0] + width, d[1] + height] + ")";
     })
     .append("path")
-    .attr("fill", "#111")
+    .attr("fill", "#fff")
     .attr("fill-opacity", 0.8)
     .attr("d", "M" + hexagon(r).join("L") + "Z");
 

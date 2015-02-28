@@ -15,7 +15,7 @@ var data = d3.range(0, 2 * Math.PI, 2 * Math.PI / n);
 var circles = svg.selectAll("circle")
     .data(data)
     .enter().append("circle")
-    .attr("fill","#000")
+    .attr("fill", "#d1d1d1")
     .attr("fill-opacity", 0.5);
 
 d3.timer(function(t) {

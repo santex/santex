@@ -1,4 +1,4 @@
-function graph10(){
+function graph10(color){
 
 var width = 500,
     height = 500,
@@ -18,7 +18,7 @@ var pad = scale(0),
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background",color);
 
 var columns = svg.selectAll("g")
     .data(d3.range(0, 8))
@@ -31,7 +31,7 @@ var paths = columns.selectAll("g")
     .attr("transform", function(d) { return "translate(0," + y(d) + ")"; })
 
 paths.append("path")
-    .attr("stroke", "#d1d1d1")
+    .attr("stroke", "#"+((1<<24)*Math.random()|0).toString(16))
     .attr("stroke-width", 2)
     .attr("fill", "none")
     .attr("line-cap", "round")

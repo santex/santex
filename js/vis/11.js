@@ -1,4 +1,4 @@
-function graph11(){
+function graph11(color){
 
 var width = 500,
     height = 500,
@@ -10,7 +10,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var g = svg.selectAll("g")
     .data(d3.range(0, 2 * π, 2 * π / n))
@@ -22,7 +22,7 @@ var g = svg.selectAll("g")
     });
 
 var moons = g.append("path")
-    .attr("fill", "#d1d1d1");
+    .attr("fill","#"+((1<<24)*Math.random()|0).toString(16));
 
 d3.timer(function(t) {
     var θ = 2 * π * (t % p / p);
