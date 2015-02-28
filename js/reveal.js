@@ -219,28 +219,76 @@
 			'ESC, O':				'Slide overview'
 		};
 
+function hideMenu(){
+    
+        var next = document.getElementById("menue");
+     next.innerHTML='';
+      
+    }
+function showMenu(x){
+    
+       var next = document.getElementById("menue");
+     next.innerHTML='';
+     
+    if(x==0 || x==undefined){
+    x=1;  
+    }
+    
+    
+    for( var i = 1, len = 52; i < len; i++ ) {
+
+        var next = document.getElementById("menue");
+      
+      if(next){
+        
+        next.innerHTML+='&nbsp;<a href="#/'+x+'/'+i+'"><img width="50px" height="50px" src="js/vis/svg/'+i+'.svg"></a>';
+    
+    
+      }
+        
+    }
+      
+    }
 	/**
 	 * Starts up the presentation if the client is capable.
 	 */
    
+   
+   
+   function getColor() {
+     
+      return "#"+((1<<24)*Math.random()|0).toString(16);
+     
+   }
   function cleanAnimation(h, v, f, o) {
     
     
     var statusVis = document.getElementById( 'vis' );
     
+    statusVis.innerHTML="";
+    
+    
+ var   d3="";
+    
+    var statusHead = document.getElementById( 'head' );
+    
+    statusHead.innerHTML="<small>"+h +" - " + v+"</small>";
     
     
     
-    if(statusVis && h==1 && v>=1){   
+    if(v == undefined || v == 0){   
+
+      showMenu(h);      
       
+    }else{
       
         console.log(h, v, f, o);
       
-        statusVis.innerHTML="";
+        hideMenu();      
+       
         
+        eval("if (typeof graph"+v+" == 'function') { graph"+v+"('"+getColor()+"'); }");
         
-        eval("if (typeof graph"+v+" == 'function') { graph"+v+"(); }");
-      
       }
     
       
@@ -344,6 +392,8 @@
 
 			start();
 		}
+    
+    
 
 		function loadScript( s ) {
 			head.ready( s.src.match( /([\w\d_\-]*)\.?js$|[^\\\/]*$/i )[0], function() {
@@ -2014,6 +2064,11 @@
 		// Dispatch an event if the slide changed
 		var slideChanged = ( indexh !== indexhBefore || indexv !== indexvBefore );
 		if( slideChanged ) {
+
+
+      
+      
+
 			dispatchEvent( 'slidechanged', {
 				'indexh': indexh,
 				'indexv': indexv,

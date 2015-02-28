@@ -1,4 +1,4 @@
-function graph47(){
+function graph47(color){
 
 var width = 500,
     height = 500,

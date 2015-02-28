@@ -1,4 +1,4 @@
-function graph30(){
+function graph30(color){
 
 var width = 500,
     height = 500,
@@ -19,7 +19,7 @@ var data = d3.range(0, n).map(function(i) {
 var g = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111")
+    .style("background", color)
   .append("g")
     .attr("transform", "translate(" + [width / 2, height / 2] + ")");
 

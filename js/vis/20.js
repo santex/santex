@@ -1,4 +1,4 @@
-function graph20(){
+function graph20(color){
 
 
 var width = 500,
@@ -9,7 +9,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var g = svg.selectAll("g")
     .data(d3.range(1, rows))

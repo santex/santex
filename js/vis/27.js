@@ -1,4 +1,4 @@
-function graph27(){
+function graph27(color){
 
 var width = 500,
     height = 500,
@@ -8,12 +8,12 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var flakes = svg.selectAll("text")
     .data(d3.range(0, n))
     .enter().append("text")
-    .attr("fill", "#d1d1d1")
+    .attr("fill","#000")
     .attr("dy", ".35em")
     .attr("text-anchor", "middle")
     .text(function() { return ("❅❆❄︎").charAt(Math.random() * 3); })
@@ -32,7 +32,7 @@ var area = d3.svg.area()
     .interpolate("basis");
 
 var path = svg.append("path")
-    .attr("fill", "#d1d1d1");
+    .attr("fill", color);
 
 function fall() {
     var flake = d3.select(this);

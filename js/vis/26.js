@@ -1,4 +1,4 @@
-function graph26(){
+function graph26(color){
 
 var width = 500,
     height = 500,
@@ -7,7 +7,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1")
+    .style("background", color)
     .append("g")
     .attr("transform", "translate(" + [width / 2, height / 2] + ")");
 
@@ -15,7 +15,7 @@ var paths = svg.selectAll("path")
     .data(d3.range(0, n))
     .enter().append("path")
     .attr("fill", "none")
-    .attr("stroke", "#111")
+    .attr("stroke", "#fff")
     .attr("stroke-width", width / 2)
     .attr("stroke-opacity", 0.02);
 

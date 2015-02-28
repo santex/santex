@@ -1,4 +1,4 @@
-function graph25(){
+function graph25(color){
 
 var width = 500,
     height = 500,
@@ -45,7 +45,7 @@ function tree(string) {
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1")
+    .style("background", color)
     .datum(tree(l(4, {"F": "FF-[-F+F+F]+[+F-F-F]"}, "F")))
     .each(grow);
 

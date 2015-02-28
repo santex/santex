@@ -1,4 +1,4 @@
-function graph23(){
+function graph23(color){
 
 var width = 500,
     height = 500,
@@ -14,7 +14,7 @@ var scale = d3.scale.ordinal()
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var data = d3.range(0, cols * cols)
     .map(function(d) {
@@ -24,7 +24,7 @@ var data = d3.range(0, cols * cols)
 var dots = svg.selectAll("circle")
     .data(data)
     .enter().append("circle")
-    .attr("fill", "#d1d1d1")
+    .attr("fill","#000")
     .attr("cx", function(d) { return scale(d.x); });
 
 d3.timer(function(elapsed) {

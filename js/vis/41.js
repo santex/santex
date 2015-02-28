@@ -1,4 +1,4 @@
-function graph41(){
+function graph41(color){
 
 var width = 500,
     height = 500,
@@ -12,7 +12,7 @@ var scale = d3.scale.ordinal()
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1")
+    .style("background", color)
     .attr("shape-rendering", "crispEdges");
 
 var data = d3.range(0, rows)
@@ -31,7 +31,7 @@ var paths = g.selectAll("path")
     .data(function(d) { return d; })
     .enter().append("path")
     .attr("fill", "none")
-    .attr("stroke", "#111")
+    .attr("stroke","#000")
     .attr("d", function(d) {
         var x0 =  d[0] *      width / cols,
             x1 = (d[0] + 1) * width / cols;

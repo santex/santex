@@ -1,4 +1,4 @@
-function graph32(){
+function graph32(color){
 
 var width = 500,
     height = 500,
@@ -9,7 +9,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var g = svg.append("g")
     .attr("transform", "translate(" + [width / 2, height / 2] + ")");
@@ -18,7 +18,7 @@ var paths = g.selectAll("path")
     .data(d3.range(0, n))
     .enter().append("path")
     .attr("fill", "none")
-    .attr("stroke", "#111")
+    .attr("stroke","#000")
     .attr("stroke-opacity", 1)
     .attr("stroke-width", 0.5);
 

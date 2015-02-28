@@ -1,4 +1,4 @@
-function graph15(){
+function graph15(color){
 
 var width = 500,
     height = 500,
@@ -13,7 +13,7 @@ var svg = d3.select("#vis").append("svg")
     .attr("transform", "rotate(" + [-25, width / 2, height / 2] + ")");
 
 var gradient = svg.selectAll("linearGradient")
-    .data([["#d1d1d1", "#444"], ["#333", "#111"], ["#333", "#444"], ["#d1d1d1", "#eee"]])
+    .data([[color, "#444"], ["#333", color], ["#333", "#444"], ["#d1d1d1", "#eee"]])
     .enter().append("linearGradient")
     .attr("id", function(d, i) { return "gradient" + i; })
     .attr("x1", "0%")

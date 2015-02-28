@@ -1,4 +1,4 @@
-function graph28(){
+function graph28(color){
 
 var width = 500,
     height = 500,
@@ -7,7 +7,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 svg.append("filter")
     .attr("id", "blur")

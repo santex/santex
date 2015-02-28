@@ -1,4 +1,4 @@
-function graph36(){
+function graph36(color){
 
 var width = 500,
     height = 500,
@@ -11,7 +11,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var data = d3.range(0, rows * cols)
     .map(function(d) {
@@ -30,7 +30,7 @@ var g = svg.selectAll("g")
     });
 
 var moons = g.append("path")
-    .attr("fill", "#d1d1d1");
+    .attr("fill", "#000");
 
 d3.timer(function(t) {
     moons.attr("d", function(d) {

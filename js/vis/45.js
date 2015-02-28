@@ -1,4 +1,4 @@
-function graph45(){
+function graph45(color){
 
 
 var width = 500,
@@ -21,7 +21,7 @@ var arc = d3.svg.arc();
 var g = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111")
+    .style("background", color)
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")rotate(0)");
 
@@ -41,7 +41,7 @@ var path = g.selectAll("path")
     .data(pie(data))
   .enter().append("path")
     .attr("d", arc)
-    .attr("fill", "#d1d1d1")
+    .attr("fill","#000")
     .attr("fill-opacity", function(d) { return Math.random(); });
 
 (function loop2() {

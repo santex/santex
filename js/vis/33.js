@@ -1,4 +1,4 @@
-function graph33(){
+function graph33(color){
 
 var width = 500,
     height = 500,
@@ -9,7 +9,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var boids = d3.range(0, 100).map(Boid);
 

@@ -1,6 +1,6 @@
 
 
-function graph9(){
+function graph9(color){
   
 var width = 500,
     height = 500,
@@ -18,7 +18,7 @@ var defs = svg.select("defs");
 
 var moon = svg.append("circle")
     .attr("class", "moon")
-    .attr("fill", "#d1d1d1")
+    .attr("fill", color)
     .attr("cx", mx)
     .attr("cy", my)
     .attr("r", 45);
@@ -95,9 +95,9 @@ function tree(d, i) {
 
     if (x > mx) {
         d.stops[0].attr("offset", "0%").attr("stop-color", "#666");
-        d.stops[1].attr("offset", 0.12 * (x - mx) + "%").attr("stop-color", "#111");
+        d.stops[1].attr("offset", 0.12 * (x - mx) + "%").attr("stop-color", color);
     } else {
-        d.stops[0].attr("offset", 100 - 0.1 * (mx - x) + "%").attr("stop-color", "#111");
+        d.stops[0].attr("offset", 100 - 0.1 * (mx - x) + "%").attr("stop-color", color);
         d.stops[1].attr("offset", "100%").attr("stop-color", "#666");
     }
 

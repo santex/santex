@@ -1,4 +1,4 @@
-function graph37(){
+function graph37(color){
 
 var w = 500,
     h = 500,
@@ -7,7 +7,7 @@ var w = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", w)
     .attr("height", h)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var g = svg.selectAll("g")
     .data([

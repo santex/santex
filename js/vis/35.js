@@ -1,4 +1,4 @@
-function graph35(){
+function graph35(color){
 
 var width = 500,
     height = 500,
@@ -7,7 +7,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111")
+    .style("background", color)
     .append("g");
 
 var g = svg.selectAll("g")
@@ -33,7 +33,7 @@ var circles = g.selectAll("circle")
         return 0.25 * height - d[0] * 5;
     })
     .attr("fill", "none")
-    .attr("stroke", "#d1d1d1")
+    .attr("stroke","#000")
     .attr("stroke-opacity", 1)
     .attr("stroke-width", 0.5);
 

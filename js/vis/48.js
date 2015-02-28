@@ -1,4 +1,4 @@
-function graph48(){
+function graph48(color){
 var width = 500,
     height = 500,
     cols = 50,
@@ -52,7 +52,7 @@ function tree(string) {
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1")
+    .style("background", color)
     .datum(tree(l(n, {"X": "F-[[X]-X]+F[+FX]-X", "F": "FF"}, "X")))
     .each(grow(3));
 

@@ -1,4 +1,4 @@
-function graph1(){
+function graph1(color){
 
 var width = 500,
     height = 500,
@@ -7,7 +7,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var filter = svg.append("filter")
     .attr("id", "blur")
@@ -30,7 +30,7 @@ var area = d3.svg.area()
 
 var scale = d3.scale.linear()
     .domain([0, rows])
-    .range(["#d1d1d1", "#222"]);
+    .range([color, "#222"]);
 
 var groups = svg.selectAll("g")
     .data(data)

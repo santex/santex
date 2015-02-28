@@ -1,7 +1,7 @@
-function graph24(){
+function graph24(color){
 
-var width = 500,
-    height = 500,
+var width =window.innerHeight*0.65,
+    height = window.innerHeight*0.65,
     cols = 100,
     a = 1,
     b = 0.3;
@@ -9,7 +9,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111")
+    .style("background", color)
     .append("g")
     .attr("transform", "translate(" + [width / 2, height / 2] + ")");
 

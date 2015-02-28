@@ -1,4 +1,4 @@
-function graph38(){
+function graph38(color){
 var width = 500,
     height = 500,
     n = 30,
@@ -9,7 +9,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var data = [];
 
@@ -26,7 +26,7 @@ var hexes = svg.selectAll("g")
         return "translate(" + d + ")";
     })
     .append("path")
-    .attr("fill", "#111")
+    .attr("fill","#000")
     .attr("fill-opacity", 0.2)
     .attr("d", "M" + hexagon(r).join("l") + "Z");
 

@@ -1,4 +1,4 @@
-function graph2(){
+function graph2(color){
 
 var width = 500,
     height = 500;
@@ -6,7 +6,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var gradient = svg.append("linearGradient")
     .attr("id", "gradient")

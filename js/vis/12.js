@@ -1,4 +1,4 @@
-function graph12(){
+function graph12(color){
 
 var width = 500,
     height = 500,
@@ -8,7 +8,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var data = d3.range(0, rows)
     .map(function(i) {

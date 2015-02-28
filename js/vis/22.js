@@ -1,4 +1,4 @@
-function graph22(){
+function graph22(color){
 
 var width = 500,
     height = 500,
@@ -8,7 +8,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background",color);
 
 var stars = svg.selectAll("text")
     .data(d3.range(0, n))

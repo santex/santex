@@ -1,4 +1,4 @@
-function graph49(){
+function graph49(color){
 var width = 500,
     height = 500,
     n = 5;
@@ -6,7 +6,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var scale = d3.scale.ordinal()
     .domain(d3.range(-n / 2, n / 2 + 1))
@@ -24,7 +24,7 @@ var squares = svg.selectAll("g")
     .enter().append("g");
 
 squares.append("rect")
-    .attr("fill", "#111")
+    .attr("fill","#000")
     .attr("fill-opacity", 0.1)
     .attr("x", -80)
     .attr("y", -80)

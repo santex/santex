@@ -1,4 +1,4 @@
-function graph7(){
+function graph7(color){
 var width = 500,
     height = 500,
     n = 30,
@@ -7,7 +7,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111");
+    .style("background", color);
 
 var ms = 1000,
     s  = ms * 60,

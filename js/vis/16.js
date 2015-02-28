@@ -1,4 +1,4 @@
-function graph16(){
+function graph16(color){
 var width = 500,
     height = 500,
     n = 32,
@@ -8,7 +8,7 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#d1d1d1");
+    .style("background", color);
 
 var g = svg.append("g");
 

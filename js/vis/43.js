@@ -1,4 +1,4 @@
-function graph43(){
+function graph43(color){
 
 
 var width = 500,
@@ -15,7 +15,7 @@ var data = d3.range(0, n).map(function() {
 var g = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#111")
+    .style("background", color)
   .append("g")
     .attr("transform", "translate(" + (Math.random() * width / 2) + "," +
                                       (Math.random() * height / 2) + ")");
