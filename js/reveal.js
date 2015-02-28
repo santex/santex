@@ -265,7 +265,7 @@ function showMenu(x){
   function cleanAnimation(h, v, f, o) {
     
     
-    document.location="#"+h+"/"+v;
+    document.location.href="http://santex.github.io/santex/#"+h+"/"+v;
     
     
     
