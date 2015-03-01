@@ -275,8 +275,8 @@ function showMenu(x){
     
     var statusCanvas = document.getElementById( 'canvas' );
     
-    statusCanvas.setAttribute('width', '0');
-    statusCanvas.setAttribute('height', '0');
+    statusCanvas.setAttribute('width', '0px');
+    statusCanvas.setAttribute('height', '0px');
       
     
  var   d3="";
