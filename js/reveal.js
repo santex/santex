@@ -434,9 +434,8 @@ function showMenu(x){
   function cleanAnimation(h, v, f, o) {
     
     
-    if(h && v) {
+    
     document.location.href="#"+h+"/"+v;
-    }
     
     
     var statusVis = document.getElementById( 'vis' );
@@ -452,8 +451,10 @@ function showMenu(x){
  var   d3="";
     
     var statusHead = document.getElementById( 'head' );
-    
-    if(v && v>0){
+    statusHead.innerHTML="";
+    if(!v){
+    statusHead.innerHTML="<small> animations </small>";
+    }else{
     statusHead.innerHTML="<small><a href='#' onclick='encode_as_img_and_link(); return false;'>export</a> animation "+v+"</small>";
     }
     
