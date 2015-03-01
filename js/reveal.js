@@ -391,6 +391,7 @@ function hideMenu(){
     
         var next = document.getElementById("menue");
      next.innerHTML='';
+     
         var canvas = document.getElementById("canvas");
      canvas.innerHTML='';
       
@@ -411,7 +412,7 @@ function showMenu(x){
       
       if(next){
         
-        next.innerHTML+='&nbsp;<a href="#/'+x+'/'+i+'"><img width="50px" height="50px" src="js/vis/svg/'+i+'.svg"></a>';
+        next.innerHTML+=' <a href="#/'+x+'/'+i+'"><img width="50px" height="50px" src="js/vis/svg/'+i+'.svg"></a>';
     
     
       }
@@ -433,7 +434,7 @@ function showMenu(x){
   function cleanAnimation(h, v, f, o) {
     
     
-    if(h==1 && v>=1){
+    if(h && v) {
     document.location.href="#"+h+"/"+v;
     }
     
@@ -453,7 +454,7 @@ function showMenu(x){
     var statusHead = document.getElementById( 'head' );
     
     if(v && v>0){
-    statusHead.innerHTML="<small>animation "+v+" <a href='#' onclick='encode_as_img_and_link(); return false;'>save</a></small>";
+    statusHead.innerHTML="<small><a href='#' onclick='encode_as_img_and_link(); return false;'>export</a> animation "+v+"</small>";
     }
     
     
