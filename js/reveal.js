@@ -433,8 +433,9 @@ function showMenu(x){
   function cleanAnimation(h, v, f, o) {
     
     
+    if(h==1 && v>=1){
     document.location.href="#"+h+"/"+v;
-    
+    }
     
     
     var statusVis = document.getElementById( 'vis' );
