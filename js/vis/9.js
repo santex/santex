@@ -74,7 +74,7 @@ var g = svg.selectAll("g")
 
 g.append("path")
     .attr("class", "shadow")
-    .attr("fill","#"+((1<<24)*Math.random()|0).toString(16));
+    .attr("fill", "rgba(16,16,16,.8)");
 
 g.append("path")
     .attr("class", "tree");

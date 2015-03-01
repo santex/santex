@@ -488,13 +488,13 @@ var width = 500,
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background", "#1e1e1e");
+    .style("background", color);
 
 var defs = svg.select("defs");
 
 var moon = svg.append("circle")
     .attr("class", "moon")
-    .attr("fill", color)
+    .attr("fill", "#"+((1<<24)*Math.random()|0).toString(16))
     .attr("cx", mx)
     .attr("cy", my)
     .attr("r", 45);
