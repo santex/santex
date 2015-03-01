@@ -23,8 +23,21 @@
     <link rel="stylesheet" href="css/component.css">
     <link rel="stylesheet" href="css/base.css">
     
-		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+    
+		<link rel="stylesheet" href="css/theme/sky.css" id="theme">
 
+						<!--//
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+            -->
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
     
@@ -47,7 +60,7 @@
 
       body{
       zoom:100%;  
-      background:#c0c0c0;
+      background:#fff;
         
       }
       
@@ -56,11 +69,11 @@ svg {
       }
       
       
-    img{
-    margin:3px;
-    max-width:40px;
-    height:auto;  
-      
+    
+.stary{
+    margin-top:-6px;
+       border: 1px solid tranparent;
+
       
     }
     
@@ -68,7 +81,8 @@ svg {
       margin-left:100px;
       max-width:90%;
       }
-    
+
+
     nav {
 cursor: pointer;
 min-width: 60px;
@@ -83,7 +97,7 @@ top: 194px;
 text-align: center;
 overflow: hidden;
 color: #fff;
-z-index: 1000;
+
 _display: none;
 }
 user agent stylesheetarticle, aside, footer, header, hgroup, main, nav, section {
@@ -106,21 +120,31 @@ font-family: "league-gothic-1",Impact,sans-serif;
 #navmenu{
 list-style:none;  
 }
+.fragment{text-align:center;}
+.fragment > background {z-index:1;}
+
+#slide{
+overflow-y:scroll;  
+}
+
+
     </style>
 
 	</head>
 
 	<body>
     <nav>
-      <img width="24" height="24" src="img/star-top.png" alt=" Navbar">
+      <img src="img/star-top.png" alt=" Navbar">
       <h2 id="navhdr">NAV</h2>
       <ul id="navmenu">
-        <li><a href="#/1" tabindex="2">art</a></li>
-        <li><a href="#/2" tabindex="3">science</a></li>
-        <li><a href="#/3" tabindex="4">politics</a></li>
+        <li><a href="#/" tabindex="0">home</a></li>
+        <li><a href="#/1" tabindex="1">animations</a></li>
+        <li><a href="#/2" tabindex="2">politics</a></li>
+        <li><a href="#/3" tabindex="3">science</a></li>
         
       </ul>
-      <img width="24" height="24" class="star" src="img/star-top.png" alt=" Navbar">
+      <img src="img/star-top.png" alt=" Navbar">
+    
     </nav>
 
 		<div class="reveal">
@@ -261,12 +285,12 @@ function linkify( selector ) {
 
 					
           
-					<div class="info-keys icon" style="font-size:10px;margin-top:20px;">Navigate with arrow keys</div>
+		<div class="info-keys icon" style="font-size:10px;margin-top:20px;color:#000;">Navigate with arrow keys</div>
 
     <script id="graph53" src="js/vis/all.js"></script>
 
 
-				<section id="themes">
+				<section id="fragments">
 
     				<div id="head">animations</div>
             <div id="menue"></div>
@@ -335,31 +359,34 @@ function linkify( selector ) {
              
 
 				</section>
-        <section>
-        		<div id="head">science</div>
-            <div id="menue"></div>
+         <section class="fragments">
+             <section><h2>politics</h2>
             
-            <div id="vis"></div>
-            <canvas id="canvas"></canvas>
-
-
-        </section>   <section>
-        		<div id="head">politics</div>
-            <div id="menue"></div>
-            
-            <div id="vis"></div>
-            <canvas id="canvas"></canvas>
-
-
-        </section>
-
-
-
-			</div>
-
-		</div>
-   
-    
+            <ul style="list-style:none;">
+        <li><a href="#/2/1" tabindex="0">syria</a></li>
+        <li><a href="#/2/2" tabindex="1">gaza</a></li>
+        <li><a href="#/2/3" tabindex="2">euro</a></li>
+        <li><a href="#/2/4" tabindex="3">journalist killed</a></li>
+        </ul></small></section>
+        
+           <section><center><small class="fragment">syria</small></center>
+            <iframe   src="http://space-man.de/cv/visualisation/airstrikes/index.html" width="90%" height="800px" frameborder="0"></iframe>
+            </section>
+            <section>
+              <center><small class="fragment">gaza</small></center>
+            <iframe   src="http://space-man.de/cv/visualisation/gaza/index.html" width="90%" height="800px" frameborder="0"></iframe>
+            </section>
+            <section>
+              <center><small class="fragment">euro</small></center>
+            <iframe   src="http://space-man.de/cv/visualisation/ecbtests/index.html" width="90%" height="800px" frameborder="0"></iframe>
+            </section>
+            <section>
+              <center><small class="fragment">journalists killed</small></center>
+              
+            <iframe   src="http://space-man.de/cv/visualisation/journalist-deaths/index.html" width="90%" height="800px" frameborder="0"></iframe>
+            </section>
+        
+        </section>		 
     <script>
 			// Full list of configuration options available at:
 			// https://github.com/santex/reveal.js#configuration

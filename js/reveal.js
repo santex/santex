@@ -386,29 +386,33 @@ function encode_as_img_and_link(){
 			'ESC, O':				'Slide overview'
 		};
 
-function hideMenu(){
+function hideMenu(h){
 
     
         var next = document.getElementById("menue");
      next.innerHTML='';
-     
         var canvas = document.getElementById("canvas");
      canvas.innerHTML='';
       
     }
 function showMenu(x){
     
-       var next = document.getElementById("menue");
-     next.innerHTML='';
-     
-    if(x==0 || x==undefined){
-    x=1;  
+
+    if(x==2)  {
+      
+    document.querySelector('.reveal > .backgrounds').style['z-index'] = 1;
+    }else{
+       
+    if(x==undefined){
+       x==1;
     }
     
+      var next = document.getElementById("menue");
+      next.innerHTML="";
     
     for( var i = 1, len = 52; i < len; i++ ) {
 
-        var next = document.getElementById("menue");
+      
       
       if(next){
         
@@ -416,7 +420,7 @@ function showMenu(x){
     
     
       }
-        
+    }    
     }
       
     }
@@ -433,11 +437,15 @@ function showMenu(x){
    }
   function cleanAnimation(h, v, f, o) {
     
+    v= v == 0 ? 1 : v;
     
-    
+    if(h>=1 && v>=0) {
     document.location.href="#"+h+"/"+v;
-    
-    
+    }
+
+
+  
+     
     var statusVis = document.getElementById( 'vis' );
     
     statusVis.innerHTML="";
@@ -447,19 +455,24 @@ function showMenu(x){
     statusCanvas.setAttribute('width', '0px');
     statusCanvas.setAttribute('height', '0px');
       
+    var statusRev = document.getElementById( 'reveal' );
     
  var   d3="";
     
     var statusHead = document.getElementById( 'head' );
     statusHead.innerHTML="";
+    
+    
     if(!v){
     statusHead.innerHTML="<small> animations </small>";
     }else{
     statusHead.innerHTML="<small><a href='#' onclick='encode_as_img_and_link(); return false;'>export</a> animation "+v+"</small>";
     }
+  
     
-    
-    if(v == undefined || v == 0){   
+  
+    if(v == undefined || v == 0 || h==3){   
+
 
       showMenu(h);      
       
@@ -467,12 +480,12 @@ function showMenu(x){
       
         console.log(h, v, f, o);
       
-        hideMenu();      
+        hideMenu(h);      
        
         eval("if (typeof graph"+v+" == 'function') { graph"+v+"('"+getColor()+"');  }");
         
       }
-    
+     
       
   }
 	function initialize( options ) {
@@ -2847,6 +2860,8 @@ function showMenu(x){
 		var indices = getIndices( slide );
 		var background = getSlideBackground( indices.h, indices.v );
 		if( background ) {
+      
+      document.querySelector('.reveal > .backgrounds').style['z-index'] = 0;
 			background.style.display = 'block';
 
 			// If the background contains media, load it
