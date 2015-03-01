@@ -1,3 +1,4 @@
+
 function graph1(color){
 
 var width = 500,
