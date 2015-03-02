@@ -81,11 +81,15 @@
     var numInOneScreen = Math.ceil(menu3Width / thumbSize) * Math.ceil(getDocHeight() / thumbSize);
     var numInView = numInOneScreen;
 
+
+  //d3.csv('https://docs.google.com/spreadsheet/pub?key=0AqMEGBUNwXeHdEZOdTRXZFNFSGJDaW1aRFBnLUpCbHc&single=true&gid=0&output=csv', function(error, _json){
+//    d3.csv('d3gallery_feb282013.csv', function(error, _json){
+    
 //     d3.csv('https://docs.google.com/spreadsheet/pub?key=0AqMEGBUNwXeHdHpQNlVuY29SUE5BSXVtS3JueGlNYVE&single=true&gid=0&output=csv', function(error, _json){
-   //    d3.csv('./data.csv', function(error, _json){
-    //d3.csv('data.csv', function(error, _json){
-    d3.csv('d3gallery_feb282013.csv', function(error, _json){
-        json = _json;
+    d3.csv('./data.csv', function(error, _json){
+          json = _json;
+    //d3.csv('data.csv', function(error, _json).d3.csv('d3gallery_feb282013.csv', function(error, _json){
+        
         d3.select('.example-count').text('(' + json.length + 'examples!)');
         buildList(dataTransformMenu1(), '.menu1-container', data1);
         buildList(dataTransformMenu2('visualizationType'), '.menu2-container', data2);
