@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Armadillo Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Armadillo Projection</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.armadillo</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection D3 plugin</a>.
+  <p>“Orthoapsidal”.  Erwin J. Raisz, 1943.  An oblique orthographic projection is plotted onto a portion of a torus.
+  <p>Claimed to have “more land in proportion to sea than any other world map”.
+  <p>Resembles an <a href="http://en.wikipedia.org/wiki/Armadillo">armadillo</a>.
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var projection = d3.geo.armadillo().scale(235).center([0, 22.5]);
+
+d3.select("#map").call(canvasMap().projection(projection));
+
+</script>

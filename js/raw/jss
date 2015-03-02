@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html class="decks show " data-account="free">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"beacon-5.newrelic.com","errorBeacon":"bam.nr-data.net","licenseKey":"4fd2e9786b","applicationID":"1563900","transactionName":"cApZREQKWl9XFxZQVlAORB9FDVlE","queueTime":0,"applicationTime":30,"agent":"js-agent.newrelic.com/nr-476.min.js"}</script>
+<script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function r(n){if(!e[n]){var o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var o=t[n][1][e];return r(o?o:e)},o,o.exports)}return e[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({QJf3ax:[function(t,e){function n(t){function e(e,n,a){t&&t(e,n,a),a||(a={});for(var c=u(e),f=c.length,s=i(a,o,r),p=0;f>p;p++)c[p].apply(s,n);return s}function a(t,e){f[t]=u(t).concat(e)}function u(t){return f[t]||[]}function c(){return n(e)}var f={};return{on:a,emit:e,create:c,listeners:u,_events:f}}function r(){return{}}var o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],"7eSDFh":[function(t,e){function n(t,e,n){if(r.call(t,e))return t[e];var o=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return t[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],D5DuLP:[function(t,e){function n(t,e,n){return r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee=r,r.q=o},{ee:"QJf3ax"}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],XL7HBI:[function(t,e){function n(t){var e=typeof t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return r++})}var r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],G9z0Bl:[function(t,e){function n(){var t=l.info=NREUM.info;if(t&&t.agent&&t.licenseKey&&t.applicationID&&c&&c.body){l.proto="https"===p.split(":")[0]||t.sslForHttp?"https://":"http://",a("mark",["onload",i()]);var e=c.createElement("script");e.src=l.proto+t.agent,c.body.appendChild(e)}}function r(){"complete"===c.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),u=window,c=u.document,f="addEventListener",s="attachEvent",p=(""+location).split("?")[0],l=e.exports={offset:i(),origin:p,features:{}};c[f]?(c[f]("DOMContentLoaded",o,!1),u[f]("load",n,!1)):(c[s]("onreadystatechange",r),u[s]("onload",n)),a("mark",["firstbyte",i()])},{handle:"D5DuLP"}]},{},["G9z0Bl"]);</script>
+
+    <title>JSS by Oleg Slobodskoi</title>
+    <meta name="description" content="Dynamic stylesheets for web components. " />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <meta property="og:title" content="JSS by Oleg Slobodskoi" />
+    <meta property="og:site_name" content="Slides" />
+    <meta property="og:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg" />
+    <meta property="og:type" content="presentation" />
+    <meta property="og:url" content="http://slides.com/kof/jss" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+      <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,600,700&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic" rel="stylesheet" type="text/css">
+
+    <link href="//assets.slid.es/assets/slides/slides-0c1388bc8e6e9cabec475ce55e102391.css" media="all" rel="stylesheet" />
+    <link href="//assets.slid.es/assets/application-2a7020aed6e57185d8b910ed864b5ca7.css" media="all" rel="stylesheet" />
+    <meta content="authenticity_token" name="csrf-param" />
+<meta content="huCzeFiY+E89S+FaVJsacbupVzLJbIZsZ38rU/cTNWg=" name="csrf-token" />
+    <script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39670045-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <!--[if lt IE 9]>
+    <script src="//assets.slid.es/assets/html5shiv-b51d49ab0e89834a02ffce4a59905afb.js"></script>
+<![endif]-->
+    	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@SlidesApp">
+	<meta name="twitter:title" content="JSS">
+	<meta name="twitter:description" content="Dynamic stylesheets for web components. ">
+	<meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg">
+
+	<link href="//assets.slid.es/assets/deck-v2-9270c79ee334f030dea4764040c2623f.css" media="all" rel="stylesheet" />
+
+
+<style id="user-css-output" type="text/css"></style>
+
+  </head>
+  <body>
+    <div id="container" class="container">
+      <header class="global-header show-on-scroll">
+  <div class="wrapper">
+    <h1 class="logo-animation">
+      <a class="symbol" href="/">
+        <div class="box-1"></div>
+        <div class="box-2"></div>
+        <div class="box-3"></div>
+      </a>
+      <a class="word" href="/"></a>
+    </h1>
+    <ul class="nav">
+        <li class="nav-item" data-page-id="home/explore">
+          <a class="nav-item-anchor" href="/explore"><span class="nav-item-label">Explore</span></a>
+        </li>
+        <li class="nav-item" data-page-id="static/features">
+          <a class="nav-item-anchor" href="/features"><span class="nav-item-label">Features</span></a>
+        </li>
+        <li class="nav-item" data-page-id="static/pricing">
+          <a class="nav-item-anchor" href="/pricing"><span class="nav-item-label">Pricing</span></a>
+        </li>
+        <li class="nav-item" data-page-id="sessions/new">
+          <a class="nav-item-anchor" href="/users/sign_in"><span class="nav-item-label">Sign in</span></a>
+        </li>
+    </ul>
+  </div>
+</header>
+      
+      <div id="main" class="main" role="main">
+        
+
+
+
+<div class="marquee loading">
+
+	<div class="reveal-frame">
+		<div class="reveal-viewport theme-font-montserrat theme-color-white-blue">
+			<div class="reveal">
+				<div class="slides">
+					<section data-id="8f9b1eb0ef13a3204e75f19fc00dfd8c"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 97px; height: auto;" data-block-id="b002a7edb4c76a6d73d171daea0174fb"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10;">
+<h1>Fix CSS</h1>
+
+<h1>by writing</h1>
+
+<h1>it in JS</h1>
+
+<p> </p>
+
+<p><a href="https://github.com/jsstyles/jss" target="_blank">https://github.com/jsstyles/jss</a></p>
+
+<p> </p>
+
+<p>By Oleg Slobodskoi <a href="http://twitter.com/oleg008" target="_blank">@oleg008</a></p>
+</div></div></section><section data-id="9e64cdce86e3361aca9f191751947811"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 114px; height: auto;" data-block-id="ef4b73c1ff15da2c82761d99a9a937c7"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Overview</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 111px; top: 224px; height: auto;" data-block-id="21bc7c8949bd943e72db599f12d712a5"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<ol>
+	<li>History</li>
+	<li>Composition</li>
+	<li>Code reuse</li>
+	<li>Vendor prefixing</li>
+	<li>CSS globals</li>
+	<li>Sharing values</li>
+	<li>Overhead</li>
+	<li>More optimizations</li>
+</ol>
+</div></div></section><section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/851102/netscape_navigator__wallpaper__request__by_hardii-d5v6v0p.png" data-id="b4668eb354a7acbdafcf618ec34c08a0"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 141px; height: auto;" data-block-id="37622b6426fb25a0d3c291e5c84141d2"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 13;">
+<h2><span style="color:#FFFFFF">Javascript Style Sheets</span></h2>
+
+<p> </p>
+
+<p> </p>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 283px; height: auto;" data-block-id="014a96753c3b981913334498501feb68"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 14;">
+<p><a href="http://en.wikipedia.org/wiki/JavaScript_Style_Sheets" target="_blank"><span style="color:#FFFFFF">http://en.wikipedia.org/wiki/JavaScript_Style_Sheets</span></a></p>
+</div></div>
+<div class="sl-block" data-block-type="shape" data-block-id="3b47be933504fc65a003d385f144cf60" style="min-width: 4px; min-height: 4px; width: 469px; height: 679px; left: -1px; top: 0px;"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="#000000" data-shape-stretch="false" style="z-index: 12; opacity: 0.62;"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveaspectratio="xMidYMid" viewbox="0 0 469 469"><rect width="469" height="469" class="shape-element" fill="#000000"></rect></svg></div></div>
+<div class="sl-block" data-block-type="shape" style="min-width: 4px; min-height: 4px; width: 469px; height: 679px; left: 467px; top: 0px;" data-block-id="fa830f9c5e56d2db6b0424312ead8a48"><div class="sl-block-content" data-shape-type="rect" data-shape-fill-color="#000000" data-shape-stretch="false" style="z-index: 11; opacity: 0.62;"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" preserveaspectratio="xMidYMid" viewbox="0 0 469 469"><rect width="469" height="469" class="shape-element" fill="#000000"></rect></svg></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="25271a4aaa8dc2ab01f6188f95e9a96e" style="min-width: 30px; min-height: 30px; width: 374px; height: 122px; left: 266px; top: 368px;"><div class="sl-block-content" style="z-index: 15;"><pre class="xml"><code>
+    &lt;style type="text/javascript"&gt;
+        tags.H1.color = "blue";
+    &lt;/style&gt;</code></pre></div></div></section><section data-id="a8e363c16518ea3387803d8ec4ed08cf"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 247px; height: auto;" data-block-id="c3ec6b4eb167350027246ee82b861d7e"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>Cascades and Composition </h1>
+</div></div></section><section data-id="af9bd0b73c2d2b324b166702cebb2d2b"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 104px; height: auto;" data-block-id="7a06a81bfab89b51674219be99933ef1"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 11;">
+<h2>Lets create a component "A" with a button.</h2>
+</div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 414px; height: 113px; left: 273px; top: 332px;" data-block-id="8c8076333936987e74c79b821789dbba"><div class="sl-block-content" style="z-index: 12;"><pre><code>
+    component-a button {
+        background: red;
+    }
+</code></pre></div></div></section><section data-id="f5afc04379890a4d2dda5a988e831d28"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 90px; height: auto;" data-block-id="93ff88b81f2deee52eb05a6feb8acce0"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 11;">
+<h2>Lets create a component "B" with a button.</h2>
+</div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 400px; height: 122px; left: 280px; top: 350px;" data-block-id="795eb33c953011c2eb99709fa9aeaa6a"><div class="sl-block-content" style="z-index: 12;"><pre><code>
+    component-b button {
+        color: green;
+    }
+</code></pre></div></div></section><section data-id="981ffe77417bd77763a38c5e51745ee3"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 59px; height: auto;" data-block-id="19fafa369b45ed8754da6364b1bdc3bd"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10;">
+<h1>Now lets compose them.</h1>
+
+<p> </p>
+
+<p>Lets use component B within component A.</p>
+</div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 410px; height: 190px; left: 282px; top: 383px;" data-block-id="a8e303198f4b1e40b186e6ec7615d3df"><div class="sl-block-content" style="z-index: 12;"><pre><code>
+    &lt;component-a&gt;
+        &lt;button&gt;Button A&lt;/butotn&gt;
+        &lt;component-b&gt;
+            &lt;button&gt;Button B&lt;/butotn&gt;
+        &lt;/component-b&gt;
+    &lt;/component-a&gt;</code></pre></div></div></section><section data-id="3bda9f998e10949d5282b071f6ae6bde" data-background-size="contain"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 79px; height: auto;" data-block-id="bb0d407c0a4d4e5c6b48abe39b6b7ba9"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 11;">
+<h1> Is this what we</h1>
+
+<h1>want to get?</h1>
+
+<p> </p>
+
+<p> </p>
+</div></div>
+<div class="sl-block" data-block-type="image" style="min-width: 30px; min-height: 30px; width: 796px; height: 152.176470588235px; left: 122px; top: 414px;" data-block-id="c3ecec90e49da5db958a348ae5f85658"><div class="sl-block-content" style="z-index: 12;"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/832448/Bildschirmfoto_2014-11-16_um_16.10.28.png" data-natural-width="408" data-natural-height="78" style="visibility: visible;"></div></div></section><section class="has-light-background" data-background-color="#788d72"><div class="sl-block" data-block-type="image" data-block-id="85d6fb6e5ee991ba03d3ae73f6daec75" style="min-width: 30px; min-height: 30px; width: 743.486111111111px; height: 995px; left: 109px; top: -147px;"><div class="sl-block-content" style="z-index: 11;"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/851208/253568_214047588618716_100000404281672_679221_1681727_n.jpg" style="visibility: visible;" data-natural-width="538" data-natural-height="720"></div></div></section><section data-id="22a975890054bafce7c57e87a40d3a35"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 280px; height: auto;" data-block-id="d81aa137f2b05078f413e5cc5309b6a6"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>2 problems</h2>
+</div></div>
+</section><section data-id="238b26f00214e4c8b2a2730b4c2714d4"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 190px; height: auto;" data-block-id="d6e688367fe555462eb2df0203fc7d37"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>1. Cascading</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 342px; height: auto;" data-block-id="f44fc47dfc64484921b01145f8c5a4b2"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<p>Is only useful when you are never going to</p>
+
+<p>compose components.</p>
+</div></div></section><section data-id="b21862d8f6a2b0ebbb3af7d1c98dbc1f"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 190px; height: auto;" data-block-id="f1351d60b4736d2908728a83bd57e661"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>2. Global selectors</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 350px; height: auto;" data-block-id="3a98c96a9882d1169b180584274ff1d1"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<p>Is a bad practice and we all know why, right?</p>
+</div></div></section><section data-id="592741c3b371d459230054e480498c4f"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 53px; height: auto;" data-block-id="d2be2f0e415da0bc498529dce05afe0d"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 11;">
+<h2>Lets rewrite it using JS</h2>
+</div></div>
+<div class="sl-block" data-block-type="code" data-block-id="7f2c203d2435330cdae1770bdcbd3715" style="min-width: 30px; min-height: 30px; width: 471px; height: 424px; left: 240px; top: 154px;"><div class="sl-block-content" style="z-index: 12; border-style: solid; border-width: 1px;"><pre class="javascript"><code>
+    // component-a.js
+    module.exports = {
+        button: {
+            background: 'red'
+        }
+    }
+    
+    // component-b.js
+    module.exports = {
+        button: {
+            color: 'green'
+        }
+    }
+    
+    // app.js
+    var a = require('./component-a')
+    var b = require('./component-b')
+    jss.createStyleSheet(a, true).attach()
+    jss.createStyleSheet(b, true).attach()</code></pre></div></div>
+<div class="sl-block" data-block-type="image" data-block-id="2f35fccad3ecc2d36004b5d43ecff08c" style="min-width: 30px; min-height: 30px; width: 628.026315789474px; height: 129px; left: 160px; top: 578px;"><div class="sl-block-content" style="z-index: 13;"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/832445/Bildschirmfoto_2014-11-16_um_16.09.19.png" data-natural-width="370" data-natural-height="76" style="visibility: visible;"></div></div>
+
+</section><section data-id="d634f3925e158ec7ecb874ab9a3b82f6"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 63px; height: auto;" data-block-id="045d721f3eea48b23d0f567c0aaa889d"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10;">
+<h1>Both problems solved.</h1>
+</div></div>
+<div class="sl-block" data-block-type="text" data-block-id="0f502f25849db8f1af57ee3555509af6" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 180px; top: 272px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11;">
+<ul>
+	<li>We don't rely on cascading</li>
+	<li>Selectors are generated and are unique</li>
+</ul>
+</div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 318px; height: 268px; left: 322px; top: 369px;" data-block-id="507c81571a05372b5120cf646b6b5d49"><div class="sl-block-content" style="z-index: 13;"><pre class="css"><code>
+    &lt;style&gt;
+        .jss-0 {
+            background: red;
+        }
+    &lt;/style&gt;
+    
+    &lt;style&gt;
+        .jss-1 {
+            color: green;
+        }
+    &lt;/style&gt;</code></pre></div></div></section><section class="has-dark-background" data-background-color="#0a0b09"><div class="sl-block" data-block-type="image" data-block-id="290516df866e975645522c594557f066" style="min-width: 30px; min-height: 30px; width: 522.666666666667px; height: 700px; left: 219px; top: 0px;"><div class="sl-block-content" style="z-index: 11;"><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/851279/IMG_0297.jpg" style="visibility: visible;" data-natural-width="672" data-natural-height="900"></div></div></section><section data-id="ec82ac60f413e3b59bba7c6b820cfb3e"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 146px; height: auto;" data-block-id="4ed4a184c8e9239154acdb21ca3407c0"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Code reuse in CSS</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 73px; top: 319px; height: auto;" data-block-id="6756c940d7aa02df28a1326d335b0f52"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<ul>
+	<li>Multiple classes on one element</li>
+	<li>Global selectors</li>
+</ul>
+</div></div></section><section data-id="3b30823f3e587f5eecd959649f59aca9"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 152px; height: auto;" data-block-id="6105c4c5f9acff4986a9b9f028393186"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Code reuse in JSS</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 318px; height: auto;" data-block-id="4a2e72ef5de18b238a3e47797d9dcd72"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<p>Is infinitely flexible.</p>
+
+<p> </p>
+
+<ul>
+	<li>Truly reusable css components</li>
+	<li>Save up to 30% in size</li>
+</ul>
+</div></div></section><section data-id="309fdbc7b92d8228f4f6b95cc10fe907"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 85px; height: auto;" data-block-id="5735ba3294249e371511107d27f08eca"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 11;">
+<h2>Inheritance</h2>
+
+<p>Done by "extend" plugin.</p>
+</div></div>
+<div class="sl-block" data-block-type="code" data-block-id="fc268d8badbb8667f914061f9d8b9e75" style="min-width: 30px; min-height: 30px; width: 455px; height: 385px; left: 67px; top: 252px;"><div class="sl-block-content" style="z-index: 12;"><pre class="javascript"><code>
+    // base-button.js
+    module.exports = {
+        color: 'red'
+    }
+    
+    // styles.js
+    var baseButton = require('./base-button')
+    module.exports = {
+        '.button': {
+            extend: baseButton,
+            float: 'left'
+        }
+    }
+    
+    // app.js
+    var styles = require('./styles')
+    jss.createStyleSheet(styles).attach()      </code></pre></div></div>
+<div class="sl-block" data-block-type="code" data-block-id="3599cbae4a604b3d8edddd4d56c99cc7" style="min-width: 30px; min-height: 30px; width: 347px; height: 385px; left: 546px; top: 252px;"><div class="sl-block-content" style="z-index: 13;"><pre class="css"><code>
+    &lt;style&gt;
+        .button {
+            color: red;
+            float: left;
+        }
+    &lt;/style&gt;</code></pre></div></div></section><section data-id="2cca0e4f7313cbcf093313a8ef2a8cd5"><div class="sl-block" data-block-type="text" style="width: 800px; left: 81px; top: 87px; height: auto;" data-block-id="d60a72e3d08900923bf3c11f77098fd7"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 11;">
+<h2>Nesting</h2>
+
+<p>Done by "nested" plugin.</p>
+</div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 468px; height: 362px; left: 60px; top: 273px;" data-block-id="0da6480a45148126d0960482b50d6028"><div class="sl-block-content" style="z-index: 12;"><pre class="javascript"><code>
+    // styles.js
+    module.exports = {
+        '.button': {
+            float: 'left',
+            '&amp;:hover': {
+                color: 'red'
+            },
+            '&amp; .icon': {
+                border: '1px solid red'
+            }
+        }
+    }
+    
+    // app.js
+    var styles = require('./styles')
+    jss.createStyleSheet(styles).attach()  </code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 347px; height: 362px; left: 554px; top: 273px;" data-block-id="fbff62d182e1b7b155469889cbac921b"><div class="sl-block-content" style="z-index: 13;"><pre class="css"><code>
+    &lt;style&gt;
+        .button {
+            float: left;
+        }
+        .button:hover {
+            color: red;
+        }
+        .button .icon {
+            width: 20px;
+            height: 20px
+        }
+    &lt;/style&gt;</code></pre></div></div></section><section data-id="3d2ddefd0645c01431c75a7c4d44c8ef"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 81px; height: auto;" data-block-id="718067405172aeda5e07c58b24fa6e7b"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 10;">
+<h2>Vendor prefixes</h2>
+
+<p>Done by "vendorPrefixer" plugin.</p>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 89px; top: 248px; height: auto;" data-block-id="a1fdfe3c6a05e4ffe1c1317d4ece5790"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11;">
+<p>Added very <a href="https://github.com/jsstyles/css-vendor" target="_blank">efficiently</a> <span> at runtime</span>.</p>
+</div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 468px; height: 255px; left: -4px; top: 334px;" data-block-id="1326cb7dd0192ac45e367fa8b7bc5d6a"><div class="sl-block-content" style="z-index: 13;"><pre class="javascript"><code>
+    // styles.js
+    module.exports = {
+        '.button': {
+            transform: 'translateX(100px)'
+        }
+    }
+    
+    // app.js
+    var styles = require('./styles')
+    jss.createStyleSheet(styles).attach()  </code></pre></div></div>
+<div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 497px; height: 255px; left: 470px; top: 333px;" data-block-id="f1b4f7c3a2d6cf5f4159097229176257"><div class="sl-block-content" style="z-index: 14;"><pre class="css"><code>
+    &lt;style&gt;
+        .button {
+            -webkit-transform: translate(100px);
+        }
+    &lt;/style&gt;</code></pre></div></div></section><section data-id="1eb704dd038f6a913291b0a422a257ff"><div class="sl-block" data-block-type="text" style="width: 800px; left: 72px; top: 65px; height: auto;" data-block-id="6a143db14ec23244114afebafe43876f"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 10;">
+<h2>Sharing values</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 71px; top: 154px; height: auto;" data-block-id="c6d7cfb693d8f15b7722281e68d90e7c"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11;">
+<p>Now it's really easy to reuse and access constants.</p>
+</div></div>
+<div class="sl-block" data-block-type="code" data-block-id="49356113a7d00f50175378ce676eb96d" style="min-width: 30px; min-height: 30px; width: 519px; height: 469px; left: 221px; top: 210px;"><div class="sl-block-content" style="z-index: 13;"><pre class="javascript"><code>
+    // vars.js
+    module.exports = {
+        color: '#fff',
+        height: 20
+    }
+    
+    
+    // styles.js
+    var vars = require('./vars')
+    module.exports = {
+        button: {
+            color: vars.color,
+            height: vars.height + 'px'
+        }
+    }
+
+    // app.js
+    var vars = require('./vars')
+
+    // Do something usefull    
+    $('something').height(vars.height)
+</code></pre></div></div></section><section data-id="59d2582f424fea3648fea9450ba00eab"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 103px; height: auto;" data-block-id="7fc5624842ce01db3aaac145921763c3"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 10;">
+<h2>Direct injection</h2>
+</div></div>
+<div class="sl-block" data-block-type="code" data-block-id="f872f0b24390c40fe13c5a8934849ef8" style="min-width: 30px; min-height: 30px; width: 526px; height: 310px; left: 220px; top: 250px;"><div class="sl-block-content" style="z-index: 12;"><pre class="javascript"><code>
+    // styles.js
+    module.exports = {
+        button: {
+            padding: '20px',
+            background: 'blue'
+        }
+    }
+    
+    // app.js
+    var styles = require('./styles')
+    var sheet = jss.createStyleSheet(styles, true)
+
+    sheet.rules.button.applyTo($('button')[0])
+    
+</code></pre></div></div></section><section data-id="08849862f598d8ef1df8eae2c807400f"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 127px; height: auto;" data-block-id="601dae60c4d3a4d937996952571a138f"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Why share values?</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 730px; left: 134px; top: 272px; height: auto;" data-block-id="0444beca592beae5b8ad1aba40b3994f"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<ul>
+	<li>DOM round trip is expensive</li>
+	<li>get initial value directly</li>
+	<li>calculate relative values</li>
+	<li>use values in different places e.g. inline</li>
+</ul>
+
+<p> </p>
+
+<p><strong>JS layout engines will love it!</strong></p>
+</div></div></section><section data-id="f111ea2d8192eac8cf5dcc20d6230823"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 128px; height: auto;" data-block-id="9817e7b7ddaf281949355169822c98d1"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Overhead?</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 70px; top: 263px; height: auto;" data-block-id="70267fe264710f778608cb3df2b550ce"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<p>bootstrap css (<span>134kb</span>) vs. bootstrap jss:</p>
+
+<p><span><a href="http://jsstyles.github.io/jss/bench/bootstrap/css.html" target="_blank">http://jsstyles.github.io/jss/bench/bootstrap/css.html</a></span></p>
+
+<p><span><a href="http://jsstyles.github.io/jss/bench/bootstrap/jss.html" target="_blank">http://jsstyles.github.io/jss/bench/bootstrap/jss.html</a></span></p>
+
+<p> </p>
+
+<p>Jss overall overhead ~10-15ms on desktop chrome.</p>
+
+<p> </p>
+
+<p> </p>
+</div></div></section><section data-id="af3669867aa659c5b81a9719283da7c8"><div class="sl-block" data-block-type="text" style="width: 800px; left: 81px; top: 294px; height: auto;" data-block-id="b7be3feea4eebd520676cb3050d0960e"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1>More optimizations?</h1>
+</div></div></section><section data-id="00fa5bcc5d6e9c40528225d379f86da9"><div class="sl-block" data-block-type="text" style="width: 800px; left: 74px; top: 103px; height: auto;" data-block-id="1885891b477feb09b13760b9b185128b"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 10;">
+<h2>Critical path</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 217px; height: auto;" data-block-id="f62b49c7aa733634893c9e0ed89e5212"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11;">
+<p>You might want to convert critical path</p>
+
+<p>jss to css and inline it.</p>
+</div></div>
+<div class="sl-block" data-block-type="code" data-block-id="7046631c776e7c860a9915e891a7bbb1" style="min-width: 30px; min-height: 30px; width: 500px; height: 288px; left: 240px; top: 333px;"><div class="sl-block-content" style="z-index: 13;"><pre class="javascript"><code>
+    var ss = jss.createStyleSheet({
+        'a': {
+            color: 'red'
+        }
+    })
+    console.log(ss.toString())
+    
+    
+    // Output
+    a {
+        color: red;
+    }
+
+
+
+</code></pre></div></div></section><section data-id="f317144185169faefd5164c696c68cb0"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 161px; height: auto;" data-block-id="c47ed520c916f38d5dcd71adf2a40cab"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
+<h2>Unused CSS</h2>
+</div></div>
+<div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 324px; height: auto;" data-block-id="8b0a186871a27f2e96723974ca3b91e9"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
+<ul>
+	<li>
+	<p>Render jss styles only for components which are in the render tree.</p>
+	</li>
+	<li>
+	<p>Remove jss styles when components are detached.</p>
+	</li>
+</ul>
+</div></div></section><section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/850665/2014-11-18_20.21.50.jpg" data-id="174a10e4cc03a4873239e6afcbf431ab"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 180px; height: auto;" data-block-id="b9a4bde4820f5181aac3563aef7e5715"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
+<h1><span style="color:#FFFFFF">Questions?</span></h1>
+
+<p> </p>
+
+<p><a href="https://github.com/jsstyles/jss" target="_blank"><span style="color:#FFFFFF">https://github.com/jsstyles/jss</span></a></p>
+
+<p> </p>
+
+<p><span style="color:#FFFFFF">Examples</span></p>
+
+<p><a href="http://jsstyles.github.io/jss/examples/" target="_blank"><span style="color:#FFFFFF">http://jsstyles.github.io/jss/examples/</span></a></p>
+
+<p> </p>
+
+<p> </p>
+
+<p><span style="color:#FFFFFF">By Oleg Slobodskoi </span><a href="http://twitter.com/oleg008" target="_blank"><span style="color:#FFFFFF">@oleg008</span></a></p>
+</div></div></section>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="deck-kudos">
+		<button class="kudos-button kudos-trigger" data-kudos-id="285693" data-kudoed-by-user="false">
+			<div class="kudos-heart">
+				<span class="kudos-icon icon i-heart-fill"></span>
+			</div>
+			<div class="kudos-count" data-kudos-value="15" data-kudos-id="285693"></div>
+		</button>
+	</div>
+
+	<div class="summary-bubble">
+		<div class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></div>
+		<div class="text">
+			<h4>JSS</h4>
+			<p>By Oleg Slobodskoi</p>
+		</div>
+	</div>
+
+</div>
+
+<div class="column">
+	<header>
+		<ul class="deck-social">
+			<li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
+			<li><a href="https://twitter.com/share" class="twitter-share-button" data-text="JSS" data-url="http://slides.com/kof/jss"></a></li>
+			<li><div class="g-plusone" data-size="medium"></div></li>
+		</ul>
+
+		<div class="deck-promotion">
+			<a class="button cta" href="/pricing">Create a presentation like this <span class="logo"></span></a>
+		</div>
+
+		<div class="deck-options">
+			<a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
+			<a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
+			<a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
+		</div>
+
+		<div class="details">
+			<div class="deck-info">
+				<h3 class="title">JSS</h3>
+				<p class="description">Dynamic stylesheets for web components. </p>
+				<ul class="deck-meta">
+					<li data-tooltip="Published date" data-tooltip-delay="500">
+						<span class="icon i-clock"></span>
+						<time class="value ago" datetime="2014-11-15 21:02:13 UTC"></time>
+					</li>
+					<li data-tooltip="Kudos" data-tooltip-delay="500">
+						<span class="icon i-heart-fill"></span>
+						<span class="value" data-kudos-value="15" data-kudos-id="285693"></span>
+					</li>
+					<li data-tooltip="Views" data-tooltip-delay="500">
+						<span class="icon i-eye"></span>
+						<span class="value">10,738</span>
+					</li>
+				</ul>
+			</div>
+
+			<div class="user-info">
+	<div class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></div>
+	<div class="text">
+		<h3>
+			<a href="/kof" class="username">Oleg Slobodskoi</a>
+		</h3>
+		<p class="description"></p>
+		<ul class="links">
+			
+			
+		</ul>
+	</div>
+	<div class="clear"></div>
+</div>
+
+			<div class="clear"></div>
+		</div>
+	</header>
+
+	<section class="comments" id="comments">
+		<div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
+	</section>
+
+	<section class="deck-list">
+		<h2>More from <a href="/kof">Oleg Slobodskoi</a></h2>
+		<ul class="carousel">
+			<li class="deck-thumbnail">
+  <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/e32647/deck.jpg)">
+    <a class="deck-link" href="/kof/famo-us-basics"></a>
+  </div>
+  <footer class="deck-details">
+    <a class="author" href="/kof">
+      <span class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></span>
+      <span class="name">Oleg Slobodskoi</span>
+    </a>
+    <div class="stats">
+      <div>260<span class="icon i-eye"></span></div>
+    </div>
+  </footer>
+</li>
+<li class="deck-thumbnail">
+  <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/b049a3/deck--2.jpg)">
+    <a class="deck-link" href="/kof/famo-us-low-level-technics"></a>
+  </div>
+  <footer class="deck-details">
+    <a class="author" href="/kof">
+      <span class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></span>
+      <span class="name">Oleg Slobodskoi</span>
+    </a>
+    <div class="stats">
+      <div>347<span class="icon i-eye"></span></div>
+    </div>
+  </footer>
+</li>
+
+		</ul>
+	</section>
+
+</div>
+
+      </div>
+      <footer class="global-footer">
+    <div class="link-group">
+      <h5>Product</h5>
+      <a href="http://slides.com/">Home</a>
+      <a href="http://slides.com/explore">Explore</a>
+      <a href="http://slides.com/features">Features</a>
+      <a href="http://slides.com/pricing">Pricing</a>
+    </div>
+
+    <div class="link-group">
+      <h5>Help</h5>
+      <a href="http://help.slides.com" target="_blank">Forum</a>
+      <a href="http://help.slides.com/knowledgebase" target="_blank">Knowledge base</a>
+      <a href="#" data-feedback-mode="smartvote">Give feedback</a>
+      <a href="#" data-feedback-mode="contact">Report an issue</a>
+    </div>
+
+    <div class="link-group">
+      <h5>News</h5>
+      <a href="http://blog.slides.com" target="_blank">Blog</a>
+      <a href="http://twitter.com/slidesapp" target="_blank">Twitter</a>
+      <a href="http://facebook.com/slidesapp" target="_blank">Facebook</a>
+      <a href="https://plus.google.com/+slidesapp/" rel="publisher" target="_blank">Google+</a>
+    </div>
+
+    <div class="link-group">
+      <h5>Company</h5>
+      <a href="http://slides.com/about">About us</a>
+      <a href="http://slides.com/terms">Terms</a>
+      <a href="http://slides.com/privacy">Privacy</a>
+    </div>
+
+    <div class="copyright"><span>Slides is made by Whim, LLC. &copy;2015</span></div>
+</footer>
+
+    </div> <!--! end of #container -->
+    <script>
+UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/f7sH7NavrjjvuGxByaw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
+
+UserVoice.push(['set', {
+  accent_color: '#448dd6',
+  trigger_color: 'white',
+  trigger_background_color: 'rgba(46, 49, 51, 0.6)',
+  position: 'automatic'
+}]);
+
+</script>
+    
+<script>
+	var SLConfig = {"deck":{"id":285693,"slug":"jss","title":"JSS","description":"Dynamic stylesheets for web components. ","visibility":"all","published_at":"2014-11-15T21:02:13.124Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg","view_count":10738,"user":{"id":90550,"username":"kof","name":"Oleg Slobodskoi","email":"oleg008@gmail.com","description":"","thumbnail_url":"//graph.facebook.com/100000404281672/picture?type=large","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":19236,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"slide","transition":"slide","theme_id":null,"theme_font":"montserrat","theme_color":"white-blue","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":true,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":2}};
+</script>
+    <script defer="defer" src="//assets.slid.es/assets/application-56cd1e916782b5dd728a8bac69a90c7c.js"></script>
+    	<script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
+	
+
+
+  </body>
+</html>

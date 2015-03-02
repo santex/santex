@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Chamberlin Trimetric Projection</title>
+<style>
+@import url(../maps.css);
+
+.graticule {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+}
+
+.foreground {
+  stroke-width: 2px;
+  stroke: #000;
+  fill: none;
+}
+
+.land {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: #cfc;
+}
+
+.boundary {
+  fill: none;
+  stroke: #000;
+  stroke-width: .25px;
+}
+
+.point {
+  stroke: #000;
+  fill: #f00;
+}
+
+#caption {
+  margin-bottom: -3em;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Chamberlin Trimetric Projection</h1>
+<p class="caption" id="caption">Chamberlin trimetric projection of Africa. Base points (22°N, 0°), (22°N, 45°E), (22°S, 22.5°E).
+<div id="map"></div>
+<div class="wrapper">
+  <p>The <a href="http://en.wikipedia.org/wiki/Chamberlin_trimetric_projection">Chamberlin trimetric projection</a> compromises between distortions of area, direction and distance.
+  <p>It is constructed by triangulating points on the sphere relative to three fixed base points, shown above in red.
+  <p>Available as <a href="https://github.com/d3/d3-plugins/tree/master/geo/projection"><code>d3.geo.chamberlin</code></a>.
+</div>
+<script src="../../d3.min.js"></script>
+<script src="../topojson.min.js"></script>
+<script src="../d3.geo.projection.min.js?20130521"></script>
+<script>
+
+var width = 960,
+    height = 900;
+
+var projection = d3.geo.chamberlin()
+    .points([[0, 22], [45, 22], [22.5, -22]])
+    .center([0, -1])
+    .scale(510)
+    .translate([width / 2, height / 2])
+    .precision(.1)
+    .clipAngle(80);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var graticule = d3.geo.graticule().extent([[-30, -40], [70, 50]]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("defs").append("clipPath")
+    .attr("id", "clip")
+  .append("path")
+    .datum(graticule.outline)
+    .attr("d", path);
+
+var g = svg.append("g").attr("clip-path", "url(#clip)");
+
+svg.append("path")
+    .datum(graticule.outline)
+    .attr("class", "foreground")
+    .attr("d", path);
+
+g.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+var point = g.selectAll(".point")
+    .data(projection.points())
+  .enter().append("path")
+    .datum(function(d) { return {type: "Point", coordinates: d}; })
+    .attr("class", "point")
+    .attr("d", path);
+    // TODO need an inverse for draggable points. :(
+
+d3.json("../world-50m.json", function(error, world) {
+  g.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+
+  g.insert("path", ".graticule")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "boundary")
+      .attr("d", path);
+});
+
+</script>

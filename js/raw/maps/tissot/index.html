@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Tissot’s Indicatrix</title>
+<style>
+
+@import url(../maps.css);
+
+h1 { margin-bottom: 0; }
+
+ellipse {
+  stroke: #f00;
+  fill: #f00;
+  fill-opacity: .2;
+}
+
+.graticule {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+  fill: none;
+}
+
+.land {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: #cfc;
+}
+
+.background {
+  fill: #fff;
+}
+
+.outline {
+  stroke: #000;
+  stroke-width: 1.5px;
+  fill: none;
+  pointer-events: all;
+  cursor: move;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Tissot’s Indicatrix</h1>
+<div id="map"></div>
+
+<script src="../../d3.js"></script>
+<script src="../d3.geo.projection.js"></script>
+<script src="../d3.geo.polyhedron.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js"></script>
+<script src="../d3.geo.tissot.js"></script>
+<script>
+
+var width = 960,
+    height = 600,
+    scale = 3,
+    m = .25,
+    p = 30;
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width + 2 * p)
+    .attr("height", height + 2 * p)
+    .call(d3.behavior.drag()
+      .origin(function() { var r = projection.rotate(); return {x: r[0] / m, y: -r[1] / m}; })
+      .on("dragstart", function() { pause = 1; })
+      .on("drag", function(d) {
+        projection.rotate([d3.event.x * m, -d3.event.y * m]);
+        redraw();
+      })
+      .on("dragend", function() { pause = 0; }));
+
+var projection,
+    path = d3.geo.path(),
+    tissot = d3.geo.tissot(),
+    graticule = d3.geo.graticule().minorStep([15, 15]).minorExtent([[-180, -75], [180, 75 + 1e-6]]);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background");
+
+svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule");
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline");
+
+d3.select(window).on("hashchange", hashchange);
+
+hashchange();
+
+function hashchange() {
+  if (location.hash === "#waterman") {
+    projection = d3.geo.polyhedron.waterman()
+        .scale(118)
+        .rotate([20, 0]);
+  } else {
+    projection = d3.geo.mercator();
+  }
+  projection
+      .translate([p + width / 2, p + height / 2])
+      .clipExtent([[p, p], [width + p, height + p]])
+      .precision(.1);
+  tissot.projection(projection);
+  path.projection(projection);
+  redraw();
+}
+
+d3.json("../world-110m.json", function(error, world) {
+  svg.insert("path", ".graticule")
+      .attr("class", "land")
+      .datum(topojson.feature(world, world.objects.land));
+  redraw();
+});
+
+function redraw() {
+  svg.selectAll("path").attr("d", path);
+  var ellipse = svg.selectAll("ellipse")
+      .data(tissot(gridpoints(graticule)))
+  ellipse.exit().remove();
+  ellipse.enter().insert("ellipse", ".outline");
+  ellipse
+      .attr("transform", function(d) {
+        return "translate(" + projection(d.coordinates) + ")rotate(" + d.rotate + ")";
+      })
+      .attr("rx", function(d) { return d.a * scale; })
+      .attr("ry", function(d) { return d.b * scale; });
+}
+
+function gridpoints(graticule) {
+  var ε = 1e-6,
+      e = graticule.minorExtent(),
+      E = graticule.majorExtent(),
+      s = graticule.minorStep(),
+      S = graticule.majorStep(),
+      py = d3_geo_graticuleY(e[0][0], (e[0][0] + 180) % 360 === (e[1][0] + 180) % 360 ? e[1][0] - s[0] : e[1][0], s[0]);
+      PY = d3_geo_graticuleY(E[0][0], (E[0][0] + 180) % 360 === (E[1][0] + 180) % 360 ? E[1][0] - S[0] : E[1][0], S[0]);
+
+  return {
+    type: "MultiPoint",
+    coordinates: d3.merge(d3.range(Math.ceil(E[0][1] / S[1]) * S[1], E[1][1], S[1]).map(PY)
+      .concat(d3.range(Math.ceil(e[0][1] / s[1]) * s[1], e[1][1], s[1]).map(py).map(function(line) {
+        return line.filter(function(p) {
+          return Math.abs(p[1] % S[1]) > ε || Math.abs(p[0] % S[0]) > ε;
+        });
+      })))
+  };
+
+  function d3_geo_graticuleY(x0, x1, dx) {
+    var x = d3.range(x0, x1 - ε, dx).concat(x1);
+    return function(y) { return x.map(function(x) { return [x, y]; }); };
+  }
+}
+
+</script>

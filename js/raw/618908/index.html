@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>pohTable</title>
+    <script type="text/javascript" src="http://github.com/protovis/protovis/raw/v3.3.1/protovis.min.js"></script>
+    <script type="text/javascript" src="pohTable.js"></script>
+    <style type="text/css">
+
+body {
+  font: 14px 'Helvetica Neue';
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.column {
+  width: 300px;
+  float: left;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript+protovis">
+
+var data = pv.nest(pohTable)
+    .key(function(d) d.altitude)
+    .sortKeys(function(a, b) b - a)
+    .entries();
+
+var w = 200,
+    h = 50,
+    x = pv.Scale.linear(pohTable, function(d) d.mp).range(0, w),
+    y = pv.Scale.linear(pohTable, function(d) d.rpm).range(0, h),
+    s0 = pv.Scale.linear(pohTable, function(d) d.ktas / d.gph).range(1, 30),
+    s1 = pv.Scale.linear(pohTable, function(d) d.ktas).range(1, 30),
+    nf = pv.Format.number();
+
+function vis(size) {
+
+  var vis = new pv.Panel()
+      .data(data)
+      .width(w)
+      .height(h)
+      .left(40)
+      .right(10)
+      .top(10)
+      .bottom(20);
+
+  vis.add(pv.Rule)
+      .data(x.ticks())
+      .left(x)
+      .strokeStyle("#ddd")
+    .anchor("bottom").add(pv.Label)
+      .text(x.tickFormat);
+
+  vis.add(pv.Rule)
+      .data(y.ticks(5))
+      .bottom(y)
+      .strokeStyle("#ddd")
+    .anchor("left").add(pv.Label)
+      .text(y.tickFormat);
+
+  vis.add(pv.Dot)
+      .data(function(d) d.values)
+      .left(x.by(function(d) d.mp))
+      .bottom(y.by(function(d) d.rpm))
+      .fillStyle("rgba(255,255,255,.5)")
+      .strokeStyle("steelblue")
+      .size(size);
+
+  vis.add(pv.Label)
+      .bottom(0)
+      .left(0)
+      .textAlign("left")
+      .textBaseline("bottom")
+      .font("bold 10px sans-serif")
+      .text(function(d) nf.format(d.key) + "'");
+
+  vis.render();
+}
+
+    </script>
+    <div class="column">
+      <h2>ktas / gph</h2>
+      <script type="text/javascript+protovis">
+
+vis(s0.by(function(d) d.ktas / d.gph));
+
+      </script>
+      <p>larger = more efficient</p>
+    </div>
+    <div class="column">
+      <h2>ktas</h2>
+      <script type="text/javascript+protovis">
+
+vis(s1.by(function(d) d.ktas));
+
+      </script>
+      <p>larger = faster</p>
+    </div>
+  </body>
+</html>

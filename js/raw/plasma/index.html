@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Infinite Plasma Fractal</title>
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    width: 800px;
+    margin: 2em auto;
+  }
+  #vis {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 4px solid #ccc;
+  }
+  #map {
+    overflow: hidden;
+    cursor: move;
+    height: 100%;
+    position: relative;
+  }
+  canvas {
+    position: absolute;
+  }
+</style>
+
+<div id="vis"></div>
+<h1>Infinite Plasma Fractal</h1>
+<p>Uses the <a href="http://en.wikipedia.org/wiki/Diamond-square_algorithm">diamond-square algorithm</a> to generate a plasma fractal. Drag to pan!
+<p>Based on Justin Seyster’s <a href="http://www.ic.sunysb.edu/Stu/jseyster/plasma/">Java applet</a>.
+<p>Thanks to <a href="http://moebio.com/">Santiago Ortiz</a> for taunting me with the infinite.
+<script src="../media/js/d3.v2.min.js"></script>
+<script>
+  var tileCache = {},
+      seedCache = {},
+      mw = 800,
+      mh = 600,
+      pot = 8, // power of two
+      width = 1 << pot,
+      w = width,
+      h = width,
+      ox = 0,
+      oy = 0;
+
+  var vis = d3.select("#vis")
+      .call(d3.behavior.drag()
+        .origin(function() { return {x: ox, y: oy}; })
+        .on("drag", function() {
+          ox = d3.event.x;
+          oy = d3.event.y;
+          update();
+        }));
+
+  var map = vis.append("div").attr("id", "map");
+
+  var ratio = (function() {
+    var canvas = document.createElement("canvas");
+    canvas.width = 8;
+    canvas.height = 8;
+    return Math.sqrt(canvas.getContext("2d").getImageData(0, 0, 8, 8).data.length / (4 * 8 * 8));
+  })();
+
+  update();
+
+  function update() {
+    var tiles = [];
+    for (var i = -ox >> pot; i < (-ox + mw) / width; i++) {
+      for (var j = -oy >> pot; j < (-oy + mh) / width; j++) {
+        tiles.push({x: i, y: j});
+      }
+    }
+    var c = map.selectAll("canvas")
+        .data(tiles, function(d) { return d.x + "," + d.y; });
+    c.enter().append("canvas")
+        .each(function(d) {
+          this.width = w;
+          this.height = h;
+          var c = this.getContext("2d");
+          d3.timer(function() {
+            var t = getTile(d.x, d.y),
+                pixels = t.data,
+                imageData = c.createImageData(w, h),
+                data = imageData.data;
+            for (var i = 0, n = pixels.length; i < n; ++i) {
+              data[i] = pixels[i];
+            }
+            c.putImageData(imageData, 0, 0);
+            return true;
+          });
+        });
+    c.exit().remove();
+    c.style("left", function(d) { return ox + (d.x << pot) + "px"; })
+     .style("top", function(d) { return oy + (d.y << pot) + "px"; });
+  }
+
+  function getSeed(x, y) {
+    var k = x + "," + y;
+    if (seedCache.hasOwnProperty(k)) return seedCache[k];
+    return seedCache[k] = Math.random();
+  }
+
+  function getTile(x, y) {
+    var k = x + "," + y;
+    if (tileCache.hasOwnProperty(k)) return tileCache[k];
+    var data = [];
+    divide(data, 0, 0, w * ratio, h * ratio, getSeed(x, y), getSeed(x + 1, y), getSeed(x + 1, y + 1), getSeed(x, y + 1));
+    return tileCache[k] = {
+      data: data,
+      x: x * w,
+      y: y * h,
+      key: k
+    };
+  }
+
+  function divide(p, x, y, w, h, c1, c2, c3, c4) {
+    if (w > 1 || h > 1) {
+      w /= 2;
+      h /= 2;
+      var m = Math.max(0, Math.min(1, (c1 + c2 + c3 + c4) / 4 + displace(w + h))),
+          e1 = (c1 + c2) / 2,
+          e2 = (c2 + c3) / 2,
+          e3 = (c3 + c4) / 2,
+          e4 = (c4 + c1) / 2;
+      divide(p, x, y, w, h, c1, e1, m, e4);
+      divide(p, x + w, y, w, h, e1, c2, e2, m);
+      divide(p, x + w, y + h, w, h, m, e2, c3, e3);
+      divide(p, x, y + h, w, h, e4, m, e3, c4);
+    } else {
+      var c = (c1 + c2 + c3 + c4) / 4,
+          i = (~~x + ~~y * width * ratio) << 2;
+      p[i++] = ~~((c < .5 ? c : 1 - c) * 0x1fe);
+      p[i++] = (c >= .3 && c < .8 ? c - .3 : c < .3 ? .3 - c : 1.3 - c) * 0x1fe;
+      p[i++] = (c >= .5 ? c - .5 : .5 - c) * 0x1fe;
+      p[i++] = 0xff;
+    }
+  }
+
+  function displace(d) {
+    return (Math.random() - .5) * d / (w + h) * 3;
+  }
+
+  // Full-screen toggle, from the beautiful Polymaps examples at http://polymaps.org/ex/
+  (function() {
+    var svg = vis.append("svg")
+        .attr("width", 32)
+        .attr("height", 32)
+        .style("position", "absolute")
+        .style("right", "-16px")
+        .style("top", "-16px")
+        .style("cursor", "pointer")
+        .on("mousedown", fullscreen);
+    var circle = svg .append("circle")
+        .attr("cx", 16)
+        .attr("cy", 16)
+        .attr("r", 14)
+        .style("fill", "#fff")
+        .style("stroke", "#ccc")
+        .style("stroke-width", 4)
+      .append("title")
+        .text("Toggle fullscreen. (ESC)");
+    var path = svg .append("path")
+        .attr("transform", "translate(16,16)rotate(-45)scale(5)translate(-1.85,0)")
+        .attr("d","M0,0L0,.5 2,.5 2,1.5 4,0 2,-1.5 2,-.5 0,-.5Z")
+        .style("pointer-events", "none")
+        .style("fill", "#aaa");
+
+    var full = false;
+
+    d3.select(window)
+        .on("resize", resize)
+        .on("keydown", function() { if (d3.event.keyCode === 27 && full) fullscreen(); });
+
+    function fullscreen() {
+      if (full = !full) {
+        vis.style("position", "fixed").style("width", "100%").style("height", "100%").style("top", 0).style("left", 0).style("border", "none");
+        svg.style("position","fixed").style("right","16px").style("top","16px");
+        path.attr("transform","translate(16,16)rotate(135)scale(5)translate(-1.85,0)");
+      } else {
+        vis .style("position", null)
+            .style("width", null)
+            .style("height", null)
+            .style("top", null)
+            .style("left", null)
+            .style("border", null);
+        svg .style("position", "absolute")
+            .style("right", "-16px")
+            .style("top", "-16px");
+        path.attr("transform", "translate(16,16)rotate(-45)scale(5)translate(-1.85,0)");
+      }
+      resize();
+    }
+  })();
+
+  function resize() {
+    mw = window.innerWidth;
+    mh = window.innerHeight;
+    update();
+  }
+</script>

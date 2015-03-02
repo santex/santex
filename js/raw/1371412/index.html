@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  </head>
+  <body>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.5.0"></script>
+    <script type="text/javascript">
+
+var w = 960,
+    h = 500;
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+
+var circle = svg.selectAll("circle")
+    .data(d3.range(1000).map(function() {
+      return {
+        x: w * Math.random(),
+        y: h * Math.random(),
+        dx: Math.random() - .5,
+        dy: Math.random() - .5
+      };
+    }))
+  .enter().append("svg:circle")
+    .attr("r", 2.5);
+
+var text = svg.append("svg:text")
+    .attr("x", 20)
+    .attr("y", 20);
+
+var start = Date.now(),
+    frames = 0;
+
+d3.timer(function() {
+
+  // Update the FPS meter.
+  var now = Date.now(), duration = now - start;
+  text.text(~~(++frames * 1000 / duration));
+  if (duration >= 1000) frames = 0, start = now;
+
+  // Update the circle positions.
+  circle
+      .attr("cx", function(d) { d.x += d.dx; if (d.x > w) d.x -= w; else if (d.x < 0) d.x += w; return d.x; })
+      .attr("cy", function(d) { d.y += d.dy; if (d.y > h) d.y -= h; else if (d.y < 0) d.y += h; return d.y; });
+
+});
+
+    </script>
+  </body>
+</html>

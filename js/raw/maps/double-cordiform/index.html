@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Double Cordiform Projection</title>
+<style>
+@import url(../maps.css);
+
+.background {
+  fill: #ccf;
+}
+
+.foreground {
+  stroke: #000;
+  stroke-width: 1px;
+  fill: none;
+}
+
+.graticule {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+  fill: none;
+}
+
+.land {
+  fill: #9f9;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.land-glow {
+  fill: #000;
+  fill-opacity: .5;
+  filter: url(#glow);
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>The World on a Double Cordiform</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>The equal-area <a href="http://en.wikipedia.org/wiki/Werner_projection">Werner projection</a> is shaped like a heart, or “cordiform”.
+  <p>French mapmaker <a href="http://en.wikipedia.org/wiki/Oronce_Fin%C3%A9">Oronce Finé</a> used this projection separately for Northern and Southern hemispheres in 1531, creating a “double cordiform” as seen above.
+</div>
+
+<script src="../../d3.min.js?20130517"></script>
+<script src="../d3.geo.projection.min.js?20130517"></script>
+<script src="../topojson.min.js?1.1.1"></script>
+<script>
+
+var width = 960,
+    height = 1500;
+
+var projection = doubleCordiform()
+    .translate([width / 2, height / 2])
+    .scale(300)
+    .precision(.1)
+    .rotate([-70, 0]);
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("filter")
+    .attr("id", "glow")
+  .append("feGaussianBlur")
+    .attr("stdDeviation", 1);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "foreground")
+    .attr("d", path);
+
+d3.json("../world-50m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land);
+  svg.insert("path", ".graticule")
+      .datum(land)
+      .attr("class", "land-glow")
+      .attr("d", path);
+  svg.insert("path", ".graticule")
+      .datum(land)
+      .attr("class", "land")
+      .attr("d", path);
+});
+
+function doubleCordiform() {
+  var ε = 1e-6,
+      π = Math.PI,
+      werner = d3.geo.bonne.raw(π / 2),
+      clipPolygon = [];
+
+  [1, -1].forEach(function(s) {
+    var y0 = s * ε,
+        y1 = s * (90 - ε),
+        x60 = s * 60,
+        x90 = s * 90,
+        x180 = s * (180 - ε);
+    clipPolygon.push([[0, y0], [-x90, y0], [-x180, y0], [-x180, y1], [-x60, y1], [x60, y1], [x180, y1], [x180, y0], [x90, y0], [0, y0]]);
+  });
+
+  return d3.geo.projection(function(λ, φ) {
+    if (φ > 0) return werner(λ, φ);
+    coordinates = werner(λ, -φ);
+    coordinates[1] = -π - coordinates[1];
+    return coordinates;
+  }).clipPolygon(clipPolygon);
+}
+
+</script>

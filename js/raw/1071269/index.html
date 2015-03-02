@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>    
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.25.0"></script>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.time.js?1.25.0"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var format = d3.time.format("%m/%d"),
+    t0 = new Date(2010, 0, 1),
+    t1 = new Date(2010, 0, Math.floor(Math.random() * 21) + 10),
+    delay = 3000;
+
+var w = 960,
+    h = 500,
+    x0 = d3.scale.linear().domain([t0, t1]).range([0, w]),
+    x1 = d3.scale.linear().domain([t0, t1]).range([0, w]);
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+
+redraw();
+setInterval(redraw, delay);
+
+function redraw() {
+  x1.domain([t0, t1 = new Date(2010, 0, Math.floor(Math.random() * 21) + 10)]);
+
+  var tick = svg.selectAll("g.tick")
+      .data(days(x1.domain()), Number);
+
+  var tickEnter = tick.enter().append("svg:g")
+      .attr("class", "tick")
+      .attr("transform", function(d) { return "translate(" + x0(d) + "," + (h / 2) + ")"; })
+      .style("opacity", 1e-6);
+
+  tickEnter.append("svg:line")
+      .attr("y1", -10)
+      .style("stroke", "#000")
+      .style("stroke-width", "1.5px");
+
+  tickEnter.append("svg:text")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .attr("text-anchor", "middle")
+      .style("font", "10px sans-serif")
+      .text(format);
+
+  tickEnter.transition()
+      .duration(delay)
+      .attr("transform", function(d) { return "translate(" + x1(d) + "," + (h / 2) + ")"; })
+      .style("opacity", 1);
+
+  tick.transition()
+      .duration(delay)
+      .attr("transform", function(d) { return "translate(" + x1(d) + "," + (h / 2) + ")"; })
+      .style("opacity", 1);
+
+  tick.exit().transition()
+      .duration(delay)
+      .attr("transform", function(d) { return "translate(" + x1(d) + "," + (h / 2) + ")"; })
+      .style("opacity", 1e-6)
+      .remove();
+
+  x0.domain([t0, t1]);
+}
+
+function days(domain) {
+  var d0 = domain[0],
+      d1 = domain[1],
+      dz = [];
+  d0 += 864e5 - (d0 % 864e5 || 864e5);
+  while (d0 <= d1) {
+    dz.push(new Date(d0));
+    d0 += 864e5;
+  }
+  return dz;
+}
+
+    </script>
+  </body>
+</html>

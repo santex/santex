@@ -1,0 +1,47 @@
+/**
+ * Convenience function for generating the standard Voynich folio names.
+ * Pairs of numerical arguments are treated as inclusive ranges. String
+ * arguments are inserted directly.
+ */
+var quire = function() {
+  var q = [];
+  for (var i=0, ii=arguments.length; i<ii; i++) {
+    var j = arguments[i];
+    if (typeof j === 'string') {
+      q.push(j);
+    } else { // integer signifying start of range
+      for (var jj = arguments[i+1]; j<=jj; j++) {
+        q.push('f' + j + 'r', 'f' + j + 'v');
+      }
+      i++;
+    }
+  }
+  return q;
+}
+
+/**
+ * Folio IDs arranged into quires, taken from http://www.voynich.nu/folios.html
+ */
+var quires = [
+  quire("outside_front_cover", "outside_front_cover_alt", "inside_front_cover", "back_flyleaf_v_inside_back_cover", "outside_back_cover"),
+  quire(1, 8),
+  quire(9, 11, 13, 16),
+  quire(17, 24),
+  quire(25, 32),
+  quire(33, 40),
+  quire(41, 48),
+  quire(49, 56),
+  quire(57, 58, 65, 66),
+  quire('f67r1_f67r2', 'f67v2_f67v1', 'f68r1_f68r2_f68r3', 'f68v3_f68v2_f68v1'),
+  quire('f69r', 'f69v_f70r1_f70r2', 'f70v2_f70v1'),
+  quire('f71r', 'f71v_f72r1_f72r2_f72r3', 'f72v1', 'f72v3_f72v2'),
+  quire(73, 73),
+  quire(75, 84),
+  quire('f85r1', 'f85r2_f86v4_f86v6', 'f86v5_f86v3', 'Ros', 'Ros2'),
+  quire(87, 87, 'f88r', 'f88v_f89r1_f89r2', 'f89v1_f90r1_f90r2', 'f89v2', 'f90v1', 'f90v2'),
+  null, // 16 is lost
+  quire(93, 93, 'f94r', 'f94v_f95r1_f95r2', 'f95v1', 'f95v2', 96, 96),
+  null, // 18 is lost
+  quire(99, 99, 'f100r', 'f100v_f101r1_f101r2', 'f101v1_f102r1_f102r2', 'f101v2', 'f102v1', 'f102v2'),
+  quire(103, 105, 'f105v_f106r', 106, 108, 111, 116)
+];

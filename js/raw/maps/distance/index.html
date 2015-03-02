@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Great-Circle Distance</title>
+<style>
+@import url(../maps.css);
+
+path {
+  fill: none;
+  stroke: #000;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+}
+
+.axis {
+  font-size: 10px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+svg {
+  display: block;
+  float: left;
+  margin: 0 8px;
+}
+
+.chart-wrapper {
+  width: 900px;
+  margin: 0 auto;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Great-Circle Distance</h1>
+
+<div class="wrapper">
+  <p>The simplest way to compute the <a href="http://en.wikipedia.org/wiki/Great-circle_distance">great-circle distance</a> is to use the <a href="http://en.wikipedia.org/wiki/Spherical_law_of_cosines">spherical law of cosines</a>.
+  Unfortunately, this is <a href="http://en.wikipedia.org/wiki/Condition_number">ill-conditioned</a> for small distances due to rounding errors.
+  For example, if two points are 1km apart, the cosine of the central angle is 0.99999999.
+  <p>A better formula is known as the <a href="http://en.wikipedia.org/wiki/Haversine_formula">haversine formula</a>, which is better-conditioned for all distances except for those close to 180°.
+  <p>Even better, a special case of <a href="http://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty’s formula</a> is accurate for all distances.
+  <p>To compare these formulæ, I computed distances along the equator, for which the expected distance is simple to derive.
+  <p>As you can see, the error is still pretty small, thanks to double-precision floating point!
+</div>
+
+<h2>Distances close to 0°</h2>
+<div class="chart-wrapper"><div class="clear"></div></div>
+
+<h2>Distances close to 180°</h2>
+<div class="chart-wrapper"><div class="clear"></div></div>
+
+<p style="font-style: italic">Distances in the second set of charts are relative to 180°.
+<p style="font-style: italic">Distances are shown in metres on Earth, assuming a radius of 6,371km.
+
+<script src="../../d3.min.js"></script>
+<script>
+
+var radians = Math.PI / 180,
+    width = 250,
+    height = 150,
+    R = 6371e3, // 6,371km
+    δ = 1 / R / radians; // 1m in degrees
+
+var chart = d3.select("body").selectAll(".chart-wrapper")
+    .data([0, 180 - δ])
+    .each(function(d0) {
+      var domain = [d0, d0 + δ],
+          div = d3.select(this),
+          x = d3.scale.linear().domain(domain.map(function(d) { return (d - d0) * R * radians; })).range([0, width]).nice(),
+          n = 100;
+      [distanceCos, distanceHaversin, distanceVincenty].forEach(function(distance, i) {
+        var y = d3.scale.linear().domain([0, f(domain[1])]).range([height, 0]).nice(),
+            step = (domain[1] - domain[0]) / n;
+
+        var svg = div.insert("svg", ".clear")
+              .attr("width", width + 25 + 7)
+              .attr("height", height + 30 + 5)
+            .append("g")
+              .attr("transform", "translate(25,5)");
+        svg.append("text")
+            .attr("class", "title")
+            .attr("transform", "translate(" + width / 2 + ")")
+            .attr("dy", "1em")
+            .attr("text-anchor", "middle")
+            .text(["Arccosine", "Haversine", "Vincenty"][i]);
+        svg.append("path")
+            .datum(d3.range(domain[0], domain[1] + step / 2, step))
+            .attr("d", d3.svg.line()
+              .x(function(d) { return x((d - d0) * R * radians); })
+              .y(function(d) { return y(f(d)); }));
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.svg.axis().scale(x).tickFormat(d3.format(".1f")))
+          .append("text")
+            .attr("transform", "translate(" + width + ")")
+            .attr("y", 6)
+            .attr("dy", "-1.2em")
+            .style("text-anchor", "end")
+            .text("Expected (m)");
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(d3.svg.axis().scale(y).orient("left").tickFormat(d3.format(".1f")))
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Actual (m)");
+        function f(d) {
+          return (distance([0, 0], [d, 0]) - d0 * radians) * R;
+        }
+      });
+    });
+
+function distanceCos(a, b) {
+  var λ0 = a[0] * radians, φ0 = a[1] * radians,
+      λ1 = b[0] * radians, φ1 = b[1] * radians;
+  return Math.acos(Math.sin(φ0) * Math.sin(φ1) + Math.cos(φ0) * Math.cos(φ1) * Math.cos(λ1 - λ0));
+}
+
+function haversin(x) {
+  return (x = Math.sin(x / 2)) * x;
+}
+
+function distanceHaversin(a, b) {
+  var λ0 = a[0] * radians, φ0 = a[1] * radians,
+      λ1 = b[0] * radians, φ1 = b[1] * radians;
+  return 2 * Math.asin(Math.sqrt(haversin(φ1 - φ0) + Math.cos(φ0) * Math.cos(φ1) * haversin(λ1 - λ0)));
+}
+
+function distanceVincenty(a, b) {
+  var Δλ = (b[0] - a[0]) * radians,
+      sinΔλ = Math.sin(Δλ),
+      cosΔλ = Math.cos(Δλ),
+      sinφ0 = Math.sin(a[1] * radians),
+      cosφ0 = Math.cos(a[1] * radians),
+      sinφ1 = Math.sin(b[1] * radians),
+      cosφ1 = Math.cos(b[1] * radians),
+      _;
+  return Math.atan2(Math.sqrt((_ = cosφ1 * sinΔλ) * _ + (_ = cosφ0 * sinφ1 - sinφ0 * cosφ1 * cosΔλ) * _), sinφ0 * sinφ1 + cosφ0 * cosφ1 * cosΔλ);
+}
+
+</script>

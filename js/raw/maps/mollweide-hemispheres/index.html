@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Mollweide Hemispheres</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Mollweide Hemispheres</h1>
+<div id="map"></div>
+
+<p>Based on <a href="http://bl.ocks.org/4498292">a version by Mike Bostock</a>.
+
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../d3.geo.polyhedron.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script src="../maps.js"></script>
+<script>
+
+var ε = 1e-4,
+    π = Math.PI,
+    degrees = 180 / π;
+
+var width = 960,
+    height = 500,
+    y0 = 90 - ε;
+
+var projection = d3.geo.interrupt(d3.geo.mollweide.raw)
+    .lobes([[ // northern hemisphere
+      [[-180,   0], [ -y0,  y0], [   0,   0]],
+      [[   0,   0], [  y0,  y0], [ 180,   0]]
+    ], [ // southern hemisphere
+      [[-180,   0], [ -y0, -y0], [   0,   0]],
+      [[   0,   0], [  y0, -y0], [ 180,   0]]
+    ]])
+    .rotate([20, 0])
+    .translate([width / 2, height / 2])
+    .scale(165)
+    .precision(.1);
+
+d3.select("#map").call(canvasMap().height(height).projection(projection));
+
+</script>

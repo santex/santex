@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://github.com/mbostock/d3/raw/v1.3.0/d3.js"></script>
+    <style type="text/css">
+
+body {
+  background: #333;
+}
+
+input {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 240px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var radius = d3.scale.linear()
+    .domain([0, 9])
+    .range([120, 240]);
+
+var fill = d3.scale.linear()
+    .domain([0, 1])
+    .range(["brown", "steelblue"]);
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", 960)
+    .attr("height", 500)
+  .append("svg:g")
+    .attr("transform", "translate(480, 250)");
+
+var g = svg.selectAll("g")
+    .data(d3.range(0, 360, 2))
+  .enter().append("svg:g")
+    .attr("transform", function(d) { return "rotate(" + d + ")"; });
+
+var path = g.selectAll("path")
+    .data(function(p) {
+      return d3.range(10).map(function(d) {
+        return {
+          x: p, // outer dimension (angle)
+          y: d, // inner dimension (radius)
+          z: Math.random()
+        };
+      });
+    })
+  .enter().append("svg:path")
+    .attr("d", d3.svg.arc()
+    .innerRadius(function(d) { return radius(d.y); })
+    .outerRadius(function(d) { return radius(d.y + 1); })
+    .startAngle(0)
+    .endAngle(Math.PI / 90))
+    .attr("fill", function(d) { return fill(d.z); })
+    .attr("fill-opacity", 1e-6)
+  .transition()
+    .delay(function(d) { return d.z * 1500; })
+    .attr("fill-opacity", 1);
+
+    </script>
+    <input type="range" min="0" max="358" step="2">
+    <script type="text/javascript">
+
+d3.select("input").on("change", function() {
+  var value = this.value;
+  d3.selectAll("path")
+      .attr("fill-opacity", function(d) {
+        return Math.max(0, 1 - Math.sqrt(Math.abs(d.x - value) / 80));
+      });
+});
+
+    </script>
+  </body>
+</html>

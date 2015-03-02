@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+  pointer-events: all;
+}
+
+path:hover {
+  fill: orange;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    radius = Math.sqrt(width / 2 * width / 2 + height / 2 * height / 2) + 5;
+
+var θ = Math.PI * (3 - Math.sqrt(5)),
+    spacing = 4,
+    total = (radius * radius) / (spacing * spacing);
+
+var voronoi = d3.geom.voronoi()
+    .clipExtent([[-1, -1], [width + 1, height + 1]]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.selectAll("path")
+    .data(voronoi(d3.range(total)
+        .map(function(index) {
+          var radius = spacing * Math.sqrt(index),
+              angle = index * θ;
+          return [
+            width / 2 + radius * Math.cos(angle),
+            height / 2 + radius * Math.sin(angle)
+          ];
+        }))
+        .filter(function(d) { return d.length; }))
+  .enter().append("path")
+    .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
+
+</script>

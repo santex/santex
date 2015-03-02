@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Marimekko Chart - Jason Davies</title>
+<style>
+
+body {
+  font-family: sans-serif;
+}
+
+rect {
+  stroke: #000;
+  fill: none;
+}
+
+svg {
+  shape-rendering: crispEdges;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+}
+
+</style>
+<h1>Marimekko, Mekko or Mosaic Chart</h1>
+<p>A <a href="http://www.perceptualedge.com/example13.php">Marimekko</a> chart created using the “slice-dice” treemap layout in <a href="http://d3js.org/">D3</a> version 3.
+<script src="../d3.min.js?3.0.0+slice-dice"></script>
+<script>
+
+var width = 960,
+    height = 450,
+    margin = 30,
+    color = d3.scale.category10(),
+    n = d3.format(",d"),
+    p = d3.format("%"),
+    data = [
+      {market: "Auburn, AL", segment: "Almond lovers", value: 3840},
+      {market: "Auburn, AL", segment: "Berry buyers", value: 1920},
+      {market: "Auburn, AL", segment: "Carrots-n-more", value: 960},
+      {market: "Auburn, AL", segment: "Delicious-n-new", value: 400},
+      {market: "Birmingham, AL", segment: "Almond lovers", value: 1600},
+      {market: "Birmingham, AL", segment: "Berry buyers", value: 1440},
+      {market: "Birmingham, AL", segment: "Carrots-n-more", value: 960},
+      {market: "Birmingham, AL", segment: "Delicious-n-new", value: 400},
+      {market: "Gainesville, FL", segment: "Almond lovers", value: 640},
+      {market: "Gainesville, FL", segment: "Berry buyers", value: 960},
+      {market: "Gainesville, FL", segment: "Carrots-n-more", value: 640},
+      {market: "Gainesville, FL", segment: "Delicious-n-new", value: 400},
+      {market: "Durham, NC", segment: "Almond lovers", value: 320},
+      {market: "Durham, NC", segment: "Berry buyers", value: 480},
+      {market: "Durham, NC", segment: "Carrots-n-more", value: 640},
+      {market: "Durham, NC", segment: "Delicious-n-new", value: 400}
+    ];
+
+var nest = d3.nest()
+    .key(function(d) { return d.segment; })
+    .key(function(d) { return d.market; });
+
+var treemap = d3.layout.treemap()
+    .mode("slice-dice")
+    //.padding(function(d) { return d.depth > 1 ? 2 : 0; })
+    .size([width - 3 * margin, height - 2 * margin])
+    .children(function(d) { return d.values; })
+    .sort(null);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + 2 * margin + "," + margin + ")")
+    .datum({values: nest.entries(data)})
+    .call(chart);
+
+console.log(nest.entries(data));
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + treemap.size()[1] + ")")
+    .call(d3.svg.axis().scale(d3.scale.linear().range([0, treemap.size()[0]])).tickFormat(d3.format("%")));
+
+svg.append("g")
+    .attr("class", "y axis")
+    .call(d3.svg.axis().scale(d3.scale.linear().range([treemap.size()[1], 0])).tickFormat(d3.format("%")).orient("left"));
+
+function chart(selection) {
+  selection.each(function() {
+    var cell = d3.select(this).selectAll("g.cell")
+        .data(treemap.nodes);
+    var cellEnter = cell.enter().append("g")
+        .attr("class", "cell");
+    var cellUpdate = d3.transition(cell)
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+    d3.transition(cell.exit()).remove();
+
+    cellEnter.filter(function(d) { return d.depth > 2; }).append("rect")
+        .style("fill", function(d) { return d.children ? null : color(d.segment); });
+    cellUpdate.select("rect")
+        .attr("width", function(d) { return d.dx; })
+        .attr("height", function(d) { return d.dy; })
+
+    cellEnter.append("title")
+        .text(function(d) { return d.children ? null : title(d); });
+  });
+}
+
+function title(d) {
+  return d.segment + ": " + d.parent.key + ": " + n(d.value);
+}
+
+function transition() {
+  data.forEach(function(d) { d.value = Math.random() * 1000; });
+  svg.datum({values: nest.entries(data)})
+      .transition()
+      .duration(1000)
+      .call(chart);
+}
+
+</script>
+<p><button class="first last" onclick="transition()">Randomise!</button><p>
+<p>Inspired by Mike Bostock’s <a href="http://bl.ocks.org/1005090">example</a>.
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

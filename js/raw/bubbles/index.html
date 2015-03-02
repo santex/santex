@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Bubbles</title>
+<style>
+body { font-family: sans-serif; }
+path { fill: none; stroke: #000; }
+line { stroke: #ccc; }
+</style>
+
+<h1>Bubbles</h1>
+<p>A pair of coalescing soap bubbles, with <i>r<sub>A</sub></i> = 200. You can adjust <i>r<sub>B</sub></i> to see the effect on the intermediate surface, which is an auxiliary circle with radius <i>r<sub>C</sub></i>.
+<form>
+  <p><input type="range" id="rb" min="1" max="200" value="100" oninput="bubbles(+this.value)">
+  <i>r<sub>B</sub></i> = <output for="rb" id="_rb">100</output>
+</form>
+<div id="vis"></div>
+<p>Their internal pressures reach an equilibrium when <i>1 / r<sub>A</sub> = 1 / r<sub>C</sub> - 1 / r<sub>B</sub></i>, and the tangents of the three arcs meet at 120º at the points of intersection.
+
+<p>Inspired by <a href="http://demonstrations.wolfram.com/TwoCoalescingSoapBubbles/">Two Coalescing Soap Bubbles</a>.
+<h2>See also</h2>
+<ul>
+  <li><a href="http://mathworld.wolfram.com/DoubleBubble.html">Double Bubble</a>
+  <li><a href="http://mathworld.wolfram.com/PlateausLaws.html">Plateau’s Laws</a>
+</ul>
+<script src="../d3.min.js"></script>
+<script src="../html5slider.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    p = 10,
+    ra = 200;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + (p + ra) + "," + height / 2 + ")");
+
+svg.append("line")
+    .attr("x1", -ra - p)
+    .attr("x2", width);
+
+var a = svg.append("path"),
+    b = svg.append("path"),
+    c = svg.append("path").style("stroke-dasharray", "4 4");
+
+bubbles(100);
+
+function bubbles(rb) {
+  d3.select("#_rb").property("value", rb);
+  var rc = ra * rb / (ra - rb),
+      xb2 = ra * ra + rb * rb - ra * rb,
+      xb = Math.sqrt(xb2),
+      t = xb2 - rb * rb + ra * ra,
+      x = t / (2 * xb),
+      y = Math.sqrt(4 * xb2 * ra * ra - t * t) / (2 * xb);
+  a.attr("d", "M" + [x, y] + "A" + [ra, ra, 0, 1, 1, x, -y]);
+  b.attr("d", "M" + [x, y] + "A" + [rb, rb, 0, 1, 0, x, -y] + (isFinite(rc) ? "A" + [rc, rc, 0, 0, 0, x, y] : "") + "Z");
+  c.attr("d", "M" + [x, y] + (isFinite(rc)
+      ? "A" + [rc, rc, 0, 1, 0, x, -y]
+      : "V" + height + "M" + [x, -y] + "V" + -height));
+}
+</script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2014.

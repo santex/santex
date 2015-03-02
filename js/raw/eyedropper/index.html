@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Eyedropper</title>
+<style>
+body {
+  background: #fcfcfc;
+  width: 960px;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+h1 {
+  font-weight: 300;
+}
+#colours {
+  float: right;
+  margin-top: 6px;
+}
+#colours input {
+  width: 230px;
+  margin-left: 1em;
+  font-size: 1.1em;
+  text-align: center;
+}
+canvas {
+  border: solid #ccc 1px;
+  cursor: crosshair;
+}
+.copyright {
+  font-size: small;
+  font-style: italic;
+  text-align: right;
+}
+</style>
+<div id="colours">
+  <input type="text"><input type="text"><input type="text">
+</div>
+<h1>Eyedropper</h1>
+<div id="chart"></div>
+<p><b>Paste</b> any image from your clipboard, or <b>drag and drop</b> a file.
+Zoom and pan to your favourite pixel, and <b>click</b> to obtain its colour.
+<p style="font-style: italic">(Hint: on OS X, ctrl-⌘-⇧-4 copies an arbitrary region to your clipboard.)
+<p class="copyright">by <a href="http://www.jasondavies.com/">Jason Davies</a>.
+<script src="../d3.min.js"></script>
+<script>
+var width = 960,
+    height = 500,
+    canvas = d3.select("#chart").append("canvas")
+      .attr("width", width)
+      .attr("height", height),
+    context = canvas.node().getContext("2d"),
+    image = new Image,
+    zoom = d3.behavior.zoom().on("zoom", function() { redraw(); }),
+    pick = [41, 35],
+    loadScale;
+
+context.webkitImageSmoothingEnabled = context.mozImageSmoothingEnabled = false;
+
+image.onload = function() {
+  var s = loadScale;
+  zoom.translate([width - s * image.width >> 1, height - s * image.height >> 1])
+      .scale(s);
+  redraw(true);
+};
+
+var colours = d3.select("#colours").selectAll("input")
+    .on("click", function() { d3.event.stopPropagation(); });
+
+canvas
+    .on("mousedown", function() {
+      var m = d3.mouse(this),
+          t = zoom.translate(),
+          s = zoom.scale();
+      pick = [
+        Math.floor((m[0] - t[0]) / s),
+        Math.floor((m[1] - t[1]) / s)
+      ];
+      redraw(true);
+    })
+    .call(zoom);
+
+load("demo.png", 16);
+
+function redraw(update) {
+  context.clearRect(0, 0, width, height);
+  var t = zoom.translate(),
+      s = zoom.scale();
+  context.drawImage(image, t[0], t[1], image.width * s, image.height * s);
+  if (update) {
+    var pixel = context.getImageData(t[0] + s * pick[0], t[1] + s * pick[1], 1, 1).data,
+        rgb = d3.rgb(pixel[0], pixel[1], pixel[2]),
+        lightness = d3.hsl(rgb).l;
+    colours
+        .data([
+          rgb,
+          "rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")",
+          "rgba(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ", " + pixel[3] + ")"
+        ])
+        .style("background", rgb)
+        .style("color", lightness > .5 ? "#000" : "#fff")
+        .property("value", String);
+  }
+  context.strokeRect(t[0] + s * pick[0] - .5, t[1] + s * pick[1] - .5, s + 1, s + 1);
+}
+
+function load(url, s) {
+  image.src = url;
+  loadScale = s || 1;
+}
+
+var pasteCatcher = d3.select("body").append("div")
+    .attr("contenteditable", "")
+    .style("visibility", "hidden");
+ 
+pasteCatcher.node().focus();
+d3.select("body")
+    .on("click", function() { pasteCatcher.node().focus(); })
+    .on("paste", function() {
+      var e = d3.event;
+      if (e.clipboardData) {
+        var items = e.clipboardData.items;
+        if (items) for (var i = 0; i < items.length; i++) {
+          if (!/^image\//.test(items[i].type)) continue;
+          load((window.URL || window.webkitURL).createObjectURL(items[i].getAsFile()));
+        }
+      }
+      setTimeout(checkInput, 1);
+    })
+    .on("dragover", function() {
+      d3.event.preventDefault(), d3.event.stopPropagation();
+    })
+    .on("drop", function() {
+      var e = d3.event;
+      e.stopPropagation(), e.preventDefault();
+      var files = e.dataTransfer.files;
+      if (files) for (var i = 0; i < files.length; ++i) {
+        if (!/^image\//.test(files[i].type)) continue;
+        var reader = new FileReader;
+        reader.onload = function(e) { load(e.target.result); };
+        reader.readAsDataURL(files[i]);
+      }
+    });
+ 
+function checkInput() {
+  var img = pasteCatcher.selectAll("img"),
+      src = !img.empty() && img.attr("src");
+  pasteCatcher.node().innerHTML = "";
+  if (src) load(src);
+}
+ 
+</script>

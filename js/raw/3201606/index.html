@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="http://d3js.org/d3.v2.js?2.9.6"></script>
+<script>
+
+var canvas = d3.select("body").append("canvas")
+    .attr("width", 960)
+    .attr("height", 500);
+
+var context = canvas.node().getContext("2d");
+
+context.strokeStyle = "#000";
+context.beginPath();
+context.arc(395.8562790527633, 44.691485522888755, 44.691485522888755, 0, 2 * Math.PI);
+context.moveTo(842.7711342816508 - 1117.2871380722188, 1117.2871380722188);
+context.arc(842.7711342816508, 1117.2871380722188, 1117.2871380722188, -Math.PI, -Math.PI / 2);
+context.stroke();
+
+</script>

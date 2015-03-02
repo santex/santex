@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Self-Organising Maps - Jason Davies</title>
+    <link rel="stylesheet" type="text/css" href="../media/style.css" />
+    <link type="text/css" href="../media/ui-lightness/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />
+    <style type="text/css">
+.ui-slider {
+  font-size: 10px;
+  width: 300px;
+  margin-top: 5px;
+}
+
+.ui-state-focus {
+  outline: none;
+}
+
+#init-learning-rate {
+  width: 300px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#vis, #vis canvas {
+  width: 500px;
+  height: 500px;
+}
+    </style>
+    <script type="text/javascript" src="../media/js/protovis-r3.3.js"></script>
+    <script type="text/javascript" src="../media/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../media/js/jquery-ui-1.8rc3.custom.min.js"></script>
+  </head>
+  <body>
+    <h1>Self-Organising Maps</h1>
+    <p>A self-organising map is a special type of neural network, which mimics the biological behaviour of neurons.  The interesting thing about them is they can learn completely unsupervised.</p>
+    <p>Here, a SOM is used to automatically classify random colours.</p>
+    <p><label for="init-learning-rate">Initial learning rate:</label> <span id="init-learning-rate"></span>
+    <span id="init-learning-rate-val"></span>
+    <input id="go" type="button" value="Start" /></p>
+    <div id="vis">
+      <script type="text/javascript+protovis">//<![CDATA[
+var sq = function(x) {
+  return x * x;
+}
+var Vector = function() {
+  this.components = [];
+  for (var i=0; i<arguments.length; i++) {
+    this.components.push(arguments[i]);
+  }
+}
+Vector.prototype = {
+  get: function() {
+    var v = new Vector();
+    v.components = this.components.slice();
+    return v;
+  },
+  mag: function() {
+    var s = 0;
+    for (var i=0; i<this.components.length; i++) {
+      s += sq(this.components[i]);
+    }
+    return Math.sqrt(s);
+  },
+  add: function(v) {
+    for (var i=0; i<this.components.length; i++) {
+      this.components[i] += v.components[i] || 0;
+    }
+  },
+  sub: function(v) {
+    for (var i=0; i<this.components.length; i++) {
+      this.components[i] -= v.components[i] || 0;
+    }
+  },
+  mult: function(s) {
+    for (var i=0; i<this.components.length; i++) {
+      this.components[i] *= s;
+    }
+  },
+  normalise: function() {
+    var m = this.mag();
+    for (var i=0; i<this.components.length; i++) {
+      this.components[i] /= m;
+    }
+  }
+}
+var width = 50, height = 50;
+var red = new Vector(1, 0, 0),
+    orange = new Vector(1, .5, 0),
+    yellow = new Vector(1, 1, 0),
+    green = new Vector(0, 1, 0),
+    blue = new Vector(0, 0, 1),
+    purple = new Vector(1, 0, 1),
+    inputs = [red, orange, yellow, green, blue, purple],
+    inputDimension = inputs[0].length,
+    scaleAmount = 10;
+
+var w = 40, h = 20, weights = new Array(width), epoch = 1, epochs = 1000,
+    initialNeighbourhoodRadius = Math.max(width, height) / 2,
+    timeConstant = epochs / Math.log(initialNeighbourhoodRadius),
+    initialLearningRate = .08;
+var data = new Array(width);
+
+for (var i=0; i<width; i++) {
+  weights[i] = new Array(height);
+  data[i] = new Array(height);
+}
+
+var randomiseWeights = function() {
+  for (var i=0; i<width; i++) {
+    for (var j=0; j<height; j++) {
+      weights[i][j] = new Vector(Math.random(), Math.random(), Math.random());
+      weights[i][j].normalise();
+    }
+  }
+}
+
+var draw = function() {
+  var pvector = inputs[Math.floor(Math.random() * inputs.length)];
+  var apvector = new Array(width);
+  var f = 9999;
+  var i=-1, j=-1;
+  for (var k=0; k<width; k++) {
+    apvector[k] = new Array(height);
+    for (var l=0; l<height; l++) {
+      apvector[k][l] = pvector.get();
+      apvector[k][l].sub(weights[k][l]);
+      if (apvector[k][l].mag() < f) {
+        f = apvector[k][l].mag();
+        i = k;
+        j = l;
+      }
+    }
+  }
+  var f1 = initialNeighbourhoodRadius * Math.exp(-epoch / timeConstant),
+      f2 = sq(f1),
+      f3 = initialLearningRate * Math.exp(-epoch / epochs);
+  //scale(scaleAmount);
+  for (var i1=0; i1<width; i1++) {
+    for (var j1=0; j1<height; j1++) {
+      var pvector1 = weights[i1][j1];
+      var f4 = sq(i1-i) + sq(j1-j);
+      if (f4 < f2) {
+        var f5 = Math.exp(-f4 / (2 * f2));
+        apvector[i1][j1].mult(f3 * f5);
+        pvector1.add(apvector[i1][j1]);
+      }
+      var c = pvector1.components;
+      data[i1][j1] = {r: Math.floor(255 * c[0]), g: Math.floor(255 * c[1]), b: Math.floor(255 * c[2]), a: 255};
+      //fill(pvector1.x, pvector1.y, pvector1.z);
+      //rect(i1, j1, 1, 1);
+    }
+  }
+  epoch++;
+}
+
+var vis = new pv.Panel()
+  .width(500)
+  .height(500);
+
+vis.add(pv.Image)
+  .imageWidth(width)
+  .imageHeight(height)
+  .image(function(x, y) data[x][y])
+
+  /*
+vis.add(pv.Panel)
+    .data([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+    .top(function(d) this.index * 50)
+    .left(function(d) this.index % 2 * 25)
+  .add(pv.Panel)
+    .data(function(d) d)
+    .left(function() this.index * 50)
+  .add(pv.Area)
+    .data([0, 1, 0])
+    .left(function() this.index * 25)
+    .height(function(d) 25 + d * 50)
+    .top(function(d) 25 - d * 25)
+*/
+$('#init-learning-rate-val').text(initialLearningRate);
+$('#init-learning-rate').slider({
+  value: .2, min: .01, max: 1, step: .01, slide: function(e, ui) {
+    initialLearningRate = ui.value;
+    $('#init-learning-rate-val').text(initialLearningRate);
+  }
+});
+var timer = null;
+$('#go').click(function() {
+  if (timer) {
+    $(this).val('Go');
+    clearInterval(timer);
+    timer = null;
+  } else {
+    $(this).val('Stop');
+    epoch = 1;
+    randomiseWeights();
+    timer = setInterval(function() {
+      draw();
+      if (epoch % 10 == 0) vis.render();
+      $('#epoch').val(epoch);
+    }, 1);
+  }
+});
+      //]]></script>
+    </div>
+    <p>Epoch: <input type="text" id="epoch" /></p>
+    <h2>References</h2>
+    <ul>
+      <li><a href="http://node99.org/som/">self-organizing maps</a> by Sean Whalen.</li>
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

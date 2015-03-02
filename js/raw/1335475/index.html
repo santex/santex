@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>Polymaps don't like these dots</title>
+        <script type="text/javascript" src="https://github.com/simplegeo/polymaps/raw/master/polymaps.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+        <style type="text/css">
+            html, body, #map {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                border: none;
+            }
+
+            #map {
+                background: #ccc;
+            }
+        </style>
+        <script type="text/javascript">
+        var map;
+        $(function() {
+
+            var po = org.polymaps;
+
+            var container = document.getElementById('map'),
+                svg = container.appendChild(po.svg('svg'));
+
+            map = po.map()
+                .container(svg)
+                .center({lat: 13.16, lon: -891.34})
+                .zoom(3);
+
+            var tiles = po.image()
+                .url("http://s3.amazonaws.com/com.modestmaps.bluemarble/{Z}-r{Y}-c{X}.jpg");
+            map.add(tiles);
+
+            var dots = po.geoJson()
+                .tile(false)
+                .zoom(3)
+                .url("fixed.json")
+                .on("load", function(collection) {
+                    console.log("collection:", collection);
+                })
+                .on("load", po.stylist()
+                    .attr("r", 5)
+                    .attr("fill", "red"));
+            map.add(dots);
+
+            map.add(po.hash());
+            map.add(po.interact());
+
+        });
+        </script>
+    </head>
+    <body>
+        <div id="map"></div>
+    </body>
+</html>

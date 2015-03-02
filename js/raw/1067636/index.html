@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+    <style type="text/css">
+
+body {
+  background: #333;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var w = 960,
+    h = 500;
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+
+var defs = svg.append("svg:defs");
+
+defs.append("svg:clipPath")
+    .attr("id", "circle1")
+  .append("svg:circle")
+    .attr("cx", 350)
+    .attr("cy", 200)
+    .attr("r", 180);
+
+defs.append("svg:clipPath")
+    .attr("id", "circle2")
+  .append("svg:circle")
+    .attr("cx", 550)
+    .attr("cy", 200)
+    .attr("r", 180);
+
+defs.append("svg:clipPath")
+    .attr("id", "circle3")
+  .append("svg:circle")
+    .attr("cx", 450)
+    .attr("cy", 300)
+    .attr("r", 180);
+
+svg.append("svg:rect")
+    .attr("clip-path", "url(#circle1)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#ff0000");
+
+svg.append("svg:rect")
+    .attr("clip-path", "url(#circle2)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#00ff00");
+
+svg.append("svg:rect")
+    .attr("clip-path", "url(#circle3)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#0000ff");
+
+svg.append("svg:g")
+    .attr("clip-path", "url(#circle1)")
+  .append("svg:rect")
+    .attr("clip-path", "url(#circle2)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#ffff00");
+
+svg.append("svg:g")
+    .attr("clip-path", "url(#circle2)")
+  .append("svg:rect")
+    .attr("clip-path", "url(#circle3)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#00ffff");
+
+svg.append("svg:g")
+    .attr("clip-path", "url(#circle3)")
+  .append("svg:rect")
+    .attr("clip-path", "url(#circle1)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#ff00ff");
+
+svg.append("svg:g")
+    .attr("clip-path", "url(#circle3)")
+  .append("svg:g")
+    .attr("clip-path", "url(#circle2)")
+  .append("svg:rect")
+    .attr("clip-path", "url(#circle1)")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "#ffffff");
+
+    </script>
+  </body>
+</html>

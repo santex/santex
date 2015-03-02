@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/polymaps.min.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/example.css");
+
+html, body {
+  height: 100%;
+}
+
+svg {
+  display: block;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .tileSize({x: 384, y: 384})
+    .zoomRange([0, 5])
+    .zoom(1)
+    .center({lat: -45, lon: 0})
+    .add(po.interact())
+    .add(po.hash());
+
+map.add(po.image()
+    .url(minecraft("http://graphics.stanford.edu/~mbostock/minecraft-sample", ".png")));
+
+map.add(po.compass()
+    .pan("none"));
+
+function minecraft(path, ext) {
+  return function(c) {
+    var k = 1 << c.zoom;
+    if (c.column < 0
+        || c.column >= k
+        || c.row < 0
+        || c.row >= k) return "about:blank";
+    if (c.zoom) {
+      for (var url = [path], z = c.zoom - 1; z >= 0; --z) {
+        k = Math.pow(2, -z);
+        url.push("/", (~~(c.column * k) & 1) + ((~~(c.row * k) & 1) << 1));
+      }
+      url.push(ext);
+      return url.join("");
+    }
+    return path + "/base" + ext;
+  };
+}
+
+    </script>
+  </body>
+</html>

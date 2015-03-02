@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Collignon Butterfly Map</title>
+<style>@import url(../maps.css);</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Collignon Butterfly Map</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.polyhedron.butterfly</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/polyhedron">geo.polyhedron D3 plugin</a>.
+  <p>A modified <a href="http://en.wikipedia.org/wiki/Collignon_projection">Collignon projection</a> can be used to project the globe onto an octahedron.
+The triangles are adjusted so that they are equilateral.
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../d3.geo.polyhedron.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var radians = Math.PI / 180;
+
+var ratio = Math.sqrt(3) / 2,
+    projection = d3.geo.polyhedron.butterfly(function(face) {
+      var centroid = d3.geo.centroid({type: "MultiPoint", coordinates: face});
+      return function(coordinates) {
+        var point = d3.geo.collignon.raw((coordinates[0] - centroid[0]) * radians, Math.abs(coordinates[1]) * radians);
+        point[1] *= ratio;
+        if (coordinates[1] > 0) point[1] = -point[1];
+        return point;
+      };
+    }).scale(150).center([0, 45]);
+
+d3.select("#map").call(canvasMap().projection(projection));
+
+</script>

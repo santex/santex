@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  border: solid 3px steelblue;
+}
+
+#parent {
+  cursor: crosshair;
+  border: solid 7px steelblue;
+  position: relative;
+  margin: 29px auto;
+  padding: 31px;
+  width: 800px;
+  height: 400px;
+  background: #eee;
+}
+
+#child {
+  position: absolute;
+  border: solid 13px steelblue;
+  margin: 17px;
+  padding: 23px;
+  top: 100px;
+  left: 100px;
+  width: 200px;
+  height: 100px;
+  background: #ccc;
+}
+
+#circle {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 12px;
+  margin-left: -12px;
+  margin-top: -12px;
+  width: 24px;
+  height: 24px;
+  background: red;
+}
+
+#small-circle {
+  position: absolute;
+  pointer-events: none;
+  background: black;
+  border-radius: 6px;
+  top: 12px;
+  left: 12px;
+  margin-left: -4px;
+  margin-top: -4px;
+  width: 8px;
+  height: 8px;
+}
+
+</style>
+
+<div id="parent">
+  <div id="offset"></div>
+  <div id="child">
+    <div id="circle">
+      <div id="small-circle"></div>
+    </div>
+  </div>
+</div>
+
+<script src="http://mbostock.github.com/d3/d3.js?2.7.4"></script>
+<script>
+
+d3.select("#child").on("mousemove", function() {
+  var ox, oy;
+
+  if ("offsetX" in d3.event) {
+    ox = d3.event.offsetX - this.clientLeft;
+    oy = d3.event.offsetY - this.clientTop;
+  } else {
+    ox = d3.event.layerX - this.clientLeft;
+    oy = d3.event.layerY - this.clientTop;
+  }
+
+  d3.select("#offset").text(ox + "," + oy);
+
+  d3.select("#circle")
+      .style("left", ox + "px")
+      .style("top", oy + "px");
+});
+
+</script>

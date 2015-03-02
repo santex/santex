@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.cell-border {
+  fill: none;
+  stroke: #ccc;
+}
+
+.cell-center {
+  fill: none;
+  stroke: orange;
+}
+
+.label {
+  font: 11px sans-serif;
+}
+
+.label--top {
+  text-anchor: middle;
+}
+
+.label--right {
+  text-anchor: start;
+}
+
+.label--bottom {
+  text-anchor: middle;
+}
+
+.label--left {
+  text-anchor: end;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var randomX = d3.random.normal(width / 2, 80),
+    randomY = d3.random.normal(height / 2, 80);
+
+var data = d3.range(200)
+    .map(function() { return [randomX(), randomY()]; })
+    .filter(function(d) { return 0 <= d[0] && d[0] <= width && 0 <= d[1] && d[1] <= height; });
+
+var cells = d3.geom.voronoi()
+    .clipExtent([[-1, -1], [width + 1, height + 1]])
+    (data)
+    .map(d3.geom.polygon);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var cell = svg.append("g")
+    .attr("class", "cell")
+  .selectAll("g")
+    .data(cells)
+  .enter().append("g");
+
+cell.append("path")
+    .attr("class", "cell-center")
+    .attr("d", function(d) { return "M" + d.centroid() + "L" + d.point; });
+
+cell.append("path")
+    .attr("class", "cell-border")
+    .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
+
+svg.append("g")
+    .attr("class", "dot")
+  .selectAll("circle")
+    .data(data)
+  .enter().append("circle")
+    .attr("transform", function(d) { return "translate(" + d + ")"; })
+    .attr("r", 2.5);
+
+svg.append("g")
+    .attr("class", "label")
+  .selectAll("text")
+    .data(cells.filter(function(d) { return d.area() > 2000; }))
+  .enter().append("text")
+    .attr("class", function(d) {
+      var centroid = d.centroid(),
+          point = d.point,
+          angle = Math.round(Math.atan2(centroid[1] - point[1], centroid[0] - point[0]) / Math.PI * 2);
+      return "label--" + (d.orient = angle === 0 ? "right"
+          : angle === -1 ? "top"
+          : angle === 1 ? "bottom"
+          : "left");
+    })
+    .attr("transform", function(d) { return "translate(" + d.point + ")"; })
+    .attr("dy", function(d) { return d.orient === "left" || d.orient === "right" ? ".35em" : d.orient === "bottom" ? ".71em" : null; })
+    .attr("x", function(d) { return d.orient === "right" ? 6 : d.orient === "left" ? -6 : null; })
+    .attr("y", function(d) { return d.orient === "bottom" ? 6 : d.orient === "top" ? -6 : null; })
+    .text(function(d, i) { return i; });
+
+</script>

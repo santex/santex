@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Gnomonic Butterfly Map</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Gnomonic Butterfly Map</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.polyhedron.butterfly</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/polyhedron">geo.polyhedron D3 plugin</a>.
+  <p>The <a href="http://mathworld.wolfram.com/GnomonicProjection.html">gnomonic projection</a> is used in the butterfly map above.
+  This conveniently projects <a href="http://mathworld.wolfram.com/GreatCircle.html">great circle</a> segments as straight lines, hence it is useful for polyhedral projections in general.
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../d3.geo.polyhedron.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var projection = d3.geo.polyhedron.butterfly().scale(110).center([0, 45]);
+
+d3.select("#map").call(canvasMap().projection(projection));
+
+</script>

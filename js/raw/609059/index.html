@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/polymaps.min.js"></script>
+    <script type="text/javascript" src="http://github.com/mbostock/polymaps/raw/586fbb0346548a5559b6edea8aab76ac51334da5/lib/crimespotting/crimespotting.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/example.css");
+
+html, body {
+  height: 100%;
+  background: #E6E6E6;
+}
+
+svg {
+  display: block;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var svg = document.body.appendChild(po.svg("svg")),
+    defs = svg.appendChild(po.svg("defs")),
+    rg = defs.appendChild(po.svg("radialGradient")),
+    s0 = rg.appendChild(po.svg("stop")),
+    s1 = rg.appendChild(po.svg("stop"));
+
+rg.setAttribute("id", "gradient");
+s0.setAttribute("offset", "0%");
+s0.setAttribute("stop-color", "green");
+s1.setAttribute("offset", "100%");
+s1.setAttribute("stop-color", "green");
+s1.setAttribute("stop-opacity", 0);
+
+var map = po.map()
+    .container(svg)
+    .center({lat: 37.787, lon: -122.228})
+    .zoom(12)
+    .add(po.interact());
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+map.add(po.geoJson()
+    .features([
+  {geometry: {coordinates: [-122.258, 37.805], type: "Point"}},
+  {geometry: {coordinates: [-122.248, 37.805], type: "Point"}},
+  {geometry: {coordinates: [-122.258, 37.815], type: "Point"}}
+])
+    .on("load", load));
+
+map.add(po.compass()
+    .pan("none"));
+
+/** Post-process the GeoJSON points! */
+function load(e) {
+  var r = 20 * Math.pow(2, e.tile.zoom - 12);
+  for (var i = 0; i < e.features.length; i++) {
+    var c = e.features[i].element;
+    c.setAttribute("r", r);
+    c.setAttribute("fill", "url(#gradient)");
+  }
+}
+
+    </script>
+    <span id="copy">
+      &copy; 2010
+      <a href="http://www.cloudmade.com/">CloudMade</a>,
+      <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors,
+      <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>.
+    </span>
+  </body>
+</html>

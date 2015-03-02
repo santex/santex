@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.27.2"></script>
+    <style type="text/css">
+
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 7px;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #777;
+  stroke-width: 1px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var w = 960,
+    h = 500,
+    n = 4,
+    m = 64,
+    x = d3.scale.linear().domain([0, m - 1]).range([0, w]),
+    y = d3.scale.linear().range([h - 20, 20]),
+    z = d3.scale.linear().domain([0, Math.PI / 2, Math.PI]).range(["#0f0", "#777", "#f00"]);
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d[0]); })
+    .y(function(d) { return y(d[1]); });
+
+d3.json("/data/series.json", function(series) {
+  y.domain([0, d3.max(d3.merge(series))]);
+
+  var g = svg.selectAll("g")
+      .data(series)
+    .enter().append("svg:g");
+
+  var path = g.selectAll("path")
+      .data(segments)
+    .enter().append("svg:path")
+      .attr("d", line)
+      .style("stroke", function(d) { return z(Math.atan2(d[1][0] - d[0][0], d[1][1] - d[0][1])); });
+
+  var circle = g.selectAll("circle")
+      .data(Object)
+    .enter().append("svg:circle")
+      .attr("cx", function(d, i) { return x(i); })
+      .attr("cy", function(d, i) { return y(d); })
+      .attr("r", 3);
+});
+
+// Produce an array of two-element arrays [x,y] for each segment of values.
+function segments(values) {
+  var segments = [], i = 0, n = values.length
+  while (++i < n) segments.push([[i - 1, values[i - 1]], [i, values[i]]]);
+  return segments;
+}
+
+    </script>
+  </body>
+</html>

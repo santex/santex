@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Crayola Colour Chronology - Jason Davies</title>
+<style>
+  body {
+    background: #eee;
+    width: 960px;
+    margin: 4em auto;
+    text-align: center;
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 300;
+  }
+  text {
+    font-size: 12px;
+    fill: #333;
+  }
+  h1 {
+    margin: 0.5em 0;
+    font-weight: 300;
+  }
+  .source, .copyright {
+    font-size: small;
+    margin-bottom: 2em;
+  }
+</style>
+
+<div id="vis"><img src="crayola.png"></div>
+<h1>Crayola Colour Chronology</h1>
+<p>Inspired by Stephen von Worley’s <a href="http://www.datapointed.net/visualizations/color/crayola-crayon-chart-bow/">Crayon-Bow</a>, this is a version written using <a href="http://mbostock.github.com/d3/">D3</a>.
+<p>Used with permission (this is almost an exact replica), so please contact Stephen if you want to use this for anything.
+<p class="source">Data: <a href="http://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors">Wikipedia</a>
+<div id="cartesian"></div>
+
+<h2>See Also</h2>
+<ul>
+  <li><a href="http://www.visualnews.com/data-design/april/crayons/">The Twentieth Century in Color</a>
+</ul>
+
+<script src="../media/js/d3.v2.min.js"></script>
+<script>
+var r = 960 / 2,
+    p = 35;
+
+d3.select("#vis").selectAll("*").remove();
+var vis = d3.select("#vis").append("svg")
+    .attr("width", r * 2 + p)
+    .attr("height", r + p)
+  .append("g")
+    .attr("transform", "translate(" + [r, r] + ")");
+
+var vis2 = d3.select("#cartesian").append("svg")
+    .style("margin-left", -p + "px")
+    .attr("width", r * 2 + 2 * p)
+    .attr("height", r * 2 + p)
+  .append("g")
+    .attr("transform", "translate(" + p + ")");
+
+var stack = d3.layout.stack()
+    .values(function(d) { return d.data; });
+
+var px = d3.scale.pow().exponent(10).domain([1900, 2012]).range([50, r]),
+    x = d3.scale.linear().domain([1900, 2012]).range([0, 2 * r]),
+    py = d3.scale.linear().range([-Math.PI / 2, Math.PI / 2]),
+    y = d3.scale.linear().range([2 * r, 0]);
+
+var polar = d3.svg.area.radial()
+    .radius(function(d) { return px(d.x); })
+    .startAngle(function(d) { return py(d.y0); })
+    .endAngle(function(d) { return py(d.y0 + d.y) - !!d.y / px(d.x); });
+
+var cartesian = d3.svg.area()
+    .defined(function(d) { return d.y; })
+    .x(function(d) { return x(d.x); })
+    .y0(function(d) { return y(d.y0); })
+    .y1(function(d) { return y(d.y0 + d.y) + !!d.y; });
+
+d3.csv("crayola.csv", function(crayons) {
+  var byYear = {};
+  crayons.forEach(function(d) {
+    d.data = [];
+    byYear[d.Issued] = 1;
+    byYear[d.Retired || "2012"] = 1;
+  });
+  crayons.sort(function(a, b) { return hslValue(a["Hex Code"]) - hslValue(b["Hex Code"]); });
+  var years = d3.keys(byYear).map(Number).filter(Boolean).sort(d3.ascending),
+      m = years.length,
+      n = crayons.length,
+      domain = d3.extent(years);
+  x.domain(domain);
+  px.domain(domain);
+  for (var i = 0; i < m; i++) {
+    var year = years[i];
+    for (var j = 0; j < n; j++) {
+      var c = crayons[j];
+      if (i) c.data.push({x: year - 1, y: c.data[c.data.length - 1].y});
+      c.data.push({x: year, y: year >= +c.Issued && year < (+c.Retired || Infinity) ? 1 : 0});
+    }
+  }
+  var d = stack(crayons);
+  var last = d[d.length - 1].data;
+  d.forEach(function(d) {
+    d.data.forEach(function(d, i) {
+      var y = last[i].y0 + last[i].y;
+      d.y0 /= y;
+      d.y /= y;
+    });
+  });
+  vis.selectAll("path")
+      .data(d)
+    .enter().append("path")
+      .attr("d", function(d) {
+        return polar(d.data);
+      })
+      .style("fill", function(d) { return d["Hex Code"]; })
+    .append("title")
+      .text(function(d) { return d.Color; });
+  vis.selectAll("text")
+      .data([1903, 1949, 1958, 1970, 1990, 2012])
+    .enter().append("text")
+      .attr("transform", function(d) { return "translate(" + px(d) + ")rotate(45)"; })
+      .attr("dy", 10)
+      .text(String);
+  vis2.selectAll("path")
+      .data(d)
+    .enter().append("path")
+      .attr("d", function(d) {
+        return cartesian(d.data);
+      })
+      .style("fill", function(d) { return d["Hex Code"]; })
+    .append("title")
+      .text(function(d) { return d.Color; });
+  vis2.selectAll("text")
+      .data([1903, 1949, 1958, 1970, 1990, 2012])
+    .enter().append("text")
+      .attr("transform", function(d) { return "translate(" + x(d) + "," + r * 2 + ")rotate(45)"; })
+      .attr("dy", 10)
+      .text(String);
+});
+
+function hslValue(d) {
+  d = d3.hsl(d);
+  return d.s ? d.h : d.l - 1;
+}
+
+window.google_analytics_uacct = "UA-54563-3";
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-54563-3']);
+_gaq.push(['_trackPageview']);
+setTimeout(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+}, 1);
+</script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

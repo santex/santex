@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Diffusion-limited aggregation - Jason Davies</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" href="../media/style.css" />
+    <script type="text/javascript" src="../media/js/protovis-r3.3.js"></script>
+  </head>
+  <body>
+    <h1>Diffusion-limited aggregation</h1>
+    <img style="display: none" src="../screenshots/dla-full.png" />
+    <p>In <a href="http://en.wikipedia.org/wiki/Diffusion-limited_aggregation">diffusion-limited aggregation (DLA)</a>, particles undergo random walks due to Brownian motion.  They cluster together to form aggregates.</p>
+    <p>DLA can be used to model systems such as lichen growth, the generation of polymers out of solutions, carbon deposits on the walls of a cylinder of a Diesel engine, path of electric discharge, and urban settlement.</p>
+    <p>In this simulation, the initial aggregate is set to be the bottom row of an NxN lattice.  Particles are launched from a random cell in the top row.  A particle's random walk is set to have the following probabilities: <em>up: 0.15</em>, <em>down: 0.35</em>, and <em>left or right: 0.25</em>.  The particle continues until it sticks to a neighbouring cell or leaves the lattice.</p>
+    <canvas id="vis" width="300" height="300"></canvas>
+    <p></p>
+    <script type="text/javascript">
+
+var N = 300;                        // N-by-N grid
+var launch = N - 10;                // row to launch particles from
+var dla = new Array(N);             // is cell (x, y) occupied
+var pic = new Array(N);
+for (var i=0; i<N; i++) {
+  dla[i] = new Array(N);
+  pic[i] = new Array(N);
+}
+var c = document.getElementById("vis").getContext("2d");
+var imageData = c.getImageData(0, 0, N, N);
+var data = imageData.data;
+
+var setPixel = function(x, y, c) {
+  var i = (x + y * N) * 4;
+  data[i++] = c.r;
+  data[i++] = c.g;
+  data[i++] = c.b;
+  data[i++] = 255;
+}
+
+var updateImage = function() {
+  c.putImageData(imageData, 0, 0);
+}
+
+var particles = 0;                  // only used to pick colors
+
+// create rainbow of colors
+var colors = new Array(256);
+for (var i = 0; i < 256; i++) {
+  colors[i] = pv.hsl(360 * 8 * i / 256, .9, .5).rgb();
+}
+
+// set seed to be bottom row
+for (var x = 0; x < N; x++) {
+  dla[x][0] = true;
+}
+
+// repeat until aggregate hits top
+var done = false;
+var height = 0;
+var loop = function() {
+
+  for (var i=0; i<20; i++) {
+    // random launching point
+    var x = Math.floor(N * Math.random());
+    var y = height + 20;
+
+    // particle takes a 2d random walk
+    while (x < N - 2 && x > 1 && y < height + 40 && y > 1) {
+      var r = Math.random();
+      if      (r < 0.25) x--;
+      else if (r < 0.50) x++;
+      else if (r < 0.65) y++;
+      else               y--;
+
+      if (x <= 1) x = N - 3;
+      else if (x >= N - 2) x = 2;
+
+      // check if neighbouring site is occupied
+      if (dla[x-1][y] || dla[x+1][y]   || dla[x][y-1]   || dla[x][y+1]   ||
+        dla[x-1][y-1] || dla[x+1][y+1] || dla[x-1][y+1] || dla[x+1][y-1] ) {
+        dla[x][y] = true;
+        particles++;
+        setPixel(x, N-y-1, colors[Math.floor(particles / 256) % 256]);
+
+        // aggregate hits top, so set flag to stop outer while loop
+        if (y > height) height = y;
+        if (y > launch) done = true;
+
+        // particle stuck, so break out of inner while loop
+        break;
+      }
+    }
+  }
+  updateImage();
+  if (!done) setTimeout(loop, 1);
+}
+
+loop();
+
+    </script>
+    <p>DLAs appear to be related to the Fibonacci sequence in terms of the branching sequence of the aggregate (see the references for more information about this, I haven't looked into it in much detail).  Additionally, small clusters evolve toward a five-branch symmetry.  Note that the ratio of successive Fibonacci numbers approaches the golden ratio, which appears in the geometry of the pentagon.</p>
+    <h2>References</h2>
+    <ul>
+      <li>Inspired by <a href="http://www.cs.princeton.edu/introcs/98simulation/">§9.8 Monte Carlo Simulation</a> of <a href="http://www.cs.princeton.edu/introcs/home/">Introduction to Programming in Java</a>.</li>
+      <li>Uncovering Fibonacci sequences in the fractal morphology of diffusion-limited aggregates. A. Arneodoa, F. Argoula, J.F. Muzya and M. Tabard. Physics Letters A, 1992.</li>
+      <li><a href="http://folk.uio.no/walmann/Publications/dla-paper/dla-paper.html">Construction of a DLA cluster model</a> (out of Balsa wood! <a href="http://folk.uio.no/walmann/Publications/dla-paper/node2.html#fig5">Photos</a>).</li>
+      <li>Paul Bourke's DLA pages: <a href="http://local.wasp.uwa.edu.au/~pbourke/fractals/dla/">2D</a> and <a href="http://local.wasp.uwa.edu.au/~pbourke/fractals/dla3d/">3D</a>.</li>
+      <li><a href="http://classes.yale.edu/Fractals/Panorama/Physics/DLA/DLA.html">Introduction to DLAs</a> from Yale.</li>
+      <li><a href="http://markjstock.org/dla-nd/">dla-nd</a> by Mark Stock</li>
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

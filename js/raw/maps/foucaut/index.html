@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Foucaut’s Stereographic Equivalent</title>
+<style>
+@import url(../maps.css);
+.outline {
+  stroke: #000;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+.graticule, .cylindrical, .azimuthal {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+  fill: none;
+}
+
+.cylindrical {
+  stroke: #00f;
+}
+
+.azimuthal {
+  stroke: #f00;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Foucaut’s Stereographic Equivalent</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Foucaut referred to this equal-area projection as the “stereographic equivalent projection”, since the spacing of parallels along the central meridian is the same as that of the stereographic azimuthal projection or Braun’s cylindrical stereographic, shown above as red and blue graticules.
+</div>
+
+<script src="../../d3.min.js?3.1"></script>
+<script src="../d3.geo.projection.min.js?20130606"></script>
+<script src="../topojson.min.js?1.1.0"></script>
+<script>
+
+var width = 1180,
+    height = 600;
+
+var projection = d3.geo.foucaut()
+    .translate([width / 2, height / 2])
+    .scale(165)
+    .precision(.1);
+
+var braun = d3.geo.cylindricalStereographic()
+    .translate([width / 2, height / 2])
+    .scale(165 * Math.sqrt(Math.PI) / 2)
+    .precision(.1);
+
+var cylindrical = d3.geo.path().projection(braun);
+
+var azimuthal = d3.geo.path().projection(d3.geo.stereographic()
+    .translate([width / 2, height / 2])
+    .scale(165 * Math.sqrt(Math.PI))
+    .precision(.1)
+    .clipExtent([[-180, 90], [180, -90]].map(braun))
+    .clipAngle(179));
+
+var path = d3.geo.path().projection(projection);
+
+var graticule = d3.geo.graticule()();
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("path")
+    .datum({type: "GeometryCollection", geometries: [graticule, {type: "Sphere"}]})
+    .attr("class", "cylindrical")
+    .attr("d", cylindrical);
+
+svg.append("path")
+    .datum({type: "GeometryCollection", geometries: [graticule, {type: "Sphere"}]})
+    .attr("class", "azimuthal")
+    .attr("d", azimuthal);
+
+svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline")
+    .attr("d", path);
+
+d3.json("../world-50m.json", function(error, world) {
+  svg.append("path")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("d", path);
+});
+
+</script>

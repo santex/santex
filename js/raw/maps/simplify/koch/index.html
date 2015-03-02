@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Quadratic Koch Island Simplification</title>
+<style>
+@import url(../../maps.css);
+
+#chart {
+  height: 580px;
+}
+
+#chart .background {
+  fill: none;
+  pointer-events: all;
+}
+
+#chart path {
+  fill: #eee;
+  stroke: #000;
+  pointer-events: none;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> →
+<a href="../../">Maps</a> →
+<a href="../">Topology-Preserving Simplification</a>
+
+<h1>Quadratic Koch Island Simplification</h1>
+
+<div class="wrapper">
+  <p>A fun stress test for <a href="https://github.com/d3/d3-plugins/tree/master/simplify">d3.simplify</a>’s new support for topology preservation.
+  Move your mouse to adjust the minimum area threshold.
+</div>
+
+<div id="chart"></div>
+
+<script src="../../../d3.min.js?3.0.0"></script>
+<script src="../simplify.js?20121029.3"></script>
+<script>(function() {
+
+var width = 960,
+    height = parseInt(d3.select("#chart").style("height")),
+    minArea = 0,
+    formatArea = d3.format(".2r"),
+    formatPercent = d3.format(".2%");
+
+var x = d3.scale.sqrt()
+    .domain([0, 1e4])
+    .range([0, width]);
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var bg = svg.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height);
+
+var shape = svg.append("path");
+
+var path = d3.geo.path()
+    .projection(null);
+
+var simplify = d3.simplify()
+    .topology(true)
+    .area(0)
+    .projection(function(d) { return [d[0] + width * .35, d[1] + height / 4]; });
+
+var quadratic = lSystem("FRFRFRFR", "FLFRFRFFLFLFRF", -Math.PI / 2, Math.PI / 2),
+    snowflake = lSystem("FRFRF", "FLFRFLF", -Math.PI / 3, Math.PI * 2 / 3);
+
+var geography = simplify.project({
+  type: "GeometryCollection",
+  geometries: [quadratic(-128, 0), quadratic(128, 0)]
+});
+
+redraw();
+
+bg.on("mousemove", function() {
+  minArea = x.invert(d3.mouse(this)[0]);
+  redraw();
+});
+
+function redraw() {
+  shape.attr("d", path(simplify.area(minArea)(geography)));
+}
+
+function lSystem(initial, replacement, left, right) {
+  var segments = initial.match(/F/g).length;
+  return function(x, y) {
+    var flake = initial,
+        iterations = 3,
+        d = 64 / Math.pow(segments, iterations - 1),
+        line = [];
+     
+    for (var i = 0; i < iterations; ++i) flake = flake.replace(/F/g, replacement);
+    for (var angle = 0, move, i = 0, n = flake.length; i < n; ++i) {
+      move = flake.charAt(i);
+      if (move === "F") {
+        line.push([
+          x += d * Math.cos(angle) | 0,
+          y += d * Math.sin(angle) | 0
+        ]);
+      } else angle += move === "L" ? left : right;
+    }
+    line.push(line[0]);
+    return {type: "Polygon", coordinates: [line]};
+  };
+}
+
+})()</script>

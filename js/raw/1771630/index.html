@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  padding: 40px;
+}
+
+input {
+  width: 880px;
+}
+
+</style>
+<input type="range" value="0" min="0" max="255" step="any">
+<script src="http://mbostock.github.com/d3/d3.js?2.7.4"></script>
+<script>
+
+d3.select("input").transition()
+    .delay(1500)
+    .duration(7500)
+    .tween("value", valueTween(255));
+
+function valueTween(value) {
+  return function() {
+    var i = d3.interpolateNumber(this.value, value);
+    return function(t) { this.value = i(t); };
+  };
+}
+
+</script>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var λ = d3.scale.linear()
+    .domain([0, width])
+    .range([-180, 180]);
+
+var φ = d3.scale.linear()
+    .domain([0, height])
+    .range([90, -90]);
+
+var projection = d3.geo.conicEqualArea()
+    .scale(150)
+    .center([0, 33])
+    .translate([width * .5, height * .5])
+    .precision(.3);
+
+var canvas = d3.select("body").append("canvas")
+    .attr("width", width)
+    .attr("height", height);
+
+var context = canvas.node().getContext("2d");
+
+var path = d3.geo.path()
+    .projection(projection)
+    .context(context);
+
+d3.json("/data/world-110m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land),
+      sphere = {type: "Sphere"},
+      touch = "ontouchstart" in window;
+
+  canvas.on(touch ? "touchmove" : "mousemove", move);
+
+  draw();
+
+  function move() {
+    var p = touch ? d3.touches(this)[0] : d3.mouse(this);
+    projection.rotate([λ(p[0]), φ(p[1])]), draw();
+    d3.event.preventDefault();
+  }
+
+  function draw() {
+    context.clearRect(0, 0, width, height);
+    context.beginPath();
+    path(land);
+    context.fill();
+    context.beginPath();
+    path(sphere);
+    context.stroke();
+  }
+});
+
+</script>

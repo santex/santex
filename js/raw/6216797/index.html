@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.lot {
+  fill: lightgray;
+  stroke: black;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([0, height]);
+
+var projection = d3.geo.transform({
+  point: function(px, py) { this.stream.point(x(px), y(py)); }
+});
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("/data/geo.json", function(error, geo) {
+  x.domain(d3.extent(geo.features, function(d) { return d.properties.Easting; }));
+  y.domain(d3.extent(geo.features, function(d) { return d.properties.Northing; }));
+
+  svg.append("path")
+      .datum(geo)
+      .attr("class", "lot")
+      .attr("d", path);
+});
+
+</script>

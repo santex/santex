@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 0, bottom: 20, left: 0},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .domain([0, 1])
+    .rangePoints([0, width], 1);
+
+var y = d3.scale.linear()
+    .domain([-1e6, 2e6])
+    .range([height, 0]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("g")
+    .attr("transform", "translate(" + x(0) + ",0)")
+    .attr("class", "axis")
+    .call(d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(20, "s"));
+
+svg.append("g")
+    .attr("transform", "translate(" + x(1) + ",0)")
+    .attr("class", "axis")
+    .call(d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(20)
+      .tickFormat(d3.format("s")));
+
+</script>

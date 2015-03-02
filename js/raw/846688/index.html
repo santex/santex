@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://github.com/mbostock/d3/raw/v1.3.0/d3.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", 960)
+    .attr("height", 500)
+  .append("svg:g")
+    .attr("transform", "translate(480, 250)");
+
+var g = svg.selectAll("g")
+    .data(d3.range(0, 360, 2))
+  .enter().append("svg:g")
+    .attr("transform", function(d) { return "rotate(" + d + ")"; });
+
+var circle = g.selectAll("circle")
+    .data(d3.range(10))
+  .enter().append("svg:circle")
+    .attr("cx", d3.scale.linear().domain([0, 9]).range([180, 240]))
+    .attr("r", 4.5)
+    .attr("fill", d3.scale.linear().domain([0, 9]).range(["brown", "steelblue"]))
+    .attr("stroke", "black");
+
+    </script>
+  </body>
+</html>

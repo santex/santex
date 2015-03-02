@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Airocean World</title>
+<style>
+@import url(../maps.css);
+body {
+  background: #fff;
+}
+#map {
+  width: 960px;
+  height: 1920px;
+  margin: 0 auto;
+  position: relative;
+}
+#heading {
+  position: absolute;
+  top: 30px;
+  left: 350px;
+  width: 420px;
+}
+#heading h1 {
+  font-size: 3.5em;
+  margin: 0;
+}
+#cuboctahedron {
+  margin: -120px 0 -100px -200px;
+  float: left;
+}
+h2 {
+  clear: left;
+}
+.author a, .meta a {
+  color: #000;
+}
+.author, .meta {
+  color: #666;
+  font-style: italic;
+  font-size: small;
+}
+.globe {
+  cursor: move;
+}
+.background {
+  stroke: none;
+  fill: #ccf;
+}
+.outline {
+  stroke: #000;
+  stroke-width: 1px;
+  fill: none;
+}
+.graticule {
+  stroke: #000;
+  stroke-width: .25px;
+  stroke-opacity: .5;
+  fill: none;
+}
+.land {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: #9f9;
+}
+.boundary {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .7;
+  fill: none;
+}
+.face {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-dasharray: 8,3;
+  fill: none;
+}
+</style>
+
+<div id="map">
+  <div id="heading">
+    <h1>Airocean World</h1>
+    <p class="author">by <a href="http://www.jasondavies.com/">Jason Davies</a>
+    <p class="meta">In the style of <a href="http://en.wikipedia.org/wiki/Buckminster_Fuller">Buckminster Fuller</a>’s Airocean World Map.
+  </div>
+  <div id="inset">
+  </div>
+</div>
+
+<div class="wrapper">
+  <h2>Dymaxion™ Maps</h2>
+  <p>Fuller used his Dymaxion trademark to market various inventions, including his maps.
+  <i>Dymaxion map</i> most commonly refers to the <a href="http://en.wikipedia.org/wiki/Icosahedron">icosahedral</a> layout shown above, though his first ever Dymaxion map was in fact based on a <a href="http://en.wikipedia.org/wiki/Cuboctahedron">cuboctahedron</a>, reproduced approximately here.
+  <div id="cuboctahedron"></div>
+  <p>For each polyhedral face, Fuller developed his own projection, but these reproductions use the <a href="http://mathworld.wolfram.com/GnomonicProjection.html">gnomonic projection</a> instead for ease of implementation.
+  <p>Incidentally, this year (2013) is the 70<sup>th</sup> anniversary of this cuboctahedral map, which was published by <a href="http://books.google.com/books?id=WlEEAAAAMBAJ&pg=PA41&source=gbs_toc_r&cad=2#v=onepage&q&f=false">Life magazine in 1943</a>.
+
+  <h2>Technical Notes</h2>
+  <p>The maps above were rendered using a custom version of <a href="http://d3js.org">D3</a>, modified to support clipping against arbitrary spherical polygons.
+  <p>This was necessary because unlike the <a href="../gnomonic-butterfly">octahedron</a>, the icosahedron cannot be unfolded exactly along a whole meridian.
+  <p>The <a href="https://github.com/d3/d3-plugins/tree/master/geo/polyhedron">polyhedral plugin</a> automatically generates an outline in geographic coordinates, which can be passed directly to D3 as a clip polygon.
+
+  <h2>Further Reading</h2>
+  <ul>
+    <li><a href="http://books.google.co.uk/books?id=WlEEAAAAMBAJ&pg=PA41&source=gbs_toc_r&redir_esc=y#v=onepage&q&f=false">R. Buckminster Fuller’s Dymaxion World</a>, Life Magazine, March 1943.
+    <li><a href="http://teczno.com/faumaxion-II/">Faumaxion II</a> by <a href="http://mike.teczno.com/">Michal Migurski</a> allows you to navigate icosahedral raster tiles.
+    <li><a href="http://www.progonos.com/furuti/MapProj/Normal/ProjPoly/projPoly3.html">Icosahedral, dodecahedral and other maps</a>, Carlos A. Furuti.
+    <li><a href="http://www.bfi.org/about-bucky/buckys-big-ideas/dymaxion-world/dymaxion-map">Dymaxion Map</a>, Buckminster Fuller Institute.
+    <li><a href="http://www.sushu.de/buckymap/">the buckymap puzzle</a>, Susanne Schuricht.
+    <li><a href="http://www.win.tue.nl/~vanwijk/myriahedral/">Myriahedral projections</a>, Jarke J. van Wijk.
+  </ul>
+  <p>← Back to <a href="../">maps</a>.
+</div>
+
+<script src="../../d3.js?20130517"></script>
+<script src="../topojson.min.js?1.1.1"></script>
+<script src="../d3.geo.projection.min.js?20130517"></script>
+<script src="../d3.geo.polyhedron.js?20130517"></script>
+<script>
+
+var rotate = [99.8, -241, -85],
+    rotation = d3.geo.rotation(rotate),
+    ε = 1e-6,
+    π = Math.PI,
+    radians = π / 180,
+    degrees = 180 / π,
+    θ = Math.atan(.5) * degrees,
+    width = 960,
+    height = 1920;
+
+var vertices = [
+  [0, 90],
+  [0, -90]
+].concat(d3.range(10).map(function(i) {
+  return [(i * 36 + 180) % 360 - 180, i & 1 ? θ : -θ];
+}));
+
+var polyhedron = d3.range(5).map(function(i) { return [0, 2 + (3 + i * 2) % 10, 3 + i * 2]; }) // North
+    .concat(d3.range(10).map(function(i) { return [2 + i, 2 + (i < 1 ? 10 + i - 1 : i - 1), 2 + (1 + i) % 10]; })) // Equator
+    .concat(d3.range(5).map(function(i) { return [1, 2 + i * 2, 2 + (2 + i * 2) % 10]; })) // South
+    .map(function(d) {
+      return d.map(function(i) { return vertices[i]; });
+    });
+
+(function() {
+  polyhedron.forEach(function(face) {
+    face.centroid = d3.geo.centroid({type: "MultiPoint", coordinates: face});
+  });
+  // Split face 3 at centroid.
+  var face = polyhedron[3],
+      tmp = face.slice();
+      centroid = face.centroid;
+  face[0] = centroid;
+  // Uncomment to join extra face.
+  //face[1] = centroid;
+  //face.push(tmp[1]);
+  polyhedron.push(face = [tmp[0], centroid, tmp[2]]);
+  face.centroid = centroid;
+  // Comment out to join extra face.
+  polyhedron.push(face = [tmp[0], tmp[1], centroid]);
+  face.centroid = centroid;
+
+  // Split face 5 at edge.
+  face = polyhedron[5];
+  tmp = face.slice();
+  centroid = d3.geo.interpolate(face[1], face[2])(.5);
+  face[1] = centroid;
+  polyhedron.push(face = [tmp[0], tmp[1], centroid]);
+  face.centroid = polyhedron[5].centroid;
+  polyhedron[4].splice(2, 0, centroid);
+})();
+
+var centroids = [], // centroids for initial nearest-centroid search
+    extraCentroids = []; // optional secondary centroids for split faces
+
+var faces = polyhedron.map(function(face) {
+  var centroid = face.centroid;
+  centroids.push(cartesian(centroid));
+  extraCentroids.push(cartesian(d3.geo.centroid({type: "MultiPoint", coordinates: face})));
+  // TODO shouldn't really need to reverse faces.
+  var tmp = face.slice();
+  tmp.push(tmp[0]);
+  if (d3.geo.area({type: "Polygon", coordinates: [tmp]}) > 2 * π) face.reverse();
+  return {
+    face: face,
+    project: d3.geo.gnomonic().scale(1).translate([0, 0]).rotate([-centroid[0], -centroid[1]])
+  };
+});
+
+// Connect each face to a parent face.
+[
+  // N
+  -1, // 0
+  0,  // 1
+  11, // 2
+  13, // 3
+  21, // 4 (change to 3 to join extra face)
+
+  // Eq
+  6,  // 5
+  7,  // 6
+  8,  // 7
+  9,  // 8
+  1,  // 9
+
+  9,  // 10
+  10, // 11
+  11, // 12
+  12, // 13
+  13, // 14
+
+  // S
+  6,  // 15
+  8,  // 16
+  18, // 17
+  12, // 18
+  18, // 19
+
+  2,  // 20 - extra
+  3,  // 21 - extra
+  4   // 22 - extra
+].forEach(function(d, i) {
+  var node = faces[d];
+  node && (node.children || (node.children = [])).push(faces[i]);
+});
+
+var projection = d3.geo.polyhedron(faces[0], face, π / 6)
+    .translate([width / 2, height / 2])
+    .center([-160, 0])
+    .scale(260)
+    .rotate(rotate)
+    .precision(1);
+
+var mesh = {type: "MultiLineString", coordinates: projection.mesh.map(function(segment) {
+  return segment.map(rotation.invert);
+}).filter(function(segment) {
+  // Don't show unwanted segment.
+  var d = d3.geo.distance.apply(null, segment);
+  return d > 1 || d < .6;
+})};
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(mesh)
+    .attr("class", "face")
+    .attr("d", path);
+
+d3.json("../world-50m.json", function(error, world) {
+  svg.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+  svg.insert("path", ".graticule")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "boundary")
+      .attr("d", path);
+});
+
+// Small globe.
+(function() {
+  var r = 300;
+
+  var orthographic = d3.geo.orthographic()
+        .translate([r / 2, r / 2])
+        .scale(r / Math.PI)
+        .clipAngle(90)
+        .precision(.1)
+        .rotate([0, -30]),
+      path = d3.geo.path().projection(orthographic);
+
+  var g = svg.append("g")
+      .attr("class", "globe")
+      .attr("transform", "translate(" + [width * .65, 130] + ")")
+      .call(d3.behavior.drag()
+        .origin(function() { var r = orthographic.rotate(); return {x: r[0], y: -r[1]}; })
+        .on("drag", function() {
+          orthographic.rotate([d3.event.x, -d3.event.y]);
+          g.selectAll("path").attr("d", path);
+        }));
+
+  g.append("path")
+      .datum({type: "Sphere"})
+      .attr("class", "background")
+      .attr("d", path);
+
+  g.append("path")
+      .datum({type: "Polygon", coordinates: projection.clipPolygon().map(function(ring) {
+        return ring.map(rotation.invert);
+      })})
+      .attr("class", "outline")
+      .attr("d", path);
+
+  g.append("path")
+      .datum(d3.geo.graticule())
+      .attr("class", "graticule")
+      .attr("d", path);
+
+  g.append("path")
+      .datum(mesh)
+      .attr("class", "face")
+      .attr("d", path);
+
+  d3.json("../world-110m.json", function(error, world) {
+    g.insert("path", ".graticule")
+        .datum(topojson.feature(world, world.objects.land))
+        .attr("class", "land")
+        .attr("d", path);
+  });
+})();
+
+function face(λ, φ) {
+  //Much slower!
+  //var point = [λ, φ],
+  //    face = null,
+  //    inside = 0;
+  //for (var i = 0, n = faces.length; i < n; ++i) {
+  //  face = faces[i];
+  //  if (d3.geo.pointInPolygon(point, face.polygon)) return face;
+  //}
+  var cosφ = Math.cos(φ),
+      p = [cosφ * Math.cos(λ), cosφ * Math.sin(λ), Math.sin(φ)],
+      c,
+      d,
+      min = Infinity,
+      best;
+
+  for (var i = 0, n = centroids.length - 3; i < n; ++i) {
+    c = centroids[i];
+    d = (d = (c[0] - p[0])) * d + (d = (c[1] - p[1])) * d + (d = (c[2] - p[2])) * d;
+    if (d < min) min = d, best = i;
+  }
+
+  if (best != null) {
+    if (best !== 5 && best !== 3) return faces[best];
+
+    // Secondary nearest-centroid search.
+    var candidates = best === 3 ? [3, 20, 21] : [5, 22];
+    best = null, min = Infinity;
+    for (var i = 0; i < candidates.length; ++i) {
+      c = extraCentroids[candidates[i]];
+      d = (d = (c[0] - p[0])) * d + (d = (c[1] - p[1])) * d + (d = (c[2] - p[2])) * d;
+      if (d < min) min = d, best = candidates[i];
+    }
+    return best != null && faces[best];
+  }
+}
+
+// Converts spherical coordinates (degrees) to 3D Cartesian.
+function cartesian(coordinates) {
+  var λ = coordinates[0] * radians,
+      φ = coordinates[1] * radians,
+      cosφ = Math.cos(φ);
+  return [
+    cosφ * Math.cos(λ),
+    cosφ * Math.sin(λ),
+    Math.sin(φ)
+  ];
+}
+
+// Converts 3D cartesian to spherical coordinates (degrees).
+function spherical(cartesian) {
+  var m = Math.sqrt(cartesian[0] * cartesian[0] + cartesian[1] * cartesian[1] + cartesian[2] * cartesian[2]);
+  return [
+    Math.atan2(cartesian[1], cartesian[0]) * degrees,
+    Math.asin(cartesian[2] / m) * degrees
+  ];
+}
+
+// Cuboctahedron.
+(function() {
+
+var vertices = [
+  // North
+  [ 0,  1, 1],
+  [ 1,  0, 1],
+  [ 0, -1, 1],
+  [-1,  0, 1],
+
+  // Equator
+  [-1,  1, 0],
+  [ 1,  1, 0],
+  [ 1, -1, 0],
+  [-1, -1, 0],
+
+  // South
+  [ 0,  1, -1],
+  [ 1,  0, -1],
+  [ 0, -1, -1],
+  [-1,  0, -1]
+].map(spherical);
+
+var polyhedron = [
+  [0, 1, 2, 3],
+
+  [1, 0, 5],
+  [2, 1, 6],
+  [3, 2, 7],
+  [0, 3, 4],
+
+  [0, 4, 8, 5],
+  [3, 7, 11, 4],
+  [2, 6, 10, 7],
+  [1, 5, 9, 6],
+
+  [8, 4, 11],
+  [11, 7, 10],
+  [10, 6, 9],
+  [8, 9, 5],
+
+  [11, 10, 9, 8]
+].map(function(d) {
+  return d.map(function(i) { return vertices[i]; });
+});
+
+var faces = polyhedron.map(function(face, i) {
+  var centroid = d3.geo.centroid({type: "MultiPoint", coordinates: face});
+  if (Math.abs(Math.abs(centroid[1]) - 90) < ε) centroid[0] = 0;
+  var ring = face.map(function(d) { return [((d[0] + 180) % 360 - 180) * radians, d[1] * radians]; });
+  return {
+    face: face,
+    polygon: [ring],
+    project: d3.geo.gnomonic().scale(1).translate([0, 0]).rotate([-centroid[0], -centroid[1]])
+  };
+});
+
+[
+  // N
+  -1,  // 0
+  5,   // 1
+  7,   // 2
+  0,   // 3
+  0,   // 4
+
+  // Eq
+  4,   // 5
+  9,   // 6
+  3,   // 7
+  1,   // 8
+
+  5,   // 9
+  13, // 10
+  8,  // 11
+  8,  // 12
+
+  // S
+  9   // 13
+].forEach(function(d, i) {
+  var node = faces[d];
+  node && (node.children || (node.children = [])).push(faces[i]);
+});
+
+var width = 365,
+    height = 360,
+    rotate = [-12, -6, -32],
+    rotation = d3.geo.rotation(rotate);
+
+var projection = d3.geo.polyhedron(faces[0], face, 11 * π / 12)
+    .translate([width / 2, height / 2])
+    .rotate(rotate)
+    .center([100, 50])
+    .scale(50);
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("#cuboctahedron").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "MultiLineString", coordinates: projection.mesh.map(function(segment) {
+      return segment.map(rotation.invert);
+    })})
+    .attr("class", "face")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline")
+    .attr("d", path);
+
+d3.json("../world-110m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land);
+  svg.insert("path", ".graticule")
+      .datum(land)
+      .attr("class", "land")
+      .attr("d", path);
+});
+
+function face(λ, φ) {
+  var point = [λ, φ],
+      face = null,
+      inside = 0;
+  for (var i = 0, n = faces.length; i < n; ++i) {
+    face = faces[i];
+    if (d3.geo.pointInPolygon(point, face.polygon)) return face;
+  }
+}
+
+})();
+
+</script>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Ford Circles</title>
+<style>
+body {
+  margin: 0 auto;
+  font-family: Georgia, Times, "Times New Roman", serif;
+  line-height: 1.5em;
+  color: #3c3c3c;
+  background: #fff;
+  width: 960px;
+  position: relative;
+}
+.breadcrumbs {
+  font-size: small;
+  font-family: sans-serif;
+  width: 100%;
+  padding: 5px 0;
+  margin: 0;
+  font-style: italic;
+  border-bottom: solid #eee 1px;
+  color: #999;
+}
+
+.circle {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+  shape-rendering: geometricPrecision;
+}
+line {
+  stroke: #000;
+}
+text {
+  font-family: sans-serif;
+  fill: #333;
+  font-weight: 300;
+}
+rect {
+  stroke: #000;
+  fill: none;
+  pointer-events: all;
+}
+svg {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: move;
+}
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a>
+
+<h1>Ford Circles</h1>
+<p>Each <a href="https://en.wikipedia.org/wiki/Ford_circle">Ford circle</a> is associated with an <a href="https://en.wikipedia.org/wiki/Irreducible_fraction">irreducible fraction</a> <em>p / q</em>, and is tangent to the horizontal axis and its neighbouring circles.
+
+<div id="vis"></div>
+
+<p>For performance, the underlying <a href="https://en.wikipedia.org/wiki/Farey_sequence">Farey sequence</a> is pre-emptively pruned as it is being expanded, such that only the circles that overlap with the x-domain of the viewport are generated.
+<p>See also: the <a href="../calkin-wilf-tree/">Calkin–Wilf tree</a> and the <a href="../apollonian-gasket/">Apollonian gasket</a>.
+
+<script src="../d3.min.js"></script>
+<script>
+
+var width = 960,
+    height = width / 2,
+    x = d3.scale.linear().domain([-.5, 1.5]).range([0, width]);
+
+var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 1e8])
+    .on("zoom", update)
+    .x(x);
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width + 1)
+    .attr("height", height + 1)
+  .append("g")
+    .attr("transform", "translate(.5,.5)")
+    .call(zoom);
+
+svg.append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+update();
+
+function update() {
+  var d = x.domain(),
+      a = d[0],
+      b = d[1],
+      c = height / zoom.scale(),
+      dx = b - a,
+      k = width * .5 / dx;
+
+  var data = farey(a, b, c, 200);
+
+  // Use paths due to an approximation bug in Chrome for circles:
+  // http://code.google.com/p/chromium/issues/detail?id=139498
+  var circle = svg.selectAll(".circle").data(data, String);
+  circle.enter().append("path").attr("class", "circle");
+  circle.exit().remove();
+  circle.attr("d", function(d) {
+    var r = k / (d[1] * d[1]);
+    return "M" + x(d[0] / d[1]) + ",0" + 
+        "a" + r + "," + r + " 0,1,1 0," +  r * 2 +
+        "a" + r + "," + r + " 0,1,1 0," + -r * 2 + "Z";
+  });
+
+  var label = svg.selectAll(".label").data(data, String);
+  var labelEnter = label.enter().append("g").attr("class", "label");
+  labelEnter.append("text")
+      .attr("class", "numerator")
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d[0]; });
+  labelEnter.append("text")
+      .attr("class", "denominator")
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d[1]; });
+  labelEnter.append("line");
+  label.exit().remove();
+  label
+      .attr("transform", function(d) {
+        var r = k / (d[1] * d[1]);
+        return "translate(" + x(d[0] / d[1]) + "," + r + ")";
+      })
+      .style("font-size", function(d) {
+        return ((1.2 - .11 * (d[1] + "").length) * k / (d[1] * d[1]) | 0) + "px";
+      });
+  label.select(".numerator")
+      .attr("y", function(d) { return -.1 * k / (d[1] * d[1]); });
+  label.select(".denominator")
+      .attr("y", function(d) { return (1 - .1 * (d[1] + "").length) * k / (d[1] * d[1]); })
+      .each(function(d) {
+        var width = this.getBBox().width;
+        d3.select(this.parentNode).select("line")
+            .style("stroke-width", .03 * k / (d[1] * d[1]) + "px")
+            .attr("x1", -width / 2)
+            .attr("x2", +width / 2);
+      });
+
+}
+
+function farey(start, end, height, max) {
+  if (end < 0 || start > 1) return [];
+
+  var s = [[0, 1], [1, 1]],
+      i0 = 0,
+      i1 = 1,
+      level = 1;
+
+  // Iteratively expand Farey sequence, while filtering invisible circles.
+  while (s.length < max) {
+    var s1 = s.slice(0, i0);
+    for (var i = i0, x = s[i]; ++i <= i1;) {
+      var y = s[i],
+          z = x[1] + y[1];
+      s1.push(x);
+      if (z <= level) s1.push([x[0] + y[0], z]);
+      x = y;
+    }
+    for (var i = i1, n = s.length; i < n; ++i) s1.push(s[i]);
+    s = s1;
+
+    i0 = 0, i1 = s.length - 1;
+    for (var i = i1; i >= i0; --i) {
+      var x = s[i];
+      if (x[0] / x[1] < start) i0 = i;
+    }
+    for (var i = i0; i <= i1; ++i) {
+      var x = s[i];
+      if (x[0] / x[1] > end) i1 = i;
+    }
+    ++level;
+  }
+  return s;
+}
+
+</script>

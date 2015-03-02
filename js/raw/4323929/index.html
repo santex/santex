@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.y.axis path {
+  display: none;
+}
+
+.y.axis line {
+  stroke: #777;
+  stroke-dasharray: 2,2;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 0, bottom: 20, left: 0},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var formatNumber = d3.format(".1f");
+
+var y = d3.scale.linear()
+    .domain([0, 1e6])
+    .range([height, 0]);
+
+var x = d3.time.scale()
+    .domain([new Date(2010, 7, 1), new Date(2012, 7, 1)])
+    .range([0, width]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .ticks(d3.time.years)
+    .tickSize(6, 0)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .tickSize(width)
+    .tickFormat(formatCurrency)
+    .orient("right");
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var gy = svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .call(customAxis);
+
+var gx = svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+setTimeout(function() {
+  y.domain([0, 3e6]);
+
+  gy.transition()
+      .duration(2500)
+      .call(yAxis)
+    .selectAll("text") // cancel transition on customized attributes
+      .tween("attr.x", null)
+      .tween("attr.dy", null);
+
+  gy.call(customAxis);
+}, 1000);
+
+function customAxis(g) {
+  g.selectAll("text")
+      .attr("x", 4)
+      .attr("dy", -4);
+}
+
+function formatCurrency(d) {
+  var s = formatNumber(d / 1e6);
+  return d === y.domain()[1]
+      ? "$" + s + " million"
+      : s;
+}
+
+</script>

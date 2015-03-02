@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.3.0/polymaps.min.js"></script>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.3.0/lib/raphaeljs/icons.js"></script>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.3.0/lib/crimespotting/crimespotting.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.3.0/examples/example.css");
+
+html, body {
+  height: 100%;
+  background: #E6E6E6;
+}
+
+svg {
+  display: block;
+}
+
+.layer path {
+  stroke: #fff;
+  fill: #999;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .center({lat: 37.787, lon: -122.228})
+    .zoomRange([10, 16])
+    .add(po.interact());
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+map.add(po.geoJson()
+    .url(crimespotting("http://oakland.crimespotting.org"
+        + "/crime-data"
+        + "?count=100"
+        + "&format=json"
+        + "&bbox={B}"
+        + "&dstart=2010-04-01"
+        + "&dend=2010-04-01"))
+    .on("load", load)
+    .clip(false)
+    .scale("fixed")
+    .zoom(12));
+
+/* Post-process the GeoJSON points and replace them with markers! */
+function load(e) {
+  for (var i = 0; i < e.features.length; i++) {
+    var f = e.features[i],
+        c = f.element,
+        g = f.element = po.svg("g");
+    g.appendChild(icons.marker());
+    g.setAttribute("transform", c.getAttribute("transform"));
+    c.parentNode.replaceChild(g, c);
+  }
+}
+
+    </script>
+    <span id="copy">
+      &copy; 2010
+      <a href="http://www.cloudmade.com/">CloudMade</a>,
+      <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors,
+      <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>.
+    </span>
+  </body>
+</html>

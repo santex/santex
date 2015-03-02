@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>Collatz Graph: All Numbers Lead to One - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <link rel="stylesheet" href="collatz.css">
+    <link rel="stylesheet" href="../media/ui-lightness/jquery-ui-1.8rc3.custom.css">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="../media/js/d3.layout.min.js"></script>
+    <script src="../media/js/underscore-min.js"></script>
+    <script src="../media/js/jquery.min.js"></script>
+    <script src="../media/js/jquery-ui-1.8rc3.custom.min.js"></script>
+    <meta name="author" content="Jason Davies">
+    <link rel="image_src" href="collatz.png">
+  </head>
+  <body>
+    <h1>Collatz Graph: All Numbers Lead to One</h1>
+    <p>Here is a graph showing the orbits of all numbers under the Collatz map with an orbit length of 18 or less, excluding the <em>1-2-4</em> loop.
+    <p><label for="level">Orbit length</label>: <span id="level"></span> <span id="level-val">1</span>
+    <p><input type="button" value="Play" id="play">
+    <p><input type="button" value="Stop" id="stop" style="display: none">
+    <div id="vis">
+      <script src="collatz.js"></script>
+      <script src="collatz-ui.js"></script>
+    </div>
+
+    <h2>Background</h2>
+    <p>The <a href="http://en.wikipedia.org/wiki/Collatz_conjecture">Collatz conjecture</a> is as follows.
+    <ol>
+      <li>Take any natural number, <em>n</em>.
+      <li>If <em>n</em> is even, divide it by <em>2</em>.
+      <li>Otherwise, <em>n</em> is odd.  Multiply it by <em>3</em> and add <em>1</em>
+      <li>Repeat indefinitely.
+    </ol>
+    <p>The conjecture is that you will always reach <em>1</em>, no matter what number you start with.  At this point, of course, you end up in an endless loop going from <em>1</em> to <em>4</em>, to <em>2</em> and back to <em>1</em>.
+
+    <h2>Reverse Collatz</h2>
+    <p>Alternatively, we can <a href="http://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse">formulate</a> the conjecture such that <em>1</em> leads to all natural numbers, using an inverse relation (see the link for full details).
+    <p>If we exclude the <em>1-2-4</em> loop, the inverse relation should result in a tree, if the conjecture is true.
+
+    <h2>Credits</h2>
+    <p>Collatz graph generation based on <a href="http://en.wikipedia.org/wiki/File:Collatz-graph-20-iterations.svg">Python code</a> by <a href="http://twitter.com/TerrorBite">@TerrorBite</a>.  Radial node-link tree layout based on an <a href="http://mbostock.github.com/d3/ex/tree.html">example</a> in <a href="http://bost.ocks.org/mike/">Mike Bostock</a>’s amazing <a href="http://mbostock.github.com/d3/">D3</a> library.
+    <h2>Further Reading</h2>
+    <ul>
+      <li><a href="http://en.wikipedia.org/wiki/Collatz_conjecture#In_reverse">Collatz conjecture (in reverse)</a> on Wikipedia.
+      <li><a href="http://xkcd.com/710/">xkcd #710</a>.
+      <li><a href="http://news.ycombinator.com/item?id=3071892">Hacker News discussion</a>.
+      <li><a href="http://images.math.cnrs.fr/Le-probleme-3n-1-elementaire-mais.html">Le problème 3n+1: élémentaire mais redoutable</a>, <a href="http://images.math.cnrs.fr/Le-probleme-3n-1-cycles-de.html">cycles de longueur 5</a> and <a href="http://images.math.cnrs.fr/Le-probleme-3n-1-y-a-t-il-des.html">y a-t-il des cycles non triviaux?</a> by Shalom Eliahou.
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

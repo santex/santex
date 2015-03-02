@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<input>
+<script src="http://mbostock.github.com/d3/d3.js?2.7.1"></script>
+<script>
+
+window.focus();
+d3.select(window).on("keydown", function() {
+  d3.select("input").property("value", d3.event.keyCode);
+});
+
+</script>

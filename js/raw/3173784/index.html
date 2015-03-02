@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+circle {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v2.min.js?2.10.0"></script>
+<script>
+
+var width = 480,
+    height = 500;
+
+var svg = d3.select("body").selectAll("svg")
+    .data(["interpolateTransform", "interpolateString"])
+  .enter().append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(240,250)");
+
+svg.append("circle")
+    .attr("r", 100);
+
+svg.append("text")
+    .attr("dy", "-.3em")
+    .attr("text-anchor", "middle")
+    .text(String)
+    .each(cycle);
+
+function cycle(d) {
+  d3.select(this)
+      .attr("transform", "rotate(180)translate(0,-100)")
+    .transition()
+      .duration(4000)
+      .attrTween("transform", d3.tween("rotate(360)translate(0,-100)", d3[d]))
+      .each("end", cycle);
+}
+
+</script>

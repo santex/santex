@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>9-Patch Quilt Generator - Jason Davies</title>
+  <link href="../media/style.css" rel="stylesheet">
+  <link href="../media/css/button.css" rel="stylesheet">
+  <script src="../media/js/d3.min.js"></script>
+  <style>
+    #breadcrumbs { display: none; }
+    body { margin: 0 auto; width: 960px; text-align: center; font-family: "Helvetica Neue", sans-serif; }
+    p { text-align: left; }
+    div, h1, p.options { text-align: center; }
+    #vis { margin-top: 1em; }
+    .colophon, #count { font-size: .8em; font-style: italic; }
+    #example svg { cursor: pointer; }
+    text { font-size: 10px; }
+    rect { fill: none; stroke: #999; shape-rendering: crispEdges; }
+    rect.selected { stroke: #000; stroke-width: 2px; }
+    rect.mouse { fill: #fff; }
+    #binary path { stroke: #999; fill: none; shape-rendering: crispEdges; }
+    #binary rect { fill: #fff; cursor: pointer; }
+    #binary rect.on { fill: #000; }
+  </style>
+</head>
+<body>
+  <div id="vis"><img src="9patch.png"></div>
+  <span id="count"></span>
+  <h1>9-Patch Quilt Generator</h1>
+  <p class="options">
+    <label><input type="radio" name="size" value="5"> Large</label>
+    <label><input type="radio" name="size" value="2" checked="checked"> Medium</label>
+    <label><input type="radio" name="size" value="1.5"> Small</label>
+    <label><input type="radio" name="size" value=".75"> All blocks (slow)</label>
+  <p class="options"><button id="more" class="first last">Regenerate</button>
+
+  <h2>Construction</h2>
+  <p>Each block in the quilt is composed using 9 shapes arranged in a 3x3 grid, such that the block is rotationally symmetric.
+
+  <div id="example"></div>
+
+  <p>The shapes are selected from the following set of 16 primitives.
+
+  <div id="primitives"><img src="primitives.png"></div>
+  
+  <p>The centre shape has to be rotationally symmetric, so it must be one of the first four.  Then we need a corner and an edge shape, which can be any of the 16.  The corner and edge shapes are rotated by 90 degrees each time until we have a full block.
+
+  <p>Taking inspiration from Jared Tarbell's <a href="http://complexification.net/gallery/machines/nineblock/">nine.block</a>, note that we can represent each possible shape using a 14-bit binary number.
+
+  <div id="binary"><img src="binary.png"></div>
+
+  <p>We can then generate random patterns by choosing integers between <em>0</em> and <em>16,384</em>.  Some integers will produce duplicate patterns because the first four primitives are rotationally symmetric, in which case the first four bits will have no effect.
+
+  <p>If we filter out these duplicates, we end up with <em>10,816</em> possible unique patterns.
+
+  <h2>Further Reading</h2>
+
+  <ul>
+    <li><a href="http://www.logarithmic.net/pfh/ghost-diagrams">Ghost Diagrams</a> by <a href="http://www.logarithmic.net/pfh/">Paul Harrison</a>.
+    <li><a href="http://complexification.net/gallery/machines/nineblock/">nine.block</a> by Jared Tarbell.
+  </ul>
+
+  <p class="colophon">Built with <a href="http://mbostock.github.com/d3/">D3</a>.
+  <script src="9patch.js"></script>
+</body>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.0.3"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", 960)
+    .attr("height", 500);
+
+svg.selectAll("text")
+    .data([30])
+  .enter().append("svg:text")
+    .attr("y", function(d, i) { return i * 20 + 100; })
+    .text(String);
+
+setTimeout(function() {
+  var text = svg.selectAll("text").data([10, 20]);
+  text.enter().append("svg:text").attr("y", function(d, i) { return i * 20 + 100; });
+  text.text(String);
+}, 1000);
+
+    </script>
+  </body>
+</html>

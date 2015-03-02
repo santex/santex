@@ -1,0 +1,38 @@
+<!DOCTYPE>
+<style>
+
+body {
+  text-align: center;
+  font-family: "Helvetica Neue";
+  font-size: 64px;
+}
+
+</style>
+<h1>1 + 2 + 3 = <span id="result">?</span></h1>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script>
+
+queue(2)
+    .defer(request, "1.json")
+    .defer(request, "2.json")
+    .defer(request, "3.json")
+    .awaitAll(ready);
+
+function ready(error, results) {
+  document.getElementById("result").textContent = error || results.reduce(function(p, v) { return p + v; }, 0);
+}
+
+function request(url, callback) {
+  var req = new XMLHttpRequest;
+  req.open("GET", url, true);
+  req.setRequestHeader("Accept", "application/json");
+  req.onreadystatechange = function() {
+    if (req.readyState === 4) {
+      if (req.status < 300) callback(null, JSON.parse(req.responseText));
+      else callback(req.status);
+    }
+  };
+  req.send(null);
+}
+
+</script>

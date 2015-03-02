@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Satellite Raster</title>
+<style>
+@import url(../../maps.css);
+
+#map {
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+canvas {
+  cursor: auto;
+}
+
+.tile {
+  position: absolute;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Reprojected Raster Tiles</a>
+<h1>Satellite Raster</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Static tiled raster version of <a href="http://bl.ocks.org/mbostock/3790444">Mike Bostock’s satellite projection example</a>.
+  <p>Minimal Mercator tiles from a <a href="http://a.tiles.mapbox.com/v3/mapbox.natural-earth-2/page.html">MapBox terrain example</a> are <a href="../../tile/">automatically computed</a> and reprojected on-the-fly.
+  <p>Unfortunately, distortion is too great to support zooming at the moment.
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../d3.geo.projection.min.js"></script>
+<script src="../../topojson.min.js"></script>
+<script src="../../d3.quadtiles.js"></script>
+<script src="../d3.geo.raster.js"></script>
+<script>
+
+var ratio = window.devicePixelRatio || 1,
+    radians = Math.PI / 180,
+    width = 960 * ratio,
+    height = 960 * ratio,
+    p = .5 * ratio;
+
+var projection = d3.geo.satellite()
+    .translate([width / 2, .65 * height / 2])
+    .scale(5500 * ratio)
+    .distance(1.1)
+    .rotate([76.00, -34.50, 32.12])
+    .center([-2, 5])
+    .tilt(25)
+    .clipAngle(Math.acos(1 / 1.1) * 180 / Math.PI - 1e-2)
+    .clipExtent([[p, p], [width - p, height - p]]);
+
+var layer = d3.select("#map")
+    .style("width", width / ratio + "px")
+    .style("height", height / ratio + "px")
+  .append("div")
+    .style(prefix + "transform", "scale(" + 1 / ratio + ")")
+    .style(prefix + "transform-origin", "0 0 0")
+  .append("div")
+    .style(prefix + "transform-origin", "0 0 0")
+    .call(d3.geo.raster(projection)
+      .scaleExtent([0, 6])
+      .url("//{subdomain}.tiles.mapbox.com/v3/mapbox.natural-earth-2/{z}/{x}/{y}.png"));
+
+</script>

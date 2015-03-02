@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Detecting Duplicates in O(1) Space and O(n) Time - Jason Davies</title>
+<style>
+body {
+  font-family: sans-serif;
+}
+rect {
+  stroke: #000;
+  fill: none;
+}
+path.link {
+  stroke: #000;
+  fill: none;
+}
+circle {
+  fill: #fff;
+  stroke: #000;
+}
+text.index {
+  font-size: 10px;
+}
+
+.highlight circle {
+  fill: #fc0;
+}
+
+.cycle-start circle {
+  fill: #f00;
+}
+</style>
+<h1>Detecting Duplicates in O(1) Space and O(n) Time</h1>
+<p>Given an array of n integers, each between 1 and n-1 inclusive, can you detect duplicates in O(1) space and O(n) time?
+<p>Assume that the input is available as an array (with O(1) lookup time).
+Note that there must be at least one duplicate due to the <a href="http://en.wikipedia.org/wiki/Pigeonhole_principle">pigeonhole principle</a>.
+<p>The trick is to treat each integer as an <i>index</i> of the input array, such that it points to another integer in the input i.e. treat it as a “pointer”.
+
+<div id="vis"></div>
+<p><button id="random">Randomise</button>
+
+<p>There are a few things to note that will help us solve this:
+<ul>
+  <li>Since each integer is a pointer, duplicate integers will result in more than one pointer going to the same position.
+  <li>The n<sup>th</sup> (last) integer cannot have any pointers going to it, since its position is one greater than the maximum value stated in the problem.
+  <li>Starting from any integer, if we iteratively follow the pointers, we will eventually reach a position that we’ve seen before i.e. a repeated subsequence, or cycle.
+  <li>This could occur immediately i.e. if an integer points to its own position, in which case we have only detected a single pointer going to its own location.
+  <li>However, since the last integer cannot have any pointers going to it, if we start from this integer, we have to reach at least one other integer before we get stuck in a cycle.
+  Such a cycle <i>must</i> include an integer with more than one pointer going to it.
+  This is because every integer except for the start value will initially have one incoming pointer.
+  A cycle will add another pointer to one of these integers (the start value cannot have any incoming pointers, as already noted).
+</ul>
+<p>Hence, if we create a sequence by following pointers starting with the last integer, the duplicate integers will be those that point to the beginning of a cycle.
+<p>Fortunately, <a href="http://en.wikipedia.org/wiki/Cycle_detection">cycle detection</a> is a well-known problem in Computer Science, and there are a few algorithms that can solve this optimally in O(n) time and O(1) space: Floyd or Brent’s algorithms.
+<p>The visualisation above shows duplicate detection for a randomised array of 10 integers, using Floyd’s algorithm.
+The position of the first repeated subsequence is marked in red, and duplicates are marked in orange.
+<p>It’s worth noting that cycles can be detected more quickly at the <a href="http://en.wikipedia.org/wiki/Cycle_detection#Time.E2.80.93space_tradeoffs">expense of memory</a>.
+
+<script src="../media/js/d3.v2.min.js"></script>
+<script>
+
+var width = 250,
+    height = 250,
+    w = 20;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("defs").append("marker")
+    .attr({
+      id: "arrow",
+      viewBox: "0 0 10 10",
+      refX: 24,
+      refY: 5,
+      markerUnits: "strokeWidth",
+      markerWidth: 10,
+      markerHeight: 8,
+      orient: "auto"
+    })
+  .append("path")
+    .attr("d", "M0,0L10,5L0,10Z");
+
+svg = svg.append("g")
+    .attr("transform", "translate(" + [width / 2 - .5, height / 2 - .5] + ")");
+
+var n = 10,
+    τ = 2 * Math.PI;
+
+random();
+
+d3.select("#random").on("click", random);
+
+function random() {
+  var a = [];
+  for (var i = 0; i < n; i++) {
+    a.push(1 + Math.random() * (n - 1) | 0);
+  }
+  var cycle = floyd(function(d) { return a[d - 1]; }, a[n - 1]),
+      duplicate = cycle.pop(),
+      start = pow(function(d) { return a[d - 1]; }, a[n - 1], cycle.pop()) - 1;
+
+  var line = svg.selectAll("path.link")
+      .data(a);
+  line.enter().append("path")
+      .attr("class", "link")
+      .attr("marker-end", "url(#arrow)");
+  line.attr("d", function(d, i) {
+        return ["M", [100 * Math.cos(τ * i / n), 100 * Math.sin(τ * i / n)],
+                "A", [200, 200, 0, 0, 1, 100 * Math.cos(τ * --d / n), 100 * Math.sin(τ * d / n)]].join("");
+      });
+
+  var g = svg.selectAll("g")
+      .data(a);
+  var gEnter = g.enter().append("g")
+      .attr("transform", function(d, i) { return "translate(" + [100 * Math.cos(τ * i / n), 100 * Math.sin(τ * i / n)] + ")"; });
+  gEnter.append("circle")
+      .attr("r", w / 2);
+  gEnter.append("text")
+      .attr("dy", ".3em")
+      .attr("text-anchor", "middle");
+  gEnter.append("text")
+      .attr("class", "index")
+      .attr("x", function(d, i) { return 20 * Math.cos(τ * i / n); })
+      .attr("y", function(d, i) { return 20 * Math.sin(τ * i / n); })
+      .attr("dy", ".3em")
+      .attr("text-anchor", "middle")
+      .text(function(d, i) { return i + 1; });
+  g
+      .classed("highlight", function(d) { return d === duplicate; })
+      .classed("cycle-start", function(d, i) { return i === start; });
+  g.select("text").text(String);
+}
+
+function floyd(f, x0) {
+  // The main phase of the algorithm, finding a repetition x_mu = x_2mu
+  // The hare moves twice as quickly as the tortoise
+  var tortoise = f(x0),
+      hare = f(f(x0));
+  while (tortoise !== hare) {
+    tortoise = f(tortoise);
+    hare = f(f(hare));
+  }
+
+  // at this point the start of the loop is equi-distant from current tortoise
+  // position and x0, so hare moving in circle and tortoise (set to x0 )
+  // moving towards circle, will intersect at the beginning of the circle.
+
+  // Find the position of the first repetition of length mu
+  // The hare and tortoise move at the same speeds
+  var mu = 0;
+  tortoise = x0;
+  while (tortoise !== hare) {
+    tortoise = f(tortoise);
+    hare = f(hare);
+    mu++;
+  }
+
+  // Find the length of the shortest cycle starting from x_mu
+  // The hare moves while the tortoise stays still
+  var lam = 1;
+  hare = f(tortoise);
+  while (tortoise !== hare) {
+    hare = f(hare)
+    lam++;
+  }
+
+  return [lam, mu, tortoise];
+}
+
+
+function brent(f, x0) {
+  // main phase: search successive powers of two
+  var power = 1,
+      lam = 1,
+      tortoise = x0,
+      hare = f(x0);
+  while (tortoise !== hare) {
+    if (power == lam) { // time to start a new power of two?
+      tortoise = hare;
+      power *= 2;
+      lam = 0;
+    }
+    hare = f(hare);
+    lam++;
+  }
+
+  // Find the position of the first repetition of length lambda
+  var mu = 0;
+  tortoise = hare = x0;
+  for (var i = 0; i < lam; ++i) hare = f(hare);
+  while (tortoise !== hare) {
+    tortoise = f(tortoise);
+    hare = f(hare);
+    mu++;
+  }
+
+  return [lam, mu, tortoise];
+}
+
+function pow(f, x0, n) {
+  var i = -1;
+  while (++i < n) x0 = f(x0);
+  return x0;
+}
+</script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

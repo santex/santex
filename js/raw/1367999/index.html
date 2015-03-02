@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    This page was generated at <script type="text/javascript">document.write(new Date())</script>.
+    <div id="main">
+      <ul>
+        <li><a href="a.html">Anteater</a></li>
+        <li><a href="b.html">Baobao</a></li>
+        <li><a href="c.html">Cuttlefish</a></li>
+      </ul>
+      Hello, PJAX!
+    </div>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.5.0"></script>
+    <script type="text/javascript">
+
+pjax("ul li a", "#main");
+
+function pjax(links, content) {
+  d3.selectAll(links).on("click", function() {
+    history.pushState(this.href, this.textContent, this.href);
+    load(this.href);
+    d3.event.preventDefault();
+  });
+
+  function load(href) {
+    d3.html(href, function(fragment) {
+      var target = d3.select(content).node();
+      target.parentNode.replaceChild(d3.select(fragment).select(content).node(), target);
+      pjax(links, content); // reapply
+    });
+  }
+
+  d3.select(window).on("popstate", function() {
+    if (d3.event.state) load(d3.event.state);
+  });
+}
+
+    </script>
+  </body>
+</html>

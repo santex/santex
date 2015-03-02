@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  font: 10px sans-serif;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  stroke: #fff;
+  stroke-opacity: .5;
+  shape-rendering: crispEdges;
+}
+
+</style>
+<svg class="chart"></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var data = [4, 8, 15, 16, 23, 42].reverse();
+
+var margin = {top: 30, right: 0, bottom: 0, left: 30},
+    width = 420,
+    barHeight = 20,
+    height = barHeight * data.length;
+
+var x = d3.scale.linear()
+    .domain([0, d3.max(data)])
+    .range([0, width]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("top")
+    .tickSize(-height);
+
+var chart = d3.select(".chart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+chart.append("g")
+    .attr("class", "bars")
+  .selectAll("rect")
+    .data(data)
+  .enter().append("rect")
+    .attr("y", function(d, i) { return i * barHeight; })
+    .attr("height", barHeight - 1)
+    .attr("width", x);
+
+chart.append("g")
+    .attr("class", "axis")
+    .call(xAxis)
+  .select(".tick line")
+    .style("stroke", "#000");
+
+</script>

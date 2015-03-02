@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="http://mbostock.github.com/d3/d3.js?2.7.1"></script>
+<ul>
+<script>
+
+var data = [
+  {name: "foo", links: ["a", "b", "c"]},
+  {name: "bar", links: ["d", "e", "f"]}
+];
+
+var toplist = d3.select("ul");
+
+toplist.selectAll("li")
+    .data(data)
+  .enter().append("li")
+    .text(function(d) { return d.name; })
+    .on("click", expand);
+
+    function expand(d) {
+      d3.select(this)
+          .on("click", null)
+        .append("ul")
+        .selectAll("li")
+          .data(d.links)
+        .enter().append("li")
+          .text(function(d) { return d; });
+    }
+
+</script>

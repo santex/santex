@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://github.com/mbostock/d3/raw/v1.3.0/d3.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var radius = d3.scale.linear()
+    .domain([0, 9])
+    .range([180, 240]);
+
+var fill = d3.scale.linear()
+    .domain([0, 9])
+    .range(["brown", "steelblue"]);
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", 960)
+    .attr("height", 500)
+  .append("svg:g")
+    .attr("transform", "translate(480, 250)");
+
+var g = svg.selectAll("g")
+    .data(d3.range(10))
+  .enter().append("svg:g")
+    .attr("fill", fill)
+    .attr("stroke", "black")
+    .each(path);
+
+function path(p, j) {
+  d3.select(this)
+    .selectAll("path")
+      .data(d3.range(0, 2 * Math.PI, Math.PI / 90))
+    .enter().append("svg:path")
+      .attr("d", d3.svg.arc()
+      .innerRadius(radius(p))
+      .outerRadius(radius(p + 1))
+      .startAngle(function(d) { return d; })
+      .endAngle(function(d) { return d + Math.PI / 90; }))
+
+}
+
+    </script>
+  </body>
+</html>

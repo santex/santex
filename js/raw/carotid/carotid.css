@@ -1,0 +1,8 @@
+path { stroke: #000; fill: none; }
+rect { fill: #fff; }
+
+.axis line, .axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

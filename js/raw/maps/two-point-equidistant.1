@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Two-Point Equidistant Projection</title>
+<style>
+@import url(../maps.css);
+
+.scale path, .scale line{
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.background {
+  fill: #f3f3ff;
+}
+
+.foreground {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+.graticule {
+  fill: none;
+  stroke: #999;
+  stroke-width: .5px;
+}
+
+.land {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.point {
+  fill: #ff0;
+  fill-opacity: .5;
+  stroke: #000;
+  cursor: move;
+}
+
+.point:hover {
+  fill: #f00;
+}
+
+.mouse-path {
+  pointer-events: none;
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-dasharray: 2,2;
+}
+
+.axis line, .axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+#control {
+  width: 960px;
+  margin: 0 auto;
+  text-align: right;
+  font-size: small;
+  font-style: italic;
+  color: #666;
+}
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Two-Point Equidistant Projection</h1>
+<p>Distances from the two specified points to any other point are to scale.
+Drag either point to adjust the projection!
+<div id="map"></div>
+<div id="control"><label for="north-up"><input type="checkbox" id="north-up"> North is up</label></div>
+<div class="wrapper">
+<p>The world is clipped against a thin rectangle going between the antipodes of the two points.
+<p>Upon adjusting one of the two points, the projection is smoothly animated by linear interpolation along a spiral path <i>(r, \theta)</i>, where <i>r</i> is the distance from the unadjusted point, and <i>\theta</i> is the bearing relative to the geodesic between the two original points.
+<p>Thanks to <a href="http://bost.ocks.org/mike">Mike Bostock</a> for suggesting the “North is up” constraint; this ensures that the meridian through the point midway between the two points is vertical, using an additional screen space rotation.
+To avoid non-linear rotation during the animation, the constraint only applies to the beginning and end state of each animation, and the rotation is interpolated linearly between the two states.
+
+</div>
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../topojson.min.js?1.0.0"></script>
+<script>
+
+var π = Math.PI,
+    radians = π / 180,
+    degrees = 180 / π,
+    ε = 1e-4,
+    radius = 480,
+    rotate = 0;
+
+var a = [-71.0636, 42.3581], // Boston, MA
+    b = [ -1.3101, 51.0598], // Winchester, UK
+    dx = d3.geo.greatArc().source(a).target(b).distance() * 180 / Math.PI;
+
+var projection = d3.geo.twoPointEquidistant()
+    .points([a, b])
+    .scale(radius / Math.PI)
+    .translate([radius, radius])
+    .clipPolygon([[
+      [180 - dx / 2, ε],
+      [180 - dx / 2, -ε],
+      [-180 + dx / 2, -ε],
+      [-180 + dx / 2, ε],
+      [180 - dx / 2, ε]
+    ]])
+    .precision(.1);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var graticule = d3.geo.graticule()
+    .step([15, 15])
+    .extent([[-180, -75], [180, 75 + 1e-4]]);
+
+var format = d3.format(",f"),
+    scale = d3.scale.linear().domain([0, .5 * π * 6371]).range([0, .5 * radius]),
+    axis = d3.svg.axis().scale(scale).ticks(3).tickFormat(function(d) { return format(d) + "km"; });
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", 2 * radius)
+    .attr("height", 2 * radius);
+
+var g = svg.append("g");
+
+g.append("defs").append("path")
+    .datum({type: "Sphere"})
+    .attr("id", "sphere")
+    .attr("d", path);
+
+g.append("use")
+    .attr("class", "background")
+    .attr("xlink:href", "#sphere");
+
+g.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + .75 * radius + ",1)")
+    .call(axis);
+
+var point = g.selectAll(".point")
+    .data([a, b])
+  .enter().append("circle")
+    .attr("class", "point")
+    .attr("r", 5.5)
+    .attr("transform", function(d) { return "translate(" + projection(d) + ")"; })
+    .call(d3.behavior.drag()
+      .on("drag", function(d) {
+        d3.select(this).attr("transform", "translate(" + d3.event.x + "," + d3.event.y + ")");
+      })
+      .on("dragend", function(d, i) {
+        var p1 = projection.invert(d3.mouse(g.node())),
+            source = cartesian(d),
+            other = cartesian(d === a ? b : a),
+            target = cartesian(p1),
+            sa = normalise(cross(other, source)),
+            sb = normalise(cross(other, target)),
+            α = distance(sa, sb),
+            kxvS = cross(other, source),
+            k_vS = dot(other, source),
+            kxvT = cross(other, target),
+            k_vT = dot(other, target),
+            A = Math.abs(distance(other, source) - distance(other, target)),
+            sinA = Math.sin(A);
+        if (dot(other, cross(source, target)) < 0) α = -α;
+
+        g.transition().duration(1500).ease("quad-in-out").tween("world", function() {
+          d[0] = p1[0], d[1] = p1[1];
+          var rotate0 = rotate,
+              rotate1 = northUp ? rotation([a, b]) : 0,
+              δrotate = rotate1 - rotate0;
+          if (δrotate && (δrotate < 0 ^ α > 0)) δrotate += δrotate > 0 ? -360 : 360;
+          return function(t) {
+            var θ = t * α, sinθ = Math.sin(θ), cosθ = Math.cos(θ);
+
+            var vS = [
+                  source[0] * cosθ + kxvS[0] * sinθ + other[0] * k_vS * (1 - cosθ),
+                  source[1] * cosθ + kxvS[1] * sinθ + other[1] * k_vS * (1 - cosθ),
+                  source[2] * cosθ + kxvS[2] * sinθ + other[2] * k_vS * (1 - cosθ)
+                ];
+
+            sinθ = Math.sin(θ -= α), cosθ = Math.cos(θ);
+
+            var vT = [
+                  target[0] * cosθ + kxvT[0] * sinθ + other[0] * k_vT * (1 - cosθ),
+                  target[1] * cosθ + kxvT[1] * sinθ + other[1] * k_vT * (1 - cosθ),
+                  target[2] * cosθ + kxvT[2] * sinθ + other[2] * k_vT * (1 - cosθ)
+                ];
+
+            var s0 = Math.sin((1 - t) * A) / sinA,
+                s1 = Math.sin(t * A) / sinA,
+                p = [
+                  s0 * vS[0] + s1 * vT[0],
+                  s0 * vS[1] + s1 * vT[1],
+                  s0 * vS[2] + s1 * vT[2]
+                ];
+            dx = distance(other, p) * degrees;
+            p = spherical(p);
+            projection
+                .points(d === a ? [p, b] : [a, p])
+                .clipPolygon([[
+                  [180 - dx / 2, ε],
+                  [180 - dx / 2, -ε],
+                  [-180 + dx / 2, -ε],
+                  [-180 + dx / 2, ε],
+                  [180 - dx / 2, ε]
+                ]]);
+            g.attr("transform", "rotate(" + (rotate = rotate0 + δrotate * t) + " " + radius + "," + radius + ")")
+              .selectAll("path").attr("d", path);
+            point.attr("transform", function(d) { return "translate(" + projection(d) + ")"; });
+          };
+        });
+      }));
+
+g.append("use")
+    .attr("class", "foreground")
+    .attr("xlink:href", "#sphere");
+
+var northUp = d3.select("#north-up").on("change", function() { northUp = this.checked; }).property("checked");
+
+d3.json("../world-110m.json", function(error, world) {
+  g.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+});
+
+function rotation(_) {
+  var interpolate = d3.geo.interpolate(_[0], _[1]),
+      origin = interpolate(.5),
+      p = d3.geo.rotation([-origin[0], -origin[1]])(_[0]),
+      b = interpolate.distance * .5,
+      γ = -Math.asin(Math.max(-1, Math.min(1, Math.sin(p[1] * radians) / Math.sin(b))));
+
+  if (p[0] > 0) γ = π - γ;
+
+  return -γ * degrees;
+}
+
+function distance(a, b) {
+  return Math.atan2(norm(cross(a, b)), dot(a, b));
+}
+
+function norm(d) {
+  return Math.sqrt(dot(d, d));
+}
+
+function spherical(cartesian) {
+  return [
+    Math.atan2(cartesian[1], cartesian[0]) * degrees,
+    Math.asin(Math.max(-1, Math.min(1, cartesian[2]))) * degrees
+  ];
+}
+
+function cartesian(spherical) {
+  var λ = spherical[0] * radians,
+      φ = spherical[1] * radians,
+      cosφ = Math.cos(φ);
+  return [
+    cosφ * Math.cos(λ),
+    cosφ * Math.sin(λ),
+    Math.sin(φ)
+  ];
+}
+
+function cross(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0]
+  ];
+}
+
+function dot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function normalise(d) {
+  var m = norm(d);
+  d[0] /= m;
+  d[1] /= m;
+  d[2] /= m;
+  return d;
+}
+
+</script>
+<script src="../../katex/katex.min.js"></script>
+<script>(function() {
+d3.selectAll("i").each(function() {
+  katex.render(this.textContent, this);
+});
+})()</script>

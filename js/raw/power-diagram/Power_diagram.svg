@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="508.164px" height="481.633px" viewBox="0 0 508.164 481.633" enable-background="new 0 0 508.164 481.633"
+	 xml:space="preserve">
+<circle opacity="0.2" fill="#FF0000" stroke="#000000" cx="124.925" cy="123.891" r="117.918"/>
+<circle opacity="0.2" fill="#FF0000" stroke="#000000" cx="285.034" cy="208.844" r="88.436"/>
+<circle opacity="0.2" fill="#FF0000" stroke="#000000" cx="149.66" cy="352.381" r="121.768"/>
+<circle opacity="0.2" fill="#FF0000" stroke="#000000" cx="368.708" cy="289.796" r="133.333"/>
+<polyline fill="none" stroke="#000000" points="292.74,37.216 189.619,230.612 14.187,249.424 "/>
+<polyline fill="none" stroke="#000000" points="189.619,230.612 239.843,277.422 399.734,112.626 "/>
+<line fill="none" stroke="#000000" x1="292.74" y1="462.053" x2="239.843" y2="277.422"/>
+</svg>

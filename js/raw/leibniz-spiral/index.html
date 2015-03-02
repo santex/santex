@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Leibniz Spiral - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <script src="../media/js/d3.min.js"></script>
+    <meta name="author" content="Jason Davies">
+    <style>
+      path { fill: none; }
+      path.spiral { stroke: steelblue; }
+      .axis path, .axis line { stroke: #000; shape-rendering: crispEdges; }
+    </style>
+  </head>
+  <body>
+    <h1>Leibniz Spiral</h1>
+    <p>Watch as the spiral converges on π, using the
+      <a href="http://en.wikipedia.org/wiki/Leibniz_formula_for_pi">Leibniz formula</a>.
+    <div id="vis">
+      <script>
+
+var w = 500,
+    h = 500,
+    p = [20, 20, 40, 40],
+    x = d3.scale.linear().domain([2.5, 4]).range([0, w]),
+    y = d3.scale.linear().domain([-2, 2]).range([h, 0]),
+    arc = [],
+    n = 50,
+    v = 0;
+
+for (var i=0; i<n; i++) {
+  var d = 1 + i * 2,
+      s = i % 2 == 0 ? 1 : -1,
+      dv = s * 4 / d;
+  v += dv;
+  if (i) arc.push("A", dv = Math.abs(dv), dv, 0, 0, 0);
+  else arc.push("M");
+  arc.push(x(v), y(0));
+}
+
+var vis = d3.select("#vis").append("svg")
+    .attr("width", w + p[1] + p[3])
+    .attr("height", h + p[0] + p[2])
+  .append("g")
+    .attr("transform", "translate(" + p[3] + "," + p[0] + ")");
+
+vis.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + y(0) + ")")
+    .call(d3.svg.axis().scale(x).orient("bottom"));
+
+vis.append("path")
+    .attr("class", "spiral")
+    .attr("d", arc.join(" "));
+
+      </script>
+    </div>
+    <h2>See Also</h2>
+    <ul>
+      <li><a href="http://groups.google.com/group/whits/msg/11bb6957473f0095">Re: Pi and Units</a> by <a href="http://tumbolia.org/nslater">Noah Slater</a>.
+    </ul>
+    <p>Built with <a href="http://mbostock.github.com/d3/">D3</a>.
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Two-Point Azimuthal</title>
+<style>
+@import url(../maps.css);
+
+.background {
+  fill: #ff0;
+  fill-opacity: .1;
+}
+
+.foreground {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+.graticule {
+  fill: none;
+  stroke: #f00;
+  stroke-width: .5px;
+}
+
+.land {
+  fill: cyan;
+  stroke: #00f;
+  stroke-width: .5px;
+  fill-opacity: .5;
+}
+
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Two-Point Azimuthal</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Shows correct azimuths (but not distances) from either of two points to any other point.
+  Can be used to locate a ship at sea, given the exact location of two radio transmitters and the direction of the ship to the transmitters.
+  <p>Compare with the <a href="../two-point-equidistant">Two-Point Equidistant</a>.
+  <p>Available as <code>d3.geo.twoPointAzimuthal</code> in <a href="http://d3js.org/">D3</a>’s <a href="https://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection</a> plugin.
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.projection.min.js?97016d"></script>
+<script src="../topojson.min.js?1.4.0"></script>
+<script>
+
+var width = 960,
+    height = 570;
+
+var a = [-158, 21.5], // Honolulu, HI
+    b = [-77, 39], // Washington, DC
+    dx = d3.geo.greatArc().source(a).target(b).distance() * 180 / Math.PI;
+
+var projection = d3.geo.twoPointAzimuthal()
+    .points([a, b])
+    .scale(219)
+    .translate([width / 2 - 67, height / 2])
+    .clipAngle(75)
+    .precision(.1);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var graticule = d3.geo.graticule().step([10, 10]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("defs").append("path")
+    .datum({type: "Sphere"})
+    .attr("id", "sphere")
+    .attr("d", path);
+
+svg.append("image")
+    .attr("xlink:href", "two-point-azimuthal.png")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("use")
+    .attr("class", "background")
+    .attr("xlink:href", "#sphere");
+
+svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.selectAll("path.point")
+    .data([a, b])
+  .enter().append("path")
+    .datum(function(d) { return {type: "Point", coordinates: d}; })
+    .attr("class", "point")
+    .attr("d", path);
+
+svg.append("use")
+    .attr("class", "foreground")
+    .attr("xlink:href", "#sphere");
+
+d3.json("../world-110m.json", function(error, world) {
+  svg.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+});
+
+</script>

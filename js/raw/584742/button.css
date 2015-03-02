@@ -1,0 +1,33 @@
+button {
+  background: #222 url(http://bost.ocks.org/button-overlay.png) repeat-x;
+  color: #fff;
+  text-rendering: optimizeLegibility;
+  text-shadow: 0 -1px 1px #222;
+  padding: 6px 10px 6px 10px;
+  border: 0;
+  border-bottom: 1px solid #222;
+  -moz-border-radius: 5px;
+  -moz-box-shadow: 0 1px 3px #999;
+  -moz-transition: background-color 250ms linear;
+  -webkit-border-radius: 5px;
+  -webkit-box-shadow: 0 1px 3px #999;
+  -webkit-transition: background-color 250ms linear;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+button.confirm {
+  background-color: brown;
+  -webkit-animation-name: pulse;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-delay: 250ms;
+  -webkit-animation-duration: 1000ms;
+  -webkit-animation-direction: alternate;
+}
+
+@-webkit-keyframes pulse {
+  0% { background-color: brown; }
+  100% { background-color: red; }
+}

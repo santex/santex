@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Antipodes</title>
+<style>
+
+@import url(../maps.css);
+
+.background {
+  fill: #fff;
+}
+
+.foreground {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+.graticule {
+  fill: none;
+  stroke: #999;
+  stroke-width: .5px;
+}
+
+.graticule:nth-child(2n) {
+  stroke-dasharray: 2,2;
+}
+
+.land {
+  fill: #ccc;
+  fill-opacity: .5;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.anti-land {
+  fill: #000;
+  fill-opacity: .5;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.boundary {
+  fill: none;
+  stroke: #a5967e;
+}
+
+svg {
+  cursor: move;
+}
+
+.copyright {
+  display: none;
+}
+
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Antipodes</h1>
+
+<div class="wrapper">
+  <p>Ever wondered where you’d end up if you drilled through the Earth?
+  <p><a href="http://en.wikipedia.org/wiki/Antipodes">Antipodes</a> are points diametrically opposite each other on the Earth’s surface.
+  This map shows the antipodal shadows of landmasses.
+</div>
+<div id="vis"></div>
+
+<div class="wrapper">
+  <p>Mathematically, the point antipodal to <i>(λ, φ)</i> is at <i>(λ ± 180°, −φ)</i>.
+  <p>The majority of antipodes appear to be either ocean-ocean or terrestial-ocean, with only a few being terrestial-terrestial.
+  <p>Inspired by <a href="http://www.atag.itu.edu.tr/GMTtr/gmt_docs/doc/html/GMT_Docs/node125.html">Global distribution of antipodes</a>.
+  <p>Coastline vector data: <a href="http://www.naturalearthdata.com/">Natural Earth</a>. Map projection: <a href="http://en.wikipedia.org/wiki/Eckert_IV_projection">Eckert IV</a> using <a href="http://d3js.org/">D3</a>’s <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">d3.geo.projection</a> plugin.
+</div>
+
+<script src="../../d3.min.js?3.0.0"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var raw = d3.geo.eckert4().scale(1).translate([0, 0]),
+    projection = d3.geo.projection(function(λ, φ) {
+      return raw([λ * 180 / Math.PI, -φ * 180 / Math.PI]);
+    }).translate([width / 2 - .5, height / 2 - .5]).scale(175),
+    antiProjection = d3.geo.projection(function(λ, φ) {
+      return raw([(λ * 180) / Math.PI, φ * 180 / Math.PI]);
+    }).translate(projection.translate()).scale(projection.scale()).rotate([180, 0]);
+
+var path = d3.geo.path().projection(projection),
+    antiPath = d3.geo.path().projection(antiProjection);
+
+var graticule = d3.geo.graticule();
+
+var svg = d3.select("#vis").append("svg")
+    .datum({x: 0, y: 0})
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.behavior.drag()
+      .origin(Object)
+      .on("drag", function(d) {
+        d.x = +d3.event.x || 0;
+        d.y = +d3.event.y || 0;
+        projection.rotate([d.x / 2, -d.y / 2]);
+        antiProjection.rotate([180 + d.x / 2, d.y / 2]);
+        svg.selectAll(".graticule,.land").attr("d", path);
+        svg.selectAll(".anti-land").attr("d", antiPath);
+      }));
+
+svg.append("path")
+    .datum(graticule.outline)
+    .attr("class", "background")
+    .attr("d", path);
+
+svg.selectAll(".graticule")
+    .data(graticule.lines)
+  .enter().append("path")
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(graticule.outline)
+    .attr("class", "foreground")
+    .attr("d", path);
+
+d3.json("../world-110m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land);
+  svg.insert("path", ".graticule,.boundary")
+      .datum(land)
+      .attr("class", "land")
+      .attr("d", path);
+  svg.insert("path", ".graticule,.boundary")
+      .datum(land)
+      .attr("class", "anti-land")
+      .attr("d", antiPath);
+});
+
+</script>

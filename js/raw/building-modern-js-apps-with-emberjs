@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html class="decks show " data-account="free">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"beacon-5.newrelic.com","errorBeacon":"bam.nr-data.net","licenseKey":"4fd2e9786b","applicationID":"1563900","transactionName":"cApZREQKWl9XFxZQVlAORB9FDVlE","queueTime":0,"applicationTime":40,"agent":"js-agent.newrelic.com/nr-476.min.js"}</script>
+<script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function r(n){if(!e[n]){var o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var o=t[n][1][e];return r(o?o:e)},o,o.exports)}return e[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({QJf3ax:[function(t,e){function n(t){function e(e,n,a){t&&t(e,n,a),a||(a={});for(var c=u(e),f=c.length,s=i(a,o,r),p=0;f>p;p++)c[p].apply(s,n);return s}function a(t,e){f[t]=u(t).concat(e)}function u(t){return f[t]||[]}function c(){return n(e)}var f={};return{on:a,emit:e,create:c,listeners:u,_events:f}}function r(){return{}}var o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],"7eSDFh":[function(t,e){function n(t,e,n){if(r.call(t,e))return t[e];var o=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return t[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],D5DuLP:[function(t,e){function n(t,e,n){return r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee=r,r.q=o},{ee:"QJf3ax"}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],XL7HBI:[function(t,e){function n(t){var e=typeof t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return r++})}var r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],G9z0Bl:[function(t,e){function n(){var t=l.info=NREUM.info;if(t&&t.agent&&t.licenseKey&&t.applicationID&&c&&c.body){l.proto="https"===p.split(":")[0]||t.sslForHttp?"https://":"http://",a("mark",["onload",i()]);var e=c.createElement("script");e.src=l.proto+t.agent,c.body.appendChild(e)}}function r(){"complete"===c.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),u=window,c=u.document,f="addEventListener",s="attachEvent",p=(""+location).split("?")[0],l=e.exports={offset:i(),origin:p,features:{}};c[f]?(c[f]("DOMContentLoaded",o,!1),u[f]("load",n,!1)):(c[s]("onreadystatechange",r),u[s]("onload",n)),a("mark",["firstbyte",i()])},{handle:"D5DuLP"}]},{},["G9z0Bl"]);</script>
+
+    <title>Building Modern JS Apps with EmberJS by Sam Selikoff</title>
+    <meta name="description" content="A presentation created with Slides." />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <meta property="og:title" content="Building Modern JS Apps with EmberJS by Sam Selikoff" />
+    <meta property="og:site_name" content="Slides" />
+    <meta property="og:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg" />
+    <meta property="og:type" content="presentation" />
+    <meta property="og:url" content="http://slides.com/samselikoff/building-modern-js-apps-with-emberjs" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+      <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,600,700&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic" rel="stylesheet" type="text/css">
+
+    <link href="//assets.slid.es/assets/slides/slides-0c1388bc8e6e9cabec475ce55e102391.css" media="all" rel="stylesheet" />
+    <link href="//assets.slid.es/assets/application-2a7020aed6e57185d8b910ed864b5ca7.css" media="all" rel="stylesheet" />
+    <meta content="authenticity_token" name="csrf-param" />
+<meta content="huCzeFiY+E89S+FaVJsacbupVzLJbIZsZ38rU/cTNWg=" name="csrf-token" />
+    <script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39670045-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <!--[if lt IE 9]>
+    <script src="//assets.slid.es/assets/html5shiv-b51d49ab0e89834a02ffce4a59905afb.js"></script>
+<![endif]-->
+    	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@SlidesApp">
+	<meta name="twitter:title" content="Building Modern JS Apps with EmberJS">
+	<meta name="twitter:description" content="An interactive presentation created with Slides.">
+	<meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg">
+
+	<link href="//assets.slid.es/assets/deck-v1-4b1e7f4bf831e7481627df3927c08fed.css" media="all" rel="stylesheet" />
+
+
+<style id="user-css-output" type="text/css">.reveal .dim {
+  opacity: 0.4;
+}
+.reveal .large-faded-background {
+  background-size: 230%;
+  opacity: 0.15;
+  background-position: 10% 20%;
+}
+.reveal .small-text {
+  font-size: 28px;
+  line-height: 22px;
+}
+</style>
+
+  </head>
+  <body>
+    <div id="container" class="container">
+      <header class="global-header show-on-scroll">
+  <div class="wrapper">
+    <h1 class="logo-animation">
+      <a class="symbol" href="/">
+        <div class="box-1"></div>
+        <div class="box-2"></div>
+        <div class="box-3"></div>
+      </a>
+      <a class="word" href="/"></a>
+    </h1>
+    <ul class="nav">
+        <li class="nav-item" data-page-id="home/explore">
+          <a class="nav-item-anchor" href="/explore"><span class="nav-item-label">Explore</span></a>
+        </li>
+        <li class="nav-item" data-page-id="static/features">
+          <a class="nav-item-anchor" href="/features"><span class="nav-item-label">Features</span></a>
+        </li>
+        <li class="nav-item" data-page-id="static/pricing">
+          <a class="nav-item-anchor" href="/pricing"><span class="nav-item-label">Pricing</span></a>
+        </li>
+        <li class="nav-item" data-page-id="sessions/new">
+          <a class="nav-item-anchor" href="/users/sign_in"><span class="nav-item-label">Sign in</span></a>
+        </li>
+    </ul>
+  </div>
+</header>
+      
+      <div id="main" class="main" role="main">
+        
+
+
+
+<div class="marquee loading">
+
+	<div class="reveal-frame">
+		<div class="reveal-viewport theme-font-league theme-color-black-mint">
+			<div class="reveal">
+				<div class="slides">
+					<section class="has-dark-background" data-id="d3616d756782069ee306579224b13103" data-background-size="cover" data-background-color="rgba( 0, 0, 0, 0.6 )" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/607051/logo.png"><h2><br></h2>
+<h2>building modern javascript applications with ember.js</h2>
+<div style="text-align: center;">
+<b>
+<br>
+</b>
+</div>
+<div style="text-align: center;">
+<b>Sam Selikoff</b>
+</div>
+<div style="text-align: center;">
+    <font style="font-size: 24px;">
+<b>
+    <font>Boston, MA  </font>
+</b>
+<span style="font-style: normal; font-variant: normal;">
+    <font>•</font>
+</span>
+<b style="font-style: normal; font-variant: normal;">  </b>
+<b>
+<font>September 11, 2014</font>
+</b>
+</font>
+</div>
+<p>
+</p>
+
+</section><section class="has-dark-background" data-id="95f06230eec3abb8f965d4ff9ec78047" data-background-color="rgba( 0, 0, 0, 0.6 )"><h1>`whoami`</h1>
+<p>
+<br>
+</p>
+<h2 class="visible" data-fragment-index="0">
+<span style="font-size: 75.96px;">Front-end engineer</span>
+<i>
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609594/pasted-from-clipboard.png" style="font-size: 24px; width: auto; height: 67.9590293542574px; max-height: none; max-width: none; vertical-align: -20px;">
+</i>
+</h2>
+<p>
+<font style="font-size: 42px;">
+    <font>@</font>
+    <font>samselikoff</font>
+</font>
+</p>
+
+</section><section class="has-dark-background" data-id="99bff601b45a988118eddf23a3d0d7c1" data-background-color="rgba( 0, 0, 0, 0.6 )"><h1 style="font-style: normal; font-variant: normal;">WEB APPS</h1>
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/607504/web-languages.png" style="width: 857.667296786389px; height: 503px; max-height: none; max-width: none;"></section><section class="has-dark-background" data-id="778fa9a4d615c0df2a8422e15465461a" data-background-color="rgba( 0, 0, 0, 0.6 )"><h1>
+    <span>
+        <br>
+    </span>
+</h1>
+<h1>
+    <span>js, a brief history</span>
+</h1></section><section class="" data-id="8568fa11e246cdbce6a4312071a46b46" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/608464/web-server.png"><h3><br></h3>
+<h3><br></h3>
+<h3><br></h3>
+<h2>server-side</h2></section><section class="" data-id="abd49cf510bea10356dbebd44a7dc501"><h2>
+    <font style="font-size: 54px;">server-side rendering</font>
+    </h2>
+
+        <p class="fragment absolute-element" data-fragment-index="0" style="position: absolute; width: 395px; height: 46px; z-index: 4; left: 281px; top: 145px;">
+            <span class="small-text">GET wikipedia.org/napolean  --&gt;</span>
+    <span> </span>
+    </p>
+    <div>
+        <br>
+    </div>
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620693/pasted-from-clipboard.png" style="width: 97px; height: 97px; max-height: none; max-width: none; position: absolute; z-index: 6; left: 844px; top: 191px;" class="absolute-element">
+
+<p class="absolute-element fragment" style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal; position: absolute; width: 499px; height: 46px; z-index: 7; left: 230px; top: 424px;" data-fragment-index="4">
+    <span class="small-text">GET wikipedia.org/France  --&gt;</span> <br>
+    </p>
+    <p class="absolute-element fragment" style="position: absolute; width: 187.207322264794px; height: 46px; z-index: 8; left: 656px; top: 203px; max-height: none; max-width: none;" data-fragment-index="1">
+        <span class="small-text">Route request, fetch data</span>
+</p>
+<p class="absolute-element fragment" style="position: absolute; width: 239px; height: 46px; z-index: 4; left: 346px; top: 281px;" data-fragment-index="2">
+    <span class="small-text">&lt;--  HTML/CSS</span>
+</p>
+<p class="fragment" data-fragment-index="2">
+</p>
+        <div class="absolute-element fragment" style="position: absolute; width: 187.757343550447px; height: 46px; z-index: 10; left: 121px; top: 321px; max-height: none; max-width: none;" data-fragment-index="3">
+            <span class="small-text">Views, click form/link</span>
+        </div>
+<p class="absolute-element" style="position: absolute; width: 152px; height: 151px; z-index: 9; left: -15px; top: 186px;">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620701/pasted-from-clipboard.png" style="width: 111.907194657446px; height: 111.907194657446px; max-height: none; max-width: none;">
+</p>
+
+
+
+
+
+
+
+
+
+</section><section class="" data-id="bbca6d9caa98a265eb41e7af655f5d7d"><h3><span><br></span></h3>
+<h3><span>Problems</span></h3>
+<p>
+</p>
+<ul>
+<li class="fragment" data-fragment-index="0">Only links and forms respond to user input</li>
+<li class="fragment" data-fragment-index="1">Limited behavior</li>
+</ul>
+<p>
+</p>
+</section><section class="" data-id="c409ce3a3284da138b67ce85420fa8eb" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/608651/minority_report.jpg"><h2><span><br></span></h2>
+<h2><span><br></span></h2>
+<h2><span><br></span></h2>
+<h3><span><br></span></h3>
+<h3><span>Need our UIs to be   </span></h3>
+<h3><span>more dynamic   </span></h3></section><section class="" data-id="deea926dc29aa788553a685cd9ac7691" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609605/watering-pot.png"><h3 style="font-style: normal; font-variant: normal;">
+<br class="Apple-interchange-newline"><br>
+</h3>
+<h3 style="font-style: normal; font-variant: normal;"><br></h3>
+<h2 style="font-style: normal; font-variant: normal;">sprinkle some javascript</h2>
+</section><section class="" data-id="83dbb91fa9dd7f4c3cec95789bf7dfd1"><p class="absolute-element" style="position: absolute; width: 351.38612175393786px; height: 46px; z-index: 4; left: 134px; top: 74px; max-height: none; max-width: none;"><span>"Can we make that form AJAX?"</span><br></p>
+<p class="absolute-element fragment" style="position: absolute; width: 348px; height: 46px; z-index: 8; left: 557px; top: 167px;" data-fragment-index="0">"Let's add infinite scrolling"</p>
+<p class="absolute-element fragment" style="position: absolute; width: 351px; height: 46px; z-index: 7; left: 122px; top: 258px;" data-fragment-index="1">"Dynamic dropdowns"</p>
+<p class="absolute-element fragment" style="position: absolute; width: 331px; height: 46px; z-index: 6; left: 532px; top: 348px;" data-fragment-index="2">"Why don't we prefetch that data"</p>
+
+
+</section><section class="" data-id="21199bb2e9a4843d418aff2f9aab2042"><h2>
+    <font style="font-size: 54px;">sprinkle some js</font>
+</h2>
+
+<p class="fragment absolute-element" data-fragment-index="0" style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal; position: absolute; width: 395px; height: 46px; z-index: 5; left: 281px; top: 145px;">
+    <span class="small-text">GET github.com  --&gt;</span>  
+</p>
+
+<p class="absolute-element fragment" style="position: absolute; width: 187.207322264794px; height: 46px; z-index: 9; left: 656px; top: 189px; max-height: none; max-width: none;" data-fragment-index="1">
+    <span class="small-text">Route request, fetch data</span>
+</p>
+
+<p class="absolute-element fragment" data-fragment-index="2" style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal; position: absolute; width: 239px; height: 46px; z-index: 7; left: 346px; top: 281px;">
+    <span class="small-text">&lt;--  HTML/CSS</span>
+</p>
+
+<p class="absolute-element fragment" style="position: absolute; width: 80.4218816517667px; height: 46px; z-index: 4; left: 373px; top: 316px; max-height: none; max-width: none;" data-fragment-index="3">
+    <span class="small-text">&lt;--  JS</span>
+</p>
+
+<div class="absolute-element fragment" style="position: absolute; width: 220.121328224777px; height: 192px; z-index: 12; left: 103px; top: 317px; max-height: none; max-width: none;" data-fragment-index="4">
+    <span class="small-text">Views, click form/link, interacts with JS</span>
+</div>
+
+<p class="absolute-element fragment" style="position: absolute; width: 371.278416347382px; height: 49px; z-index: 13; left: 331px; top: 456px; max-height: none; max-width: none;" data-fragment-index="5">
+    <span class="small-text">AJAX/non-AJAX request --&gt;</span>
+</p>
+
+<p class="fragment absolute-element" data-fragment-index="6" style="position: absolute; width: 395px; height: 46px; z-index: 6; left: 261px; top: 518px;">
+    <span class="small-text">&lt;-- JSON/HTML</span>
+</p>
+
+
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620693/pasted-from-clipboard.png" style="width: 97px; height: 97px; max-height: none; max-width: none; position: absolute; z-index: 8; left: 844px; top: 191px;" class="absolute-element">
+
+<p class="absolute-element" style="position: absolute; width: 152px; height: 151px; z-index: 11; left: -15px; top: 186px;">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620701/pasted-from-clipboard.png" style="width: 111.907194657446px; height: 111.907194657446px; max-height: none; max-width: none;">
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</section><section class="" data-id="12b8d2893a323223b1c9dc4f4f44b9cb"><p style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;"> <br>
+</p>
+<div>
+<span style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;">
+    <br>
+</span>
+</div>
+<div>
+<br>
+</div>
+<div class="absolute-element visible" style="position: absolute; width: 305.37207322264794px; height: 143px; z-index: 4; left: 578px; top: 61px; max-height: none; max-width: none;" data-fragment-index="3">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/530950/pasted-from-clipboard.png" style="width: 235.42060000469536px; height: 111.52149861657706px; max-height: none; max-width: none;">
+    <br>
+</div>
+<div>
+    <br>
+</div>
+<div class="absolute-element visible" style="position: absolute; width: 270px; height: 130px; z-index: 4; left: 93px; top: 362px;" data-fragment-index="2">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/530887/pasted-from-clipboard.png">
+    <br>
+</div>
+<div class="absolute-element" style="position: absolute; width: 323px; height: 46px; z-index: 4; left: 312px; top: 251px;">
+<span style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;">The libraries cometh</span>
+</div>
+<div class="absolute-element visible" style="position: absolute; width: 287px; height: 126px; z-index: 4; left: 561px; top: 325px;" data-fragment-index="1">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/530885/pasted-from-clipboard.png">
+    <span style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;">
+        <br>
+    </span>
+</div>
+<div style="max-height: none; max-width: none; position: absolute; width: 179px; height: 199px; z-index: 4; left: 90px; top: 50px;" class="absolute-element visible" data-fragment-index="0">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/530878/pasted-from-clipboard.png">
+    <br>
+</div>
+</section><section class="" data-id="cb116637bcd8e0a4dae27d9dd378d972"><p style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;"><br></p>
+<h3 style="font-style: normal; font-variant: normal;">PROBLEMS</h3>
+<p style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;"></p>
+<ul style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;">
+<li class="fragment" data-fragment-index="0">Maintainability</li>
+<li class="fragment" data-fragment-index="1">No shared solutions</li>
+<li class="fragment" data-fragment-index="2">Hard to detect architectural flaws</li>
+</ul></section><section class="" data-id="c34abeac7bac078e481e9018c360d490" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620778/Blueprint-Background.jpg"><h3>
+<br><br><br><br>Need a complete plan<br>for our JavaScript</h3>
+
+
+
+</section><section class="" data-id="6b7ca834d9e00a6096991fc6a9c90d59" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620777/JavaScript-logo.png"><h3 style="font-style: normal; font-variant: normal;">
+<br class="Apple-interchange-newline"><br>
+</h3>
+<h2 style="font-style: normal; font-variant: normal;">javascript apps</h2></section><section class="" data-id="25cb3be5d3a5bf4841496b3efd5d5783"><h2><br></h2>
+<h2><br></h2>
+<h2>Frameworks <span>help us avoid the<br>
+architecture problems of the past
+</span>
+</h2>
+
+</section><section class="" data-id="16f5905a90def9491ee4ff0f365fe6cb"><h2>
+    <font style="font-size: 54px;">JS Apps</font>
+</h2>
+
+<p class="fragment absolute-element" data-fragment-index="0" style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal; position: absolute; width: 395px; height: 46px; z-index: 5; left: 281px; top: 145px;">
+    <span class="small-text">GET gmail.com  --&gt;</span>  
+</p>
+
+<p class="absolute-element fragment" style="position: absolute; width: 187.207322264794px; height: 46px; z-index: 9; left: 656px; top: 189px; max-height: none; max-width: none;" data-fragment-index="1">
+    <span class="small-text">Fetch JS app, initial data</span>
+</p>
+
+<p class="absolute-element fragment" data-fragment-index="2" style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal; position: absolute; width: 239px; height: 46px; z-index: 7; left: 346px; top: 281px;">
+    <span class="small-text">&lt;--  HTML/CSS</span>
+</p>
+
+<p class="absolute-element fragment" style="position: absolute; width: 273.635163899532px; height: 46px; z-index: 4; left: 363px; top: 315px; max-height: none; max-width: none;" data-fragment-index="3">
+    <span class="small-text">&lt;--  JS app, templates</span></p>
+
+<div class="absolute-element fragment" style="position: absolute; width: 220.121328224777px; height: 192px; z-index: 12; left: 98px; top: 336px; max-height: none; max-width: none;" data-fragment-index="4">
+    <span class="small-text">Loads app, interacts with JS</span>
+</div>
+
+<p class="absolute-element fragment" style="position: absolute; width: 228.507024265645px; height: 49px; z-index: 13; left: 349px; top: 460px; max-height: none; max-width: none;" data-fragment-index="5">
+    <span class="small-text">AJAX request --&gt;</span>
+</p>
+
+<p class="fragment absolute-element" data-fragment-index="6" style="position: absolute; width: 395px; height: 46px; z-index: 6; left: 263px; top: 519px;">
+    <span class="small-text">&lt;-- JSON</span>
+</p>
+
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620693/pasted-from-clipboard.png" style="width: 97px; height: 97px; max-height: none; max-width: none; position: absolute; z-index: 8; left: 844px; top: 191px;" class="absolute-element">
+
+<p class="absolute-element" style="position: absolute; width: 152px; height: 151px; z-index: 11; left: -15px; top: 186px;">
+    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620701/pasted-from-clipboard.png" style="width: 111.907194657446px; height: 111.907194657446px; max-height: none; max-width: none;">
+</p>
+
+
+
+
+
+
+
+
+
+
+
+</section><section class="" data-id="c4eedd3642f273164f049dbd18006305"><p style="font-size: 36.185611724853516px; font-style: normal; font-variant: normal;"><br></p>
+<p>JS now controls</p>
+<p></p>
+<ul>
+<li class="fragment" data-fragment-index="0">routing</li>
+<li class="fragment" data-fragment-index="1">templates + rendering</li>
+<li class="fragment" data-fragment-index="2">data syncing</li>
+<li class="fragment" data-fragment-index="3">responding to user input</li>
+<li class="fragment" data-fragment-index="4">authentication</li>
+<li class="fragment" data-fragment-index="5">persistence</li>
+<li class="fragment" data-fragment-index="6">...</li>
+</ul>
+<p></p></section><section class="has-light-background" data-id="3e0541dd3aebf1a5ed6ec29fe4055326" data-background-color="rgba( 255, 122, 0, 0.6 )"><p><br></p>
+<p><img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/532740/pasted-from-clipboard.png" style="font-size: 75.96px;"></p>
+<h2>A <u>framework</u> for building <u>ambitious web applications</u>
+</h2></section><section class="" data-id="54e23c7c057f40a967a15b3ec5dfa8ef"><h2><br></h2>
+<h2><br></h2>
+<h2>
+<span style="font-size: 135.72px;">what is a framework?</span><br>
+</h2></section><section class="has-light-background" data-id="37aecd477ee4c4c3f726ebf3673d26b8" data-background-size="cover" data-background-color="rgba( 255, 255, 255, 0.6 )" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/612142/helping-hand.jpg"><h2><font color="#000000"><br></font></h2>
+<h1 style="text-align: left; ">
+helps <span style="font-size: 135.72px;">you out</span>
+</h1></section><section class="has-dark-background" data-id="130f71ba66738940d5c8eed2c50d636e" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/612157/dog-cat-share.jpg" data-background-color="rgba( 0, 0, 0, 0.6 )"><h2 style="text-align: left; "><font color="#000000">promotes</font></h2>
+<h2 style="text-align: left; "><font color="#000000">    sharing</font></h2></section><section class="" data-id="9189f73291e1f8a84312d574c90035f3" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620820/conventions.png"><h2>
+    <br>
+</h2>
+<h2>
+<br>
+</h2>
+<h2><font style="font-size: 72px;">embraces conventions
+</font></h2>
+</section><section class="" data-id="46163221b652fe03525b0a7629dc41f5"><h1><br></h1>
+<h1>what are ambitious web apps?
+</h1>
+</section><section class="" data-id="bbd7403e5e14562e9d00897c85413a0c" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/612239/itunes-rdio.png" data-background-size="contain"><h2><span style="color: rgb(0, 0, 0);"><br></span></h2>
+<h2><span style="color: rgb(0, 0, 0);"><br></span></h2>
+<h2><span style="color: rgb(0, 0, 0);"><br></span></h2>
+<h2><span style="color: rgb(0, 0, 0);"><br></span></h2>
+<h2><span style="color: rgb(0, 0, 0);"><br></span></h2>
+<h2>
+<font color="#0000ff" style="
+    color: rgb(204, 48, 48);
+">native-like</font><br>
+</h2></section><section class="" data-id="59a2b63260d3ed013c4941981de4a51b" data-background-size="cover" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/612301/url.png"><h2 style="text-align: left;"><font color="#000000"><br></font></h2>
+<h2 style="text-align: left;"><font color="#000000"><br></font></h2>
+<h2 style="text-align: left;"><font color="#000000"><br></font></h2>
+<h2 style="text-align: left;"><br></h2>
+<h2 style="text-align: left;"><font color="#000000"> </font></h2>
+<h2 style="text-align: left;"><font color="#000000" style="
+    color: rgb(197, 62, 62);
+">            url driven</font></h2></section><section class="" data-id="87cdefc8c3607f7e5ec03106e65bde56"><h1><br></h1>
+<h1>overview</h1>
+<div>of Ember</div></section><section class="" data-id="a662778a9d1dd2bf636812e8fdc54384" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609633/gmail1.png"><h2>
+<br>
+</h2></section><section class="" data-id="8b9279df8f4bd872030c123713239344" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609663/gmail2.png"><h2><br></h2></section><section class="" data-id="a742016c5bd310aeb2e74b6d40ffc90b" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609661/gmail3.png"><h2>
+<br>
+</h2></section><section class="" data-id="dce8c83eb8a6fa87badecd4d8ec6d967" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609635/gmail3.png"><h2>
+<br>
+</h2></section><section class="" data-id="c66a43e3b4a427f0944c01acf80dd384" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/609636/gmail4.png"><h2>
+<br>
+</h2></section><section class="" data-id="7ec05bd3f75bcafe795a4bfe8d72ef2c"><h3><br></h3>
+<h1>router</h1>
+<div><ul>
+<li class="fragment" data-fragment-index="0">
+<span style="text-align: center;">URLs</span><br>
+</li>
+<li class="fragment" data-fragment-index="1">
+<span style="text-align: center;">UI hierarchy</span><br>
+</li>
+</ul></div></section><section class="" data-id="7d14e82fa96b3bca12d3058262da46e3"><div style="
+    /* text-align: left; */
+">
+<h2 style="text-align: center; ">URLs</h2>
+<ul>
+    <li>
+    <font style="font-family: inherit; font-style: inherit; font-variant: inherit; font-weight: inherit; font-size: 32px;">/inbox</font>
+        <br>
+    </li>
+    <li>
+        <span style="font-size: 32px;">/message/1234</span>
+        <br>
+    </li>
+    <li>
+        <font style="font-family: inherit; font-style: inherit; font-variant: inherit; font-weight: inherit; font-size: 32px;">/contacts</font>
+        <span> </span>
+        <br>
+    </li>
+  </ul>
+</div>
+<p>
+</p>
+
+<p style="text-align: left; ">
+<font>
+</font>
+<br>
+</p>
+<div class="fragment" data-fragment-index="0">
+<pre><code><font style="font-size: 24px;">Router.map(function() {
+  this.route('inbox');
+  this.resource('message', {path: '/:message_id'});
+  this.resource('contacts');
+});</font>
+</code></pre>
+</div>
+<br>
+
+
+
+
+
+
+
+
+
+</section><section class="" data-id="cffa9033cc727b2a9d737277b901ef5e"><h3><br></h3>
+<h1>route</h1>
+<div><ul>
+<li class="fragment" data-fragment-index="0">one per URL</li>
+<li class="fragment" data-fragment-index="1">retrieve related model via AJAX</li>
+</ul></div></section><section class="" data-id="0640e3b12e448e56c48b43505e1bf1e6"><h2><br></h2>
+<div><pre><code>export default Ember.Route.extend({
+  model: function() {
+    return Ember.getJSON('/contacts');
+  }
+});</code></pre></div>
+<br></section><section class="" data-id="a8458b16a4af6afe6bb86a96a63b4ae8">
+<h3>
+<br>
+</h3>
+<h1>templates</h1>
+    <div style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal;">
+        <ul>
+            <li class="fragment" data-fragment-index="0">Handlebars</li>
+            <li class="fragment" data-fragment-index="1">Render your model(s) in HTML</li>
+<li class="fragment" data-fragment-index="2">Data binding</li>
+        </ul>
+    </div>
+
+
+
+</section><section class="" data-id="07d5a089ef57b17af269efb72deaf371"><h3>  </h3>
+<div><pre><code>&lt;h1&gt;{{title}}&lt;/h1&gt;
+
+{{#each contact in contacts}}
+  &lt;div class='contact-card'&gt;
+    &lt;h2&gt;{{contact.name}}&lt;/h2&gt;
+    &lt;h3&gt;{{contact.email}}&lt;/h3&gt;
+  &lt;/div&gt;
+{{/each}}</code></pre></div>
+<br></section><section class="" data-id="317b39006835eed40e7028ff16f7e248">
+<h3>
+<br>
+</h3>
+<h1>controllers</h1>
+    <div style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal;">
+        <ul>
+            <li class="fragment" data-fragment-index="0">Hold application state</li>
+<li class="fragment" data-fragment-index="1">Presenters</li>
+            <li class="fragment" data-fragment-index="2">Great place for computed properties</li>
+        </ul>
+    </div>
+
+
+
+</section><section class="" data-id="38a895ebb56cad2363d573b6f9e74191"><p> </p>
+<div>
+<pre><code>// controllers/contact.js
+
+export default Ember.ObjectController.extend({
+
+  fullName: function() {
+    return this.get('firstName') + ' ' + this.get('lastName');
+  }.property('firstName', 'lastname')
+  
+});
+</code></pre>
+</div>
+<div>
+</div>
+<p><br></p>
+<pre><code>// templates/contacts.hbs
+
+{{#each contact in contacts}}
+  &lt;p&gt;{{contact.fullName}}&lt;/p&gt;
+{{/each}}
+</code></pre>
+<br></section><section class="" data-id="90ed12a51ed84ce2d3ac3495882ca102">
+<h3>
+<br>
+</h3>
+<h1>views</h1>
+    <div style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal;">
+        <ul>
+            <li class="fragment" data-fragment-index="0">Render templates</li>
+            <li class="fragment" data-fragment-index="1">Great place for manual DOM manipulation</li>
+        </ul>
+    </div>
+
+
+
+
+
+</section><section class="" data-id="d3990277eb13d0f8e435c4f35b66031e"><p><br></p>
+<div>
+<pre><code>// views/profile-card.js
+
+export default Ember.View.extend({
+  didInsertElement: function() {
+    this.$().somePlugin();
+  }
+});
+</code></pre>
+</div>
+<p><br></p>
+<div>
+<pre><code>// templates/contacts.hbs
+
+{{#each contact in contacts}}
+  {{view 'profile-card'}}
+{{/each}}
+</code></pre>
+</div>
+<br>
+</section><section class="" data-id="9221ed88919f7565fc6ca373a2cd3986">
+<h3>
+<br>
+</h3>
+<h1>components</h1>
+    <div style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal;">
+        <ul>
+            <li class="fragment" data-fragment-index="0">Subclass of View</li>
+            <li class="fragment" data-fragment-index="1">Act as their own Controller</li>
+        </ul>
+    </div>
+
+
+
+
+
+
+</section><section class="" data-id="57735d9173329822ce49e2222a2db636"><h2><br></h2>
+<div><pre><code>&lt;div class="sidebar"&gt;
+  &lt;label &gt;Select a date&lt;/label&gt; 
+  {{date-picker selectedDate=currentMonth mode='month'}}
+&lt;/div&gt;</code></pre></div>
+<br></section><section class="" data-id="72bb37b819ab0b508386527463a3c58f">
+<h3>
+<br>
+</h3>
+<h1>actions</h1>
+<div style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal;">
+    <ul>
+            <li class="fragment" data-fragment-index="0">
+    <span>Add user interaction</span>
+</li>
+<li class="fragment" data-fragment-index="1">
+    <span>DOM events =&gt; semantic events</span>
+    <br>
+</li>
+<li class="fragment" data-fragment-index="2">
+    <span>Bubbling</span>
+</li>
+        </ul>
+    </div>
+
+
+
+
+
+
+
+
+</section><section class="" data-id="7586f0ffcf3ac344915e6af7436c4cd2"><p><br></p>
+<div><pre><code>// templates/index.hbs
+
+&lt;div&gt;
+  &lt;a id='delete-contact' {{action 'deleteContact' this}}&gt;Delete&lt;/a&gt;
+&lt;/div&gt;
+</code></pre></div>
+<br><div><pre><code>// a-view.js, a-component.js, a-controller.js, a-route.js
+
+actions: {
+  deleteContact: function(contact) {
+    contact.delete();
+  }
+}
+</code></pre></div>
+<br></section><section class="" data-id="c9de27d6a1efc414bd9c3ad96ea5e94d">
+<h3>
+<br>
+</h3>
+<h1>models</h1>
+<div>
+    <ul>
+            <li style="font-size: 36.1856117248535px; font-style: normal; font-variant: normal;" class="fragment" data-fragment-index="0">
+<span>Ember Data</span><br>
+</li>
+<li class="fragment" data-fragment-index="1"><span>v1.0.0-beta.9</span></li>
+<li class="fragment" data-fragment-index="2">
+<span style="font-size: 36.1856117248535px;">Can always use Ember.Object</span><br>
+</li>
+        </ul>
+    </div>
+
+
+
+
+
+
+
+
+</section><section class="" data-id="9971176ebb55b1097d6c1a5177a51b39"><p><br></p>
+<div><pre><code>// models/contact.js
+
+export default DS.Model.extend({
+  firstName: DS.attr('string'),
+  lastName: DS.attr('string'),
+  age: DS.attr('number'),
+
+  addresses: DS.hasMany('address')
+});
+</code></pre></div>
+<br><div><pre><code>// some-route.js
+model: function() {
+  return this.store.find('contact');
+}</code></pre></div>
+<br></section><section class="" data-id="5e859187fedfe0a0aae8be33e052e55e"><h2>
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/620840/pasted-from-clipboard.png" style="width: 602.7854407196px; height: 581.111793273184px; max-height: none; max-width: none;"><br>
+</h2></section><section class="" data-id="90af5822020235107a7b62b01e693769"><h1>
+    <br>
+    </h1>
+<h1>
+<span style="font-size: 135.72px;">demo</span>
+    <br>
+</h1>
+    <p>
+    ember-cli
+</p>
+</section><section class="" data-id="243f746815f0bd50e403263ab92afc7f"><h1><br></h1>
+<h1>thanks!</h1>
+<div>github.com/samselikoff/talks</div>
+<div>slides.com/samselikoff/intro-to-emberjs<br>
+</div>
+<div>@samselikoff</div></section>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="deck-kudos">
+		<button class="kudos-button kudos-trigger" data-kudos-id="200125" data-kudoed-by-user="false">
+			<div class="kudos-heart">
+				<span class="kudos-icon icon i-heart-fill"></span>
+			</div>
+			<div class="kudos-count" data-kudos-value="0" data-kudos-id="200125"></div>
+		</button>
+	</div>
+
+	<div class="summary-bubble">
+		<div class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></div>
+		<div class="text">
+			<h4>Building Modern JS Apps with EmberJS</h4>
+			<p>By Sam Selikoff</p>
+		</div>
+	</div>
+
+</div>
+
+<div class="column">
+	<header>
+		<ul class="deck-social">
+			<li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
+			<li><a href="https://twitter.com/share" class="twitter-share-button" data-text="Building Modern JS Apps with EmberJS" data-url="http://slides.com/samselikoff/building-modern-js-apps-with-emberjs"></a></li>
+			<li><div class="g-plusone" data-size="medium"></div></li>
+		</ul>
+
+
+		<div class="deck-options">
+			<a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
+			<a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
+			<a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
+		</div>
+
+		<div class="details">
+			<div class="deck-info">
+				<h3 class="title">Building Modern JS Apps with EmberJS</h3>
+				<ul class="deck-meta">
+					<li data-tooltip="Published date" data-tooltip-delay="500">
+						<span class="icon i-clock"></span>
+						<time class="value ago" datetime="2014-09-12 13:56:45 UTC"></time>
+					</li>
+					<li data-tooltip="Kudos" data-tooltip-delay="500">
+						<span class="icon i-heart-fill"></span>
+						<span class="value" data-kudos-value="0" data-kudos-id="200125"></span>
+					</li>
+					<li data-tooltip="Views" data-tooltip-delay="500">
+						<span class="icon i-eye"></span>
+						<span class="value">773</span>
+					</li>
+				</ul>
+			</div>
+
+			<div class="user-info">
+	<div class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></div>
+	<div class="text">
+		<h3>
+			<a href="/samselikoff" class="username">Sam Selikoff</a>
+			<a href="/pricing#pro" class="pro-badge">PRO</a>
+		</h3>
+		<p class="description"></p>
+		<ul class="links">
+			 <li><a href="http://www.samselikoff.com" target="_blank"><span class="icon i-link"></span>http://www.samselikoff.com</a></li> 
+			 <li><a href="http://twitter.com/samselikoff" target="_blank"><span class="icon i-twitter"></span>samselikoff</a></li> 
+		</ul>
+	</div>
+	<div class="clear"></div>
+</div>
+
+			<div class="clear"></div>
+		</div>
+	</header>
+
+	<section class="comments" id="comments">
+		<div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
+	</section>
+
+	<section class="deck-list">
+		<h2>More from <a href="/samselikoff">Sam Selikoff</a></h2>
+		<ul class="carousel">
+			<li class="deck-thumbnail">
+  <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/64fdcd/react.jpg)">
+    <a class="deck-link" href="/samselikoff/react"></a>
+  </div>
+  <footer class="deck-details">
+    <a class="author" href="/samselikoff">
+      <span class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></span>
+      <span class="name">Sam Selikoff</span>
+    </a>
+    <div class="stats">
+      <div>106<span class="icon i-eye"></span></div>
+    </div>
+  </footer>
+</li>
+<li class="deck-thumbnail">
+  <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/d31133/using-d3-with-backbone-angular-and-ember.jpg)">
+    <a class="deck-link" href="/samselikoff/using-d3-with-backbone-angular-and-ember"></a>
+  </div>
+  <footer class="deck-details">
+    <a class="author" href="/samselikoff">
+      <span class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></span>
+      <span class="name">Sam Selikoff</span>
+    </a>
+    <div class="stats">
+      <div>1,130<span class="icon i-eye"></span></div>
+    </div>
+  </footer>
+</li>
+<li class="deck-thumbnail">
+  <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/aa5131/big-data-intro-to-d3-jan-2014.jpg)">
+    <a class="deck-link" href="/samselikoff/big-data-intro-to-d3-jan-2014"></a>
+  </div>
+  <footer class="deck-details">
+    <a class="author" href="/samselikoff">
+      <span class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></span>
+      <span class="name">Sam Selikoff</span>
+    </a>
+    <div class="stats">
+      <div>980<span class="icon i-eye"></span></div>
+    </div>
+  </footer>
+</li>
+<li class="deck-thumbnail">
+  <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/3b0a4f/ember-and-d3.jpg)">
+    <a class="deck-link" href="/samselikoff/ember-and-d3-sep-2013"></a>
+  </div>
+  <footer class="deck-details">
+    <a class="author" href="/samselikoff">
+      <span class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></span>
+      <span class="name">Sam Selikoff</span>
+    </a>
+    <div class="stats">
+      <div>5,060<span class="icon i-eye"></span></div>
+    </div>
+  </footer>
+</li>
+
+		</ul>
+	</section>
+
+</div>
+
+      </div>
+      <footer class="global-footer">
+    <div class="link-group">
+      <h5>Product</h5>
+      <a href="http://slides.com/">Home</a>
+      <a href="http://slides.com/explore">Explore</a>
+      <a href="http://slides.com/features">Features</a>
+      <a href="http://slides.com/pricing">Pricing</a>
+    </div>
+
+    <div class="link-group">
+      <h5>Help</h5>
+      <a href="http://help.slides.com" target="_blank">Forum</a>
+      <a href="http://help.slides.com/knowledgebase" target="_blank">Knowledge base</a>
+      <a href="#" data-feedback-mode="smartvote">Give feedback</a>
+      <a href="#" data-feedback-mode="contact">Report an issue</a>
+    </div>
+
+    <div class="link-group">
+      <h5>News</h5>
+      <a href="http://blog.slides.com" target="_blank">Blog</a>
+      <a href="http://twitter.com/slidesapp" target="_blank">Twitter</a>
+      <a href="http://facebook.com/slidesapp" target="_blank">Facebook</a>
+      <a href="https://plus.google.com/+slidesapp/" rel="publisher" target="_blank">Google+</a>
+    </div>
+
+    <div class="link-group">
+      <h5>Company</h5>
+      <a href="http://slides.com/about">About us</a>
+      <a href="http://slides.com/terms">Terms</a>
+      <a href="http://slides.com/privacy">Privacy</a>
+    </div>
+
+    <div class="copyright"><span>Slides is made by Whim, LLC. &copy;2015</span></div>
+</footer>
+
+    </div> <!--! end of #container -->
+    <script>
+UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/f7sH7NavrjjvuGxByaw.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
+
+UserVoice.push(['set', {
+  accent_color: '#448dd6',
+  trigger_color: 'white',
+  trigger_background_color: 'rgba(46, 49, 51, 0.6)',
+  position: 'automatic'
+}]);
+
+</script>
+    
+<script>
+	var SLConfig = {"deck":{"id":200125,"slug":"building-modern-js-apps-with-emberjs","title":"Building Modern JS Apps with EmberJS","description":"","visibility":"all","published_at":"2014-09-12T13:56:45.309Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg","view_count":773,"user":{"id":60138,"username":"samselikoff","name":"Sam Selikoff","email":"sam.selikoff@gmail.com","description":"","thumbnail_url":"//graph.facebook.com/2042529/picture?type=large","pro":true,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":220,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"fade","transition":"slide","theme_id":null,"theme_font":"league","theme_color":"black-mint","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":false,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":0}};
+</script>
+    <script defer="defer" src="//assets.slid.es/assets/application-56cd1e916782b5dd728a8bac69a90c7c.js"></script>
+    	<script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
+	
+
+
+  </body>
+</html>

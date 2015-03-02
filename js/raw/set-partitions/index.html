@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Set Partitions - Jason Davies</title>
+<style>
+
+body { font-family: sans-serif; }
+#vis { margin-top: 1em; }
+svg { display: block; }
+circle.bead { pointer-events: none; }
+path.subset {
+  pointer-events: all;
+  stroke-width: 10px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: .5;
+}
+
+</style>
+<h1>Set Partitions</h1>
+
+<form>
+  <input type="range" min="1" max="7" value="5" step="1" id="n" onchange="window.n = +this.value; update();">
+  All <output id="count" for="n"></output>
+  <a href="http://en.wikipedia.org/wiki/Partition_of_a_set">set partitions</a> of</label>
+  <output id="output" for="n"></output>
+</form>
+<div id="vis"></div>
+<p>Inspired by <a href="http://en.wikipedia.org/wiki/File:Set_partitions_5;_circles.svg">The 52 partitions of a 5-element set</a>.
+
+<script src="../media/js/d3.v2.min.js"></script>
+<script src="partitions.js"></script>
+<script src="html5slider.js"></script>
+<script>
+  var category = d3.scale.category10();
+
+  var r,
+      w,
+      n = 5;
+
+  var svg = d3.select("#vis").append("svg");
+  var g = svg.append("g");
+
+  resize();
+
+  function resize() {
+    var width = 960,
+        p = 10;
+    svg.attr("width", width);
+    w = width / 10;
+    r = w / 2 - 2 * p;
+    g.attr("transform", "translate(" + [w / 2, w / 2] + ")");
+    update();
+  }
+
+  function update() {
+    g.selectAll("g").remove();
+    var i = 0;
+    partitions(n, function(a) {
+      var partition = g.append("g").attr("transform", "translate(" + [w * (i % 10), w * ~~(i / 10)] + ")");
+      var subsets = d3.range(n).map(function() { return []; });
+      a.forEach(function(d, i) { subsets[d].push(i); });
+      partition.selectAll("path.subset")
+          .data(subsets.filter(function(d) { return d.length; }))
+        .enter().append("path")
+          .attr("class", "subset")
+          .style("stroke", function(d, i) { return category(i); })
+          .style("fill", function(d, i) { return category(i); })
+          .attr("d", function(subset) {
+            var d = [];
+            subset.forEach(function(i, j) {
+              var a = 3 * Math.PI / 2 + i * 2 * Math.PI / n;
+              d.push(j ? "L" : "M", r * Math.cos(a), ",", r * Math.sin(a));
+            });
+            if (subset.length !== 2) d.push("Z"); // work around Firefox bug.
+            return d.join("");
+          })
+        .append("title")
+          .text(function(d) { return "{" + d.join(", ") + "}"; });
+      partition.selectAll("circle.bead")
+          .data(d3.range(n))
+        .enter().append("circle")
+          .attr("class", "bead")
+          .attr("r", 2.5)
+          .attr("transform", function(d, i) { return "rotate(" + i * 360 / n + ")translate(0," + -r + ")"; });
+      i++;
+    });
+    svg.attr("height", Math.ceil(i / 10) * w);
+    d3.select("#count").property("value", i);
+    d3.select("#output").property("value", "{" + d3.range(1, n + 1).join(", ") + "}.");
+  }
+</script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

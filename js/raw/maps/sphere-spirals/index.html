@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Sphere Spirals</title>
+<style>
+@import url(../maps.css);
+.outline {
+  pointer-events: all;
+  cursor: move;
+}
+.graticule, .outline {
+  stroke: #ccc;
+  stroke-opacity: .5;
+  fill: none;
+}
+.front {
+  stroke: #000;
+  fill: #0f0;
+  fill-opacity: .75;
+}
+.back {
+  stroke: #ccc;
+  fill: #000;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Sphere Spirals</h1>
+
+<div id="map"></div>
+
+<div class="wrapper">
+  <p><a href="http://en.wikipedia.org/wiki/M._C._Escher">M. C. Escher</a> used <a href="../loxodrome/">loxodromes</a> in
+  <a href="http://www.mcescher.com/Gallery/recogn-bmp/LW428.jpg">Sphere Spirals</a> and
+  <a href="http://www.mcescher.com/Gallery/recogn-bmp/LW427.jpg">Sphere Surface with Fish</a>.
+  <p>Eight <a href="http://mathworld.wolfram.com/SphericalSpiral.html">spherical spirals</a> are used to generate four polygons going from pole to pole.
+</div>
+
+<script src="../../d3.min.js"></script>
+<script>
+
+var width = 500,
+    height = width;
+
+var front = d3.geo.orthographic()
+    .translate([width / 2, height / 2])
+    .scale(height / 2 - 2)
+    .clipAngle(90)
+    .rotate([0, -30]);
+
+var back = d3.geo.projection(function(λ, φ) {
+      var coordinates = d3.geo.orthographic.raw(λ, φ);
+      coordinates[0] = -coordinates[0];
+      return coordinates;
+    })
+    .translate(front.translate())
+    .scale(front.scale())
+    .clipAngle(front.clipAngle())
+    .rotate([front.rotate()[0] + 180, -front.rotate()[1], -front.rotate()[2]]);
+
+var initial = front.rotate(),
+    velocity = [.005, -.001],
+    t0 = Date.now(),
+    path = d3.geo.path().projection(front),
+    backPath = d3.geo.path().projection(back);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.behavior.drag()
+      .origin(function() { var r = front.rotate(); return {x: r[0], y: -r[1]}; })
+      .on("drag", function() {
+        t0 = -1;
+        rotate(d3.event.x, -d3.event.y);
+      })
+      .on("dragend", function() {
+        initial = front.rotate();
+        t0 = Date.now();
+      }));
+
+function rotate(λ, φ) {
+  front.rotate([λ, φ, front.rotate()[2]]);
+  back.rotate([180 + λ, -φ, back.rotate()[2]]);
+  svg.selectAll("path:not(.back)").attr("d", path);
+  svg.selectAll("path.back").attr("d", backPath);
+}
+
+var mercator = d3.geo.mercator().scale(1 / Math.PI).translate([0, 0]),
+    n = 4;
+
+var spirals = {type: "GeometryCollection", geometries: d3.range(-1, 1 + 1 / n, 2 / n).map(function(x) {
+  var angle = .5;
+  return {type: "Polygon", coordinates: [rhumb(x, angle).concat(rhumb(x + 1 / n, angle).reverse())]};
+})};
+
+function rhumb(x0, angle) {
+  return d3.range(x0, x0 + 1.5 * 2 / angle + .5 * 1 / 100, 1 / 100).map(function(x) {
+    return mercator.invert([(x + 1) % 2 - 1, 1.5 - (x - x0) * angle]);
+  });
+}
+
+svg.append("path")
+    .attr("class", "back")
+    .datum(spirals)
+    .attr("d", backPath);
+
+svg.append("path")
+    .attr("class", "front")
+    .datum(spirals)
+    .attr("d", path);
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline")
+    .attr("d", path);
+
+d3.timer(function() {
+  if (t0 < 0) return;
+  var t = Date.now() - t0;
+  rotate(initial[0] + velocity[0] * t, initial[1] + velocity[1] * t);
+});
+
+</script>

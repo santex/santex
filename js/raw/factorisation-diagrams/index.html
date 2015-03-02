@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Factorisation Diagrams - Jason Davies</title>
+<style>
+body {
+  font-family: sans-serif;
+}
+svg {
+  margin: 5px;
+}
+text {
+  font-size: 10px;
+}
+</style>
+<h1>Factorisation Diagrams</h1>
+<div id="vis"></div>
+<p>A version of Brent Yorgey’s <a href="http://mathlesstraveled.com/2012/10/05/factorization-diagrams/">factorisation diagrams</a>, written using <a href="http://d3js.org">D3.js</a>. Code for spacing the dots nicely taken from an excellent <a href="http://jsfiddle.net/vjeux/vkdxv/2/">demo</a> by <a href="http://vjeux.com">Vjeux</a>.
+<h2>See Also</h2>
+<ul>
+  <li><a href="http://www.amazon.com/Count-Monsters-Richard-Evan-Schwartz/dp/1568815786">You Can Count on Monsters</a>.
+  <li><a href="http://web.bentley.edu/empl/c/ncarter/vgt/">Visual Group Theory</a>.
+  <li><a href="http://www.ptolemy.co.uk/primitives">Primitives</a> at ptolemy.co.uk.
+</ul>
+<script src="../media/js/d3.v2.min.js"></script>
+<script>
+var width = 1 << 7,
+    height = 1 << 7;
+
+var svg = d3.select("#vis").selectAll("svg")
+    .data(d3.range(1, (1 << 7) + 1))
+  .enter().append("svg")
+    .attr("width", width)
+    .attr("height", height);
+svg.append("text")
+    .attr("dy", "1em")
+    .text(String);
+svg.append("g")
+    .attr("transform", "translate(" + [width / 2, height / 2] + ")")
+    .each(function(d) {
+      d3.select(this).call(diagram, primeFactors(d), width / 2);
+    });
+
+function diagram(selection, factors, size) {
+  if (factors.length) {
+    var n = factors.pop(),
+        offset = n === 4 ? 45 : n === 2 ? 0 : -90,
+        radius = n * size / (n + 2),
+        δy = n & 1 ? (radius / 2) * (1 - Math.cos(Math.PI / n)) : 0;
+    selection.selectAll("g")
+        .data(d3.range(n))
+      .enter().append("g")
+        .attr("transform", function(d) {
+          var angle = d * 360 / n + offset;
+          return "translate(0," + δy + ")rotate(" + angle + ")translate(" + radius + ")rotate(" + -angle + ")";
+        })
+        .call(diagram, factors, 2 * size / (n + 2));
+  } else selection.append("circle").attr("r", size * .9);
+}
+
+function primeFactors(n) {
+  var factors = [],
+      f;
+  while (n > 1) {
+    factors.push(f = factor(n));
+    n /= f;
+  }
+  return factors;
+}
+
+function factor(n) {
+  if (n % 4 === 0) return 4;
+  for (var i = 2; i <= n / 2; i++) {
+    if (n % i === 0) return i;
+  }
+  return n;
+}
+</script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

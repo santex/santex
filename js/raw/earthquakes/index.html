@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Earthquakes</title>
+<link rel="stylesheet" href="earthquakes.css">
+<link rel="image_src" href="earthquakes.jpg">
+<meta name="author" content="Jason Davies">
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+#intro {
+  background: #fff;
+  position: absolute;
+  top: 0;
+  right: 0;
+  -webkit-border-bottom-left-radius: 10px;
+  -moz-border-bottom-left-radius: 10px;
+  padding: 0 10px;
+}
+#breadcrumbs { display: none; }
+</style>
+
+<body>
+<div id="intro">
+  <h1>Latest Earthquakes</h1>
+  <p>This map shows all known
+    <select id="url">
+      <option value="http://earthquake.usgs.gov/earthquakes/catalogs/eqs7day-M2.5.txt">M2.5+ quakes (past seven days)
+      <option value="http://earthquake.usgs.gov/earthquakes/feed/csv/2.5/day">M2.5+ quakes (past day)
+    </select>
+  <p>Live data from <a href="http://earthquake.usgs.gov/earthquakes/catalogs/">U.S. Geological Survey</a>.
+</div>
+<div id="wrap">
+  <div id="map"></div>
+</div>
+<script src="../d3.min.js"></script>
+<script src="../polymaps.min.js"></script>
+<script>
+var po = org.polymaps;
+
+var div = document.getElementById("map");
+
+var map = po.map()
+    .container(div.appendChild(po.svg("svg")))
+    .center({lat: 20, lon: 805})
+    .zoom(3)
+    .add(po.interact())
+    .add(po.hash())
+    .add(po.compass().pan("none"));
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+var depth = d3.scale.linear();
+var layer = po.geoJson()
+  .on('show', po.stylist()
+    .attr('r', function(d) { return Math.pow(2, parseFloat(d.properties.Magnitude)/2); })
+    .style('fill', function(d) { return 'rgba(0,0,0,'+depth(parseFloat(d.properties.Depth))+')'; })
+    .title(function(d) { return d.properties.Region; })
+  );
+map.add(layer);
+
+d3.select("#url").on("change", change);
+
+change();
+
+function change() {
+  var url = d3.select("#url").property("value");
+  d3.csv("//www.jasondavies.com/xhr?url=" + encodeURIComponent(url), function(csv) {
+    var depths = csv.map(function(row) { return parseFloat(row.Depth) });
+    depth.domain([d3.min(depths), d3.max(depths)]).range([1, .5]);
+    layer.features(csv.map(function(row) {
+      return {
+        geometry: {
+          coordinates: [parseFloat(row.Longitude), parseFloat(row.Latitude)],
+          type: "Point"
+        },
+        properties: row
+      };
+    }))
+  });
+}
+
+</script>

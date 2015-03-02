@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<ul></ul>
+<script src="http://mbostock.github.com/d3/d3.js?2.7.3"></script>
+<script>
+
+var data = [
+  ["A", "B", "C", "D", "E"],
+  ["B", "C", "D", "A", "E"],
+  ["C", "A", "D", "E", "B"],
+  ["D", "A", "B", "E", "C"],
+  ["E", "D", "B", "C", "A"]
+];
+
+var li = d3.select("ul").selectAll("li")
+    .data(data[0])
+  .enter().append("li")
+    .text(function(d) { return d; })
+    .on("click", reorder);
+
+function reorder(d, i) {
+  li
+      .data(data[i], function(d) { return d; })
+      .order();
+}
+
+</script>

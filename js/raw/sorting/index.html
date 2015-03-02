@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sorting Visualisations - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <link rel="stylesheet" href="sorting.css">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="sort.js"></script>
+    <script src="qsort.js"></script>
+  </head>
+  <body>
+    <h1>Sorting Visualisations</h1>
+    <p>Reload the page for a new, random dataset to be sorted.  Below you can see mergesort and quicksort.  More algorithms will be added soon.</p>
+    <div id="vis"></div>
+    <script>
+
+var map,
+    n = 20;
+
+var w = 800,
+    h = 300,
+    x = d3.scale.linear().domain([0, 50]).range([0, w]),
+    y = d3.scale.linear().domain([0, n]).range([10, h - 10]),
+    colors = d3.scale.linear().domain([0, n]).range(["white", "#666"]);
+
+var vis = d3.select("#vis").selectAll("svg")
+    .data([["Merge sort", mergesort], ["Quick sort", quicksort]]);
+
+vis.enter().append("svg")
+    .attr("width", w)
+    .attr("height", h);
+
+var line = d3.svg.line()
+    .x(function(d, i) { return x(i); })
+    .y(function(d, i) { return y(map[d.n || d] || 0); });
+
+update();
+
+function update() {
+  var data = d3.range(n).map(Math.random);
+  map = {};
+  data.forEach(function(d, i) {
+    map[d] = i;
+  });
+
+  var g = vis.selectAll("g")
+      .data(function(d) {
+        var passes = d[1](data.slice());
+        return transpose(passes);
+      });
+
+  var gEnter = g.enter().append("g");
+  gEnter.append("path")
+      .attr("class", "outer");
+  gEnter.append("path")
+      .attr("class", "inner");
+
+  g.select("path.outer").attr("d", line);
+  g.select("path.inner").attr("d", line);
+}
+
+function transpose(arrays) {
+  var n = arrays.length, m = d3.max(arrays, function(d) { return d.length; });
+
+  if (m > n) {
+    arrays.length = m;
+    for (var i = n; i < m; i++) {
+      arrays[i] = new Array(n);
+    }
+    for (var i = 0; i < n; i++) {
+      for (var j = i + 1; j < m; j++) {
+        var t = arrays[i][j];
+        arrays[i][j] = arrays[j][i];
+        arrays[j][i] = t;
+      }
+    }
+  } else {
+    for (var i = 0; i < m; i++) {
+      arrays[i].length = n;
+    }
+    for (var i = 0; i < n; i++) {
+      for (var j = 0; j < i; j++) {
+        var t = arrays[i][j];
+        arrays[i][j] = arrays[j][i];
+        arrays[j][i] = t;
+      }
+    }
+  }
+
+  arrays.length = m;
+  for (var i = 0; i < m; i++) {
+    arrays[i].length = n;
+  }
+
+  return arrays;
+}
+    </script>
+    <input type="button" onclick="update()" value="Reset">
+    <h2>Links</h2>
+    <ul>
+      <li><a href="http://sortvis.org/">sortvis.org</a> - sorting algorithm visualisations by <a href="http://corte.si/">cortesi</a></li>
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

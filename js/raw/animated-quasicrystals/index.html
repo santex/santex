@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <title>Animated Quasicrystals - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <link rel="stylesheet" href="crystals.css">
+    <link rel="image_src" href="crystals.png">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="../media/js/PhiloGL.cls.js"></script>
+  </head>
+  <body>
+    <h1>Animated Quasicrystals</h1>
+    <div id="vis"></div>
+    <p style="text-align: center">When I saw <a href="http://mainisusuallyafunction.blogspot.com/2011/10/quasicrystals-as-sums-of-waves-in-plane.html">this fantastic quasicrystals animation</a>, I simply <em>had</em> to replicate it in the browser!
+    <p style="text-align: center">This uses the excellent <a href="http://senchalabs.github.com/philogl/">PhiloGL</a> library if your browser supports WebGL, otherwise it falls back to using canvas.  Thanks to Nicolas Garcia Belmonte for his help with the WebGL version.
+    <p id="patience" style="display: none; text-align: center">Please be patient while the initial frames are computed prior to creating a smooth animation.  This is faster in WebGL browsers.
+    <p><a href="/toys/">See my other toys&hellip;</a>
+<script id="shader-vs" type="x-shader/x-vertex"> 
+  attribute vec3 position;
+  attribute vec2 texCoord1;
+  
+  uniform mat4 worldMatrix;
+  uniform mat4 projectionMatrix;
+  
+  varying   vec2 pixel;
+  void main(void) {
+     gl_Position = projectionMatrix * worldMatrix * vec4(position, 1.);
+     pixel = texCoord1;
+  }
+</script>
+
+<script id="shader-fs" type="x-shader/x-fragment"> 
+  #ifdef GL_ES
+  precision highp float;
+  #endif
+
+  #define PI 3.1415926535
+
+  uniform sampler2D sampler1;
+  uniform float t;
+
+  varying vec2 pixel;
+  uniform vec2 mouse;
+
+  void main(void) {
+    const float step = PI / 7.0;
+    float angle = 0.;
+    float s;
+    float c;
+    float ans;
+
+    vec2 defpixel = (pixel - vec2(.5)) * 170.;
+
+    for (int i = 0; i < 7; i++) {
+      s = sin(angle);
+      c = cos(angle);
+      ans += (cos( c * defpixel.x + s * defpixel.y + t) + 1.) / 2.;
+      angle += step;
+    }
+
+    ans = mod(floor(ans), 2.0) == 0. ? fract(ans) : 1. - fract(ans);
+    vec4 color = vec4(ans * .53, ans * .33, ans * .65, 1.);
+    color.w = 1.;
+
+    gl_FragColor = color;
+  }
+</script>
+<script src="crystals.js"></script>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

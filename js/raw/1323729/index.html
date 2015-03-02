@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<ul id="list">
+  <li data-username="shawnbot">Shawn Allen</li>
+  <li data-username="mbostock">Mike Bostock</li>
+</ul>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+d3.selectAll("#list li")
+    .datum(function() { return this.dataset; })
+    .sort(function(a, b) { return d3.ascending(a.username, b.username); });
+
+</script>

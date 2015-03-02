@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Bounding Circle Tree</title>
+<style>
+@import url(../../style.css);
+
+.background {
+  fill: #fff;
+  stroke: #000;
+}
+
+.point:hover {
+  fill: #f00;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.circle {
+  fill-opacity: .1;
+  fill: #0f0;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.graticule {
+  stroke: #666;
+  stroke-width: .25px;
+  fill: none;
+}
+
+circle {
+  stroke: #000;
+  fill: none;
+}
+
+.centre circle {
+  fill: #000;
+}
+
+.centre.draggable circle {
+  fill: #0f0;
+  cursor: move;
+}
+
+.distance {
+  stroke: #f00;
+  stroke-width: 1.5px;
+}
+
+.radius {
+  stroke: #00f;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Bounding Circle Tree</h1>
+<div id="map"></div>
+<p>Similar to <a href="http://doc.cgal.org/latest/AABB_tree/index.html">axis-aligned bounding box (AABB) trees</a>, bounding circle trees can be used to speed up finding <a href="../intersect/">line segment intersections on the sphere</a>.
+<p>Line segments are converted into a series of bounding circles, and then adjacent circles are repeatedly merged until a single bounding circle remains.
+
+<h2 id="merging">Merging Circles</h2>
+<p>Given two circles <i>A</i> and <i>B</i> situated a distance <i>d</i> apart, assume <i>radius<sub>A</sub> ≤ radius<sub>B</sub></i> and compute the bounding circle <i>C</i> as follows.
+
+<p>Firstly, observe that if <b><i>d + radius<sub>A</sub> ≤ radius<sub>B</sub></i></b>, then <i>B</i> is the bounding circle.
+<p>Otherwise, the diameter of the bounding circle is <i>d + radius<sub>A</sub> + radius<sub>B</sub></i>, which can be seen from the diagram below.
+Hence <b><i>radius<sub>C</sub> = ½(d + radius<sub>A</sub> ≤ radius<sub>B</sub>)</i></b>.
+<p>The bounding circle centre, relative to the centre of <i>A</i>, can be found by interpolating along the path connecting <i>A</i> and <i>B</i>.
+First move a distance <i>radius<sub>A</sub></i> away from <i>B</i> to reach the circumference of <i>C</i>.
+Then move a distance <i>radius<sub>C</sub></i> towards <i>B</i>:
+<b><i>centre<sub>C</sub> = interpolate(A, B)[(radius<sub>C</sub> - radius<sub>A</sub>) / d]</i></b>.
+
+<div id="merging-example"></div>
+<p>Note that the above calculations only rely on distances and interpolation, so they work in both Cartesian and spherical settings.
+On a sphere, a bounding circle radius of 180° or greater is a special case as it covers the whole sphere.
+
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.zoom.js"></script>
+<script>
+
+(function() {
+
+var width = 600,
+    height = width;
+
+var projection = d3.geo.orthographic()
+    .translate([width / 2, height / 2])
+    .scale(width / 2 - 1)
+    .clipAngle(90)
+    .rotate([0, -30])
+    .precision(.1);
+
+var path = d3.geo.path()
+    .pointRadius(6.5)
+    .projection(projection);
+
+var tree = circleTree();
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .style("cursor", "move")
+    .call(d3.geo.zoom()
+      .projection(projection)
+      .scaleExtent([projection.scale(), projection.scale()])
+      .on("zoom", redraw));
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+var coordinates = d3.range(-60, 60, 10).map(function(x) { return [x, Math.random() * 20 + 20]; });
+
+var line = svg.append("path")
+    .attr("class", "line")
+    .datum({type: "LineString", coordinates: coordinates});
+
+redraw();
+
+function redraw() {
+  var point = svg.selectAll(".point")
+      .data(coordinates.map(function(d) { return {type: "Point", coordinates: d}; }));
+  point.enter().append("path")
+      .attr("class", "point")
+      .call(d3.behavior.drag()
+        .origin(function(d) {
+          d = projection(d.coordinates);
+          return {x: d[0], y: d[1]};
+        })
+        .on("dragstart", function() { d3.event.sourceEvent.stopPropagation(); })
+        .on("drag", function(d) {
+          var p = projection.invert(d3.mouse(this));
+          if (!p || isNaN(p[0])) return;
+          d.coordinates[0] = p[0];
+          d.coordinates[1] = p[1];
+          redraw();
+        }));
+  var circle = svg.selectAll(".circle").data(tree(coordinates));
+  circle.enter().insert("path", ".point").attr("class", "circle");
+  circle.exit().remove();
+
+  svg.selectAll("path").attr("d", path);
+}
+
+})();
+
+(function() {
+
+var width = 600,
+    height = 425;
+
+var svg = d3.select("#merging-example").append("svg")
+    .attr("width", width + 2)
+    .attr("height", height + 2)
+  .append("g")
+    .attr("transform", "translate(1," + (1 + height / 2) + ")");
+
+var A = {radius: 75, x: 75},
+    B = {radius: 125, x: 300},
+    C = {radius: 0, x: 0};
+
+var circle = svg.selectAll("circle").data([A, B, C]);
+circle.enter().append("circle");
+
+var distanceLine = svg.append("line")
+    .attr("class", "distance");
+
+var radius = svg.selectAll(".radius")
+    .data([A, B])
+  .enter().append("line")
+    .attr("class", "radius");
+
+var centre = svg.selectAll(".centre")
+    .data([A, B, C])
+  .enter().append("g")
+    .attr("class", "centre");
+centre.append("circle")
+    .attr("r", 5.5);
+centre.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "-1em")
+    .text(function(d, i) { return ["A", "B", "C"][i]; });
+
+svg.select(".centre")
+    .classed("draggable", true)
+    .call(d3.behavior.drag()
+      .origin(Object)
+      .on("drag", function(d) {
+        d.x = Math.max(d.radius, Math.min(width - d.radius, d3.event.x));
+        redraw();
+      }));
+
+var radiusLabel = svg.selectAll(".radius-label")
+    .data([A, B])
+  .enter().append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "1.2em")
+    .attr("class", "radius-label")
+    .text(function(d, i) { return ["radiusA", "radiusB"][i]; });
+
+var distanceLabel = svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "1.2em")
+    .attr("class", "distance-label")
+    .text("d");
+
+redraw();
+
+function redraw() {
+  var distance = Math.abs(B.x - A.x);
+  if (distance + A.radius <= B.radius) {
+    C.x = B.x;
+    C.radius = B.radius;
+  } else {
+    C.radius = .5 * (distance + A.radius + B.radius);
+    C.x = A.x + (B.x - A.x) * (C.radius - A.radius) / distance;
+  }
+  circle
+      .attr("r", function(d) { return d.radius; })
+      .attr("cx", function(d) { return d.x; });
+  centre
+      .attr("transform", function(d) { return "translate(" + d.x + ")"; });
+  radius
+      .attr("x1", function(d, i) { return A.x > B.x ^ i ? d.x + d.radius : d.x - d.radius; })
+      .attr("x2", function(d) { return d.x; });
+  radiusLabel
+      .attr("x", function(d, i) { return A.x > B.x ^ i ? d.x + d.radius / 2 : d.x - d.radius / 2; });
+  distanceLine
+      .attr("x1", A.x).attr("x2", B.x);
+  distanceLabel
+      .attr("x", .5 * (A.x + B.x))
+}
+
+})();
+
+function circleTree() {
+  var circle = d3.geo.circle();
+
+  function tree(coordinates) {
+    var nodes = [],
+        n = coordinates.length - 1; // number of segments
+
+    // Create a bounding circle for each line segment.
+    for (var i = 1, a = coordinates[0]; i <= n; ++i, a = b) {
+      var b = coordinates[i],
+          I = d3.geo.interpolate(a, b),
+          centre = I(.5),
+          radius = I.distance * 90 / Math.PI,
+          o = circle.origin(centre).angle(radius)();
+      o.centre = centre, o.radius = radius;
+      nodes.push(o);
+    }
+
+    // Merge pairs of circles until we have a single circle.
+    var layer = nodes;
+    while (n > 1) {
+      var layer1 = [], i = 0;
+      if (n & 1) layer1.push(layer[i++]); // odd number of circles
+      for (; i < n; ++i) {
+        var a = layer[i], b = layer[++i], t;
+
+        // Ensure a.radius ≤ b.radius.
+        if (a.radius > b.radius) t = a, a = b, b = t;
+
+        var I = d3.geo.interpolate(a.centre, b.centre),
+            distance = I.distance * 180 / Math.PI;
+
+        // a is entirely enclosed by b.
+        if (distance + a.radius <= b.radius) { layer1.push(b); continue; }
+
+        var centre = I(.5 + (b.radius - a.radius) / (2 * distance)),
+            radius = .5 * (distance + a.radius + b.radius),
+            o = radius >= 180 ? {type: "Sphere"} : circle.origin(centre).angle(radius)();
+        o.centre = centre, o.radius = Math.min(180, radius);
+        nodes.push(o);
+        layer1.push(o);
+      }
+      n = (layer = layer1).length;
+    }
+    return nodes.reverse();
+  }
+
+  return tree;
+}
+
+</script>

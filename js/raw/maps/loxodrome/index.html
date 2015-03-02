@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Loxodrome</title>
+<style>
+@import url(../maps.css);
+.stroke {
+  stroke: #000;
+  stroke-width: .5;
+  fill: none;
+}
+.land {
+  fill: #eee;
+  fill-opacity: .5;
+}
+.loxodrome {
+  stroke: #000;
+  fill: none;
+}
+.graticule, .outline {
+  stroke: #ccc;
+  stroke-opacity: .5;
+  fill: none;
+}
+.back {
+  stroke: #ccc;
+  stroke-dasharray: 5,5;
+  fill: none;
+}
+.outline {
+  pointer-events: all;
+  cursor: move;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Loxodrome</h1>
+<div id="map" class="map"></div>
+<div class="wrapper">
+  <p>A <a href="http://en.wikipedia.org/wiki/Rhumb_line">loxodrome</a> (or rhumb line) is a line crossing all meridians at a constant angle.
+  <p>This is best illustrated using the <a href="http://en.wikipedia.org/wiki/Mercator_projection">Mercator projection</a>, which is in fact why it is so good for marine navigation, since courses of constant compass bearing (loxodromes) appear as straight lines.
+</div>
+<div id="mercator" class="map"></div>
+
+<div class="wrapper">
+  <p>Another interesting property of the loxodrome is that for non-zero bearings measured clockwise from North, it circles a pole infinitely many times.
+  <p>The y-coordinate of the Mercator projection tends to infinity as you get closer to the poles; the map above is clipped at latitudes ±85°.
+  <p>The loxodrome appears as a straight line on the Mercator projection, so it’s not hard to see that it would have to cross the sides infinitely many times before reaching either pole.
+  <p>Despite circling a pole infinitely many times, a loxodrome has finite length.
+  The pole-to-pole length of a spherical loxodrome is the length of the meridian divided by the cosine of the loxodrome’s bearing measured clockwise from North.
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var width = 500,
+    height = 500;
+
+var mw = 500;
+
+var front = d3.geo.orthographic()
+    .translate([width / 2, height / 2])
+    .scale(height / 2)
+    .clipAngle(90)
+    .rotate([0, -30])
+    .precision(.1);
+
+var back = d3.geo.projection(function(λ, φ) {
+      var coordinates = d3.geo.orthographic.raw(λ, φ);
+      coordinates[0] = -coordinates[0];
+      return coordinates;
+    })
+    .translate(front.translate())
+    .scale(front.scale())
+    .clipAngle(front.clipAngle())
+    .precision(front.precision())
+    .rotate([front.rotate()[0] + 180, -front.rotate()[1], -front.rotate()[2]]);
+
+var mercator = d3.geo.mercator()
+    .translate([width / 2, height / 2])
+    .scale(width / (2 * Math.PI))
+    .clipExtent([[0, 10], [width, height - 10]]);
+
+var frontPath = d3.geo.path().projection(front),
+    backPath = d3.geo.path().projection(back),
+    mercatorPath = d3.geo.path().projection(mercator);
+
+var maps = d3.selectAll(".map")
+    .data([front, mercator].map(function(projection) {
+      return {
+        projection: projection,
+        path: d3.geo.path().projection(projection)
+      };
+    }))
+  .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var globe = d3.select("#map")
+    .call(d3.behavior.drag()
+      .origin(function() { var r = front.rotate(); return {x: 2 * r[0], y: -2 * r[1]}; })
+      .on("drag", function() {
+        front.rotate([d3.event.x / 2, -d3.event.y / 2, front.rotate()[2]]);
+        back.rotate([180 + d3.event.x / 2, d3.event.y / 2, back.rotate()[2]]);
+        globe.selectAll("path:not(.back)").attr("d", frontPath);
+        globe.selectAll("path.back").attr("d", backPath);
+      }));
+
+maps.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule");
+
+maps.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline");
+
+maps.each(redraw);
+
+var angle = 1 / 16;
+
+var loxodrome = d3.merge(d3.range(-10, 10).map(function(i) {
+  return d3.range(-mw / 2, mw / 2 + .5 * mw / 100, mw / 100).map(function(x) {
+    return mercator.invert([mw / 2 + x, mw / 2 - (x + i * mw) * angle]);
+  });
+}));
+
+d3.json("../world-110m.json", function(error, world) {
+  var mesh = topojson.mesh(world, world.objects.land),
+      land = topojson.feature(world, world.objects.land);
+
+  maps.insert("path", ".graticule")
+      .datum(land)
+      .attr("class", "land");
+
+  maps.insert("path", ".graticule")
+      .datum(mesh)
+      .attr("class", "stroke");
+
+  maps.append("path")
+      .attr("class", "loxodrome")
+      .datum({type: "LineString", coordinates: loxodrome});
+
+  d3.select("#map").selectAll("svg").insert("path", "*")
+      .attr("class", "back loxodrome")
+      .datum({type: "LineString", coordinates: loxodrome})
+      .attr("d", backPath);
+
+  maps.each(redraw);
+});
+
+function redraw(d) {
+  d3.select(this).selectAll("path:not(.back)")
+      .attr("d", d.path);
+}
+
+</script>

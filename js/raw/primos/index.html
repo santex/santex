@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>El Patrón de los Números Primos: Prime Number Patterns - Jason Davies</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  min-width: 500px;
+  min-height: 500px;
+}
+svg {
+  display: block;
+}
+#header {
+  position: absolute;
+  left: 50%;
+  width: 800px;
+  margin-left: -400px;
+}
+#about {
+  clear: right;
+}
+#close {
+  float: right;
+  text-decoration: none;
+  color: #000;
+}
+@font-face {
+  font-family: AnglicanText;
+  src: url(AnglicanText.ttf);
+}
+h1 {
+  font-size: 3.5em;
+  margin: .3em 0 0;
+}
+h2 {
+  font-size: 2em;
+  margin: .3em 0;
+}
+h1, h2 {
+  font-family: AnglicanText, sans-serif;
+  font-weight: 300;
+}
+line, path {
+  stroke: #ccc;
+  fill: none;
+}
+.highlight {
+  stroke: #000;
+}
+rect {
+  fill: none;
+  pointer-events: all;
+}
+#vis {
+  cursor: col-resize;
+}
+p.meta {
+  font-style: italic;
+  font-size: small;
+}
+p.copyright {
+  display: none;
+}
+</style>
+<div id="header">
+  <a href="#close" id="close">×</a>
+  <div id="about">
+    <h1>El Patrón de los Números Primos</h1>
+    <h2>Prime Number Patterns</h2>
+    <p class="meta">by <a href="http://www.jasondavies.com/">Jason Davies</a>.
+    <p>For each natural number <em>n</em>, we draw a periodic curve starting from the origin, intersecting the x-axis at <em>n</em> and its multiples. The prime numbers are those that have been intersected by <em>only two</em> curves: the prime number itself and one.
+    <p>Below the currently highlighted number, we also show its <a href="http://en.wikipedia.org/wiki/Divisor_function">sum of divisors</a> <em>σ(n)</em>, and its aliquot sum <em>s(n) = σ(n) - n</em>, which indicate whether the number is <a href="http://en.wikipedia.org/wiki/Prime_number">prime</a>, <a href="http://en.wikipedia.org/wiki/Deficient_number">deficient</a>, <a href="http://en.wikipedia.org/wiki/Perfect_number">perfect</a> or <a href="http://en.wikipedia.org/wiki/Abundant_number">abundant</a>.
+    <p class="meta">Based on <a href="http://www.polprimos.com/">Sobre el patrón de los números primos</a> by Omar E. Pol.
+  </div>
+</div>
+<div id="vis"></div>
+<script src="../media/js/d3.v2.min.js?v2.9.6"></script>
+<script>
+var width = 960,
+    height = 600,
+    range0 = 1,
+    range1 = 1000,
+    svg = d3.select("#vis").append("svg");
+
+var s;
+if (s = window.location.search) {
+  var m = s.match(/[\?&]range=([^&,]+),([^&]+)$/);
+  if (m) {
+    range0 = +m[1];
+    range1 = +m[2];
+  }
+}
+
+var clipRect = svg.append("defs").append("clipPath").attr("id", "clip").append("rect");
+
+var x = d3.scale.linear().domain([0, 31]).range([0, width]);
+
+var zoom = d3.behavior.zoom()
+    .scaleExtent([1 / 5, 2])
+    .on("zoom", function() {
+      var t = d3.event.translate,
+          k = d3.event.scale;
+      t[0] = Math.min(0, t[0]);
+      update(~~x.invert(-t[0] / k));
+      g2.select("rect").attr("x", -t[0]);
+      g2.attr("transform", "translate(" + t[0] + ")scale(" + k + ")")
+        .style("stroke-width", 1 / k + "px");
+      zoom.translate(t);
+    });
+
+var g = svg.append("g")
+    .attr("clip-path", "url(#clip)")
+    .style("pointer-events", "all")
+    .call(zoom);
+
+d3.select(window).on("resize", resize);
+
+d3.select("#close").on("click", function() {
+  d3.select("#header")
+      .style("opacity", 1)
+    .transition()
+      .style("opacity", 1e-6)
+      .remove();
+  d3.event.preventDefault();
+});
+
+function resize() {
+  svg .attr("width", width = Math.max(600, window.innerWidth))
+      .attr("height", height = Math.max(400, window.innerHeight));
+  clipRect
+      .attr("y", -height / 2)
+      .attr("width", width)
+      .attr("height", height);
+  g.attr("transform", "translate(0," + height / 2 + ")");
+  x.range([0, width]);
+  update(~~x.invert(-zoom.translate()[0] / zoom.scale()));
+}
+
+g.append("line").attr("x2", "100%");
+
+g.append("rect")
+    .attr("y", -height / 2)
+    .attr("width", width)
+    .attr("height", height);
+
+var focusLine = g.append("line")
+    .attr("class", "focus")
+    .attr("y1", "-50%")
+    .attr("y2", "50%");
+
+var g2 = g.append("g");
+
+var focusText = g.selectAll("text")
+    .data(d3.range(3))
+  .enter().append("text")
+    .attr("dy", function(d, i) { return (i - 2) * 1.2 - .5 + "em"; })
+    .attr("y", "50%");
+
+var path = g2.selectAll("path.factor");
+var prime = g2.selectAll("g.prime");
+
+resize();
+
+function update(lo) {
+  var hi = lo + x.invert(width / zoom.scale());
+  path = path.data(d3.range(range0, range1), Number);
+  path.enter().append("path")
+      .attr("class", "factor");
+  path.attr("d", function(d) {
+        if (d > hi) return "";
+        var q = ~~(lo / d),
+            d0 = q * d,
+            path = ["M", [x(d0), 0]],
+            r = (x(d) - x(0)) / 2;
+        for (var i = d0 + d, j = (q & 1) ^ 1; i < hi + d; i += d, j ^= 1) {
+          path.push("a", [r, r, 0, 1, j, 2 * r, 0]);
+        }
+        return path.join("");
+      });
+  path.exit().remove();
+
+  prime = prime.data(primes(hi), Number);
+  var primeEnter = prime.enter().append("g");
+  primeEnter.append("circle").attr("r", 5.5);
+  primeEnter.append("text").attr("dy", "1.8em").attr("text-anchor", "middle").text(String);
+  prime.exit().remove();
+  prime.attr("transform", function(d) { return "translate(" + x(d) + ")"; });
+}
+
+d3.select(window)
+    .on("mousemove", mousemove)
+    .on("touchstart", mousemove, true);
+
+function mousemove() {
+  var m = d3.mouse(g2.node()),
+      p = Math.max(0, Math.round(x.invert(m[0])));
+  path.classed("highlight", function(d) {
+    var h = p % d === 0;
+    if (h) {
+      var parent = this.parentNode;
+      if (parent) parent.insertBefore(this, prime[0][0]);
+    }
+    return h;
+  });
+  var tx = x(p) * zoom.scale() + zoom.translate()[0];
+  focusLine.attr("transform", "translate(" + tx + ")");
+  if (p) {
+    var f = factors(p),
+        s = d3.sum(f),
+        implication = s - p === 1 ? " ⇒ prime"
+          : s - p < p ? " < n ⇒ deficient"
+          : s - p === p ? " = n ⇒ perfect"
+          : " > n ⇒ abundant"
+    focusText
+        .data([
+          "n = " + p,
+          "σ(n) = " + (f.length ? f.join(" + ") + " = " : "") + s,
+          "s(n) = σ(n) - n = " + s + " - " + p + " = " + (s - p) + implication
+        ])
+        .attr("transform", "translate(" + tx + ")")
+        .attr("text-anchor", tx > width / 2 ? "end" : "start")
+        .attr("dx", tx > width / 2 ? "-.3em" : ".3em")
+        .text(String);
+  } else {
+    focusText.text("");
+  }
+}
+
+function primes(n) {
+  return d3.range(n).filter(isPrime);
+}
+
+function isPrime(n) {
+  if (2 > n) return false;
+  if (0 === n % 2) return 2 === n;
+  for (var index = 3; n / index >= index; index += 2) {
+    if (0 === n % index) return false;
+  }
+  return true;
+}
+
+function factors(n) {
+  var result = [];
+  for (var i = 1; i <= n / 2; i++) {
+    if (n % i === 0) result.push(i);
+  }
+  if (n) result.push(n);
+  return result;
+}
+</script>

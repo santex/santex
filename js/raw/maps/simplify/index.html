@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Topology-Preserving Simplification</title>
+<style>
+@import url(../maps.css);
+
+#chart {
+  height: 600px;
+}
+
+#chart .background {
+  fill: none;
+  pointer-events: all;
+}
+
+#chart path {
+  fill: #eee;
+  stroke: #000;
+  pointer-events: none;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Topology-Preserving Simplification</h1>
+
+<div class="wrapper">
+  <p>Visvalingam’s line simplification algorithm is fantastic for cartography.
+  However, when applied to geometrical features that are topologically connected, e.g. polygons with shared borders, it can introduce gaps and even overlapping polygons, since the shared border is simplified differently for each polygon.
+  <p>Building on <a href="http://bost.ocks.org/mike/">Mike Bostock</a>’s excellent work, I’ve added topology detection to <a href="http://github.com/d3/d3-plugins/tree/master/simplify">d3.simplify</a>.
+  Move your mouse to adjust the minimum area for simplification.
+
+  <p style="font-style: italic"><label for="topology"><input id="topology" type="checkbox" checked> Preserve topology</label>
+</div>
+
+<div id="chart"></div>
+
+<div class="wrapper">
+  <p>This uses a hash table to map each point to one or more lines that include that point.
+  During the effective area calculation phase, each line is split into chains of points, each chain consisting only of points that occur in exactly the same lines.
+  For example, a shared border would be a chain, and a non-shared border would be another chain.
+  <p>Visvalingam’s algorithm is then used to calculate the effective area of each point in these chains.
+  The first and last points are given effective areas of the maximum effective area of their set of connected features.
+  <p>This means that islands will be removed if their maximum effective area is less than the threshold.
+  <p>Make sure you check out Mike’s <a href="http://bost.ocks.org/mike/simplify/">line simplification demo</a> with a detailed explanation of Visvalingam’s algorithm.
+  <p>I’ve also made a <a href="koch/">stress test using Koch Island fractals</a>.
+</div>
+
+<script src="../../d3.min.js?3.0.0"></script>
+<script src="simplify.js?20121029.3"></script>
+<script>(function() {
+
+var width = 960,
+    height = parseInt(d3.select("#chart").style("height")),
+    minArea = 1,
+    formatArea = d3.format(".2r"),
+    formatPercent = d3.format(".2%");
+
+var x = d3.scale.sqrt()
+    .domain([0, 100])
+    .range([0, width]);
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var bg = svg.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height);
+
+var text = svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height / 2)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "middle");
+
+var shape = svg.append("path");
+
+var path = d3.geo.path()
+    .projection(null);
+
+var simplify = d3.simplify()
+    .topology(true)
+    .area(0)
+    .projection(d3.geo.albers().scale(1300).translate([width / 2, height / 2]));
+
+d3.json("us-states.json", function(error, us) {
+
+  var geography = simplify.project(copy(us));
+  redraw();
+
+  bg.on("mousemove", function() {
+    minArea = x.invert(d3.mouse(this)[0]);
+    redraw();
+  });
+
+  d3.select("#topology").on("change", function() {
+    geography = simplify.topology(this.checked).project(copy(us));
+    redraw();
+  });
+
+  function redraw() {
+    shape.attr("d", path(simplify.area(minArea)(geography)));
+  }
+});
+
+function copy(d) {
+  return Array.isArray(d) ? d.map(copy)
+      : typeof d === "number" || typeof d === "string" ? d
+      : copyObject(d);
+}
+
+function copyObject(d) {
+  var o = {};
+  for (var k in d) o[k] = copy(d[k]);
+  return o;
+}
+
+})()</script>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Fibonacci Numbers - Jason Davies</title>
+    <link rel="stylesheet" type="text/css" href="../media/style.css" />
+    <script type="text/javascript" src="../media/js/protovis-r3.3.js"></script>
+    <script type="text/javascript" src="../media/js/jquery.min.js"></script>
+    <meta name="author" content="Jason Davies" />
+  </head>
+  <body>
+    <h1>Fibonacci Numbers</h1>
+    <p>The Fibonacci sequence is defined as
+    <em>F<sub>n</sub> = F<sub>n-1</sub> + F<sub>n-2</sub></em>, with 
+    <em>F<sub>0</sub> = 0</em> and <em>F<sub>1</sub> = 1</em>. The first few numbers are: <em>0, 1, 1, 2, 3, 5, 8</em> and <em>13</em>.</p>
+    <p>An interesting way to visualise Fibonacci numbers is to start off with two <em>1x1</em> squares, and then combine their side lengths to draw a new square, <em>2x2</em>.  This can be continued ad infinitum to form the Fibonacci spiral.</p>
+    <p>The ratio of successive Fibonacci numbers approaches the golden ratio, <em>&phi;</em>, as <em>n</em> increases.</p>
+    <p><label for="n"><em>n</em>:</label> <select id="n"></select></p>
+    <p><em>F<sub>n</sub> / F<sub>n-1</sub> = <span id="phi"></span></em></p>
+    <div id="vis">
+      <script type="text/javascript+protovis">
+
+var w = 500, h = 500, n = 13;
+var data, x = pv.Scale.linear().range(0, w), l = pv.Scale.linear().range(0, w / 2);
+
+var fibonacci = function(n) {
+  var data = [0, 1];
+  for (var i=2; i<n; i++) {
+    data.push(data[data.length-1] + data[data.length-2] || 0);
+  }
+  return data;
+}
+var pos = function(t) {
+  return function(d) {
+    var i = this.index % 4, s = this.sibling();
+    if (s) {
+      d = l(d);
+      switch (t) {
+        case 'left':
+          if (i === 1 || i === 2) return i === 1 ? s.left : s.left + s.width;
+          if (i === 3 || i === 0) return i === 0 ? s.left - d: s.left + s.width - d;
+        case 'top':
+          if (i === 2 || i === 3) return i === 3 ? s.top - d : s.top + s.height - d;
+          if (i === 1 || i === 0) return i === 0 ? s.top : s.top + s.height;
+      }
+    } else return x(0);
+    return null;
+  };
+}
+var vis = new pv.Panel()
+    .width(w)
+    .height(h)
+    .margin(10)
+var box = vis.add(pv.Panel)
+  .data(function() data)
+    .width(function(d) l(d))
+    .height(function(d) l(d))
+    .left(pos('left'))
+    .top(pos('top'))
+box.add(pv.Label)
+    .visible(function(d) d && n - this.parent.index < 4)
+box.anchor('top').add(pv.Label)
+    .visible(function() this.parent.index && n - this.parent.index < 4)
+    .text(function() 'F' + this.parent.index)
+box.add(pv.Line)
+  .data(function(d) [[0, 0], [d, 0], [d, d], [0, d], [0, 0]])
+    .left(function(d) l(d[0]))
+    .top(function(d) l(d[1]))
+box.add(pv.Wedge)
+  .left(function() this.parent.index % 4 < 2 ? this.parent.width() : 0)
+  .top(function() (this.parent.index + 1) % 4 > 1 ? 0 : this.parent.height())
+  .outerRadius(function(d) l(d))
+  .innerRadius(function(d) l(d) - 1)
+  .startAngle(function() (-this.parent.index + 2) * Math.PI / 2)
+  .endAngle(function() this.startAngle() + Math.PI / 2)
+
+$.each(pv.range(1, 31), function() {
+  $('#n').append('<option value="' + this + '">' + this + '</option>');
+});
+$('#n').val('10');
+$('#n').change(function() {
+  n = parseInt($('#n').val()) + 1;
+  data = fibonacci(n);
+  var max = data[data.length - 1] + data[data.length-2] || 0;
+  x.domain(-max, max);
+  l.domain(0, max);
+  vis.render();
+  $('#phi').text((data[data.length-1] / data[data.length-2]).toFixed(5))
+}).change();
+      </script>
+    </div>
+    <h2>Links</h2>
+    <ul>
+      <li><a href="http://www.maths.surrey.ac.uk/hosted-sites/R.Knott/Fibonacci/">Fibonacci Numbers and the Golden Section</a> by Dr. Ron Knott</li>
+      <li><a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci number</a> on Wikipedia</li>
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

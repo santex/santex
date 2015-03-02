@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Great Circle Arc Intersections</title>
+
+<style>
+@import url(../maps.css);
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+  pointer-events: none;
+}
+.outline {
+  stroke: #ccc;
+  stroke-width: 1.5px;
+  pointer-events: all;
+}
+.line {
+  stroke-width: 1.5px;
+}
+.end {
+  fill: blue;
+  pointer-events: all;
+}
+.end:hover {
+  fill: green;
+}
+.intersection {
+  fill: red;
+}
+.case {
+  display: inline;
+}
+#cases {
+  text-align: center;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Great Circle Arc Intersections</h1>
+
+<div id="map"></div>
+
+<p>Drag the endpoints!  <i>Explanation coming soon…</i>
+
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.zoom.js"></script>
+<script>
+
+var π = Math.PI,
+    radians = π / 180,
+    degrees = 180 / π,
+    ε = 1e-6;
+
+var width = 500,
+    height = width;
+
+var lines = [[[-90, 0], [0, 90]], [[0, 80], [180, 80]]].map(function(line) {
+  return {type: "LineString", coordinates: line};
+});
+
+var intersection = {type: "Point", coordinates: intersect(lines[0].coordinates, lines[1].coordinates) || [0, 0]};
+
+var projection = d3.geo.orthographic()
+    .clipAngle(90)
+    .rotate([55, -50])
+    .scale(width / 2 - 1)
+    .translate([width / 2, height / 2])
+    .precision(.1);
+
+var path = d3.geo.path()
+    .pointRadius(7.5)
+    .projection(projection);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .style("cursor", "move")
+    .call(d3.geo.zoom()
+      .scaleExtent([projection.scale(), projection.scale()])
+      .projection(projection)
+      .on("zoom", function() {
+        svg.selectAll("path").attr("d", path);
+      }));
+
+svg.append("path").datum(d3.geo.graticule());
+svg.append("path").attr("class", "outline").datum({type: "Sphere"});
+
+svg.selectAll("path.line")
+    .data(lines)
+  .enter().append("path")
+    .attr("class", "line");
+
+svg.selectAll("path.end")
+    .data(function(path) {
+      return d3.merge(lines.map(function(d) {
+        return d.coordinates;
+      })).map(function(d) {
+        return {type: "Point", coordinates: d};
+      });
+    })
+  .enter().append("path")
+    .attr("class", "end")
+    .call(d3.behavior.drag()
+      .origin(function(d) {
+        d = projection(d.coordinates);
+        return {x: d[0], y: d[1]};
+      })
+      .on("dragstart", stopPropagation)
+      .on("drag", function(d) {
+        var p = projection.invert(d3.mouse(this));
+        if (!p || isNaN(p[0])) return;
+        d.coordinates[0] = Math.max(-180, Math.min(180, p[0]));
+        d.coordinates[1] = Math.max(-90, Math.min(90, p[1]));
+        if (Math.abs(Math.abs(lines[0].coordinates[1][1] - lines[0].coordinates[0][1]) - 180) < ε ||
+            Math.abs(Math.abs(lines[1].coordinates[1][1] - lines[1].coordinates[0][1]) - 180) < ε) {
+          d.coordinates[1] = Math.max(-90 + 1e-3, Math.min(90 - 1e-3, p[1]));
+        }
+        var i = intersect(lines[0].coordinates, lines[1].coordinates);
+        intersectionPath.style("display", i ? null : "none");
+        if (i) intersection.coordinates = i;
+        svg.selectAll("path").attr("d", path);
+      }));
+
+var intersectionPath = svg.append("path")
+    .datum(intersection)
+    .style("display", intersect(lines[0].coordinates, lines[1].coordinates) ? null : "none")
+    .attr("class", "intersection");
+
+svg.selectAll("path").attr("d", path);
+
+function intersect(a, b) {
+  var a0 = d3_geo_cartesian([a[0][0] * radians, a[0][1] * radians]),
+      a1 = d3_geo_cartesian([a[1][0] * radians, a[1][1] * radians]),
+      b0 = d3_geo_cartesian([b[0][0] * radians, b[0][1] * radians]),
+      b1 = d3_geo_cartesian([b[1][0] * radians, b[1][1] * radians]);
+  a = d3_geo_cartesianCross(a0, a1);
+  b = d3_geo_cartesianCross(b0, b1);
+  a0 = d3_geo_cartesianCross(a, a0);
+  a1 = d3_geo_cartesianCross(a, a1);
+  b0 = d3_geo_cartesianCross(b, b0);
+  b1 = d3_geo_cartesianCross(b, b1);
+  var axb = d3_geo_cartesianCross(a, b);
+  d3_geo_cartesianNormalize(axb);
+  a0 = d3_geo_cartesianDot(axb, a0);
+  a1 = d3_geo_cartesianDot(axb, a1);
+  b0 = d3_geo_cartesianDot(axb, b0);
+  b1 = d3_geo_cartesianDot(axb, b1);
+  if (a0 > -ε && a1 < ε && b0 >- ε && b1 < ε) {
+    var i = d3_geo_spherical(axb);
+    return [i[0] * degrees, i[1] * degrees];
+  }
+
+  if (a0 < ε && a1 > -ε && b0 < ε && b1 > -ε) {
+    axb[0] = -axb[0], axb[1] = -axb[1], axb[2] = -axb[2];
+    var i = d3_geo_spherical(axb);
+    return [i[0] * degrees, i[1] * degrees];
+  }
+}
+
+function d3_geo_cartesian(spherical) {
+  var λ = spherical[0],
+      φ = spherical[1],
+      cosφ = Math.cos(φ);
+  return [
+    cosφ * Math.cos(λ),
+    cosφ * Math.sin(λ),
+    Math.sin(φ)
+  ];
+}
+
+function d3_geo_cartesianDot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function d3_geo_cartesianCross(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0]
+  ];
+}
+
+function d3_geo_cartesianNormalize(d) {
+  var l = Math.sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+  d[0] /= l;
+  d[1] /= l;
+  d[2] /= l;
+}
+
+function d3_geo_spherical(cartesian) {
+  return [
+    Math.atan2(cartesian[1], cartesian[0]),
+    Math.asin(Math.max(-1, Math.min(1, cartesian[2])))
+  ];
+}
+
+function stopPropagation() { d3.event.sourceEvent.stopPropagation(); }
+
+</script>

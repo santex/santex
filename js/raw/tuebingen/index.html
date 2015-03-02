@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Tübingen - Jason Davies</title>
+
+<link rel="stylesheet" href="../media/style.css">
+<script src="../media/js/d3.v2.min.js"></script>
+<script src="tuebingen.js"></script>
+<script src="../media/js/jquery.min.js"></script>
+<style>
+  #vis {
+    width: 100%;
+    height: 500px;
+  }
+  .line {
+    stroke: black;
+    fill: none;
+  }
+</style>
+
+<h1>Tübingen</h1>
+<p><label for="n">Dimensions:</label> <select id="n"></select></p>
+<div id="vis">
+  <script>
+var t = new Tuebingen();
+t.setup(0, 3);
+var w = $('#vis').width(), h = $('#vis').height();
+var lines = t.draw(w, 0, h, 0);
+lines = lines.concat(t.draw(w, h, h * 2, h * 2));
+var x = d3.scale.linear().domain([-400, 1100]).range([0, 1000]);
+var scale = 1;
+
+var vis = d3.select('#vis')
+.on('mousewheel', function() { d3.event.preventDefault() })
+.append('svg')
+.attr('height', 500)
+.attr("pointer-events", "all")
+.call(d3.behavior.zoom()
+  .on("zoom", redraw))
+.append('g')
+
+$(function() {
+$.each(d3.range(2, 15), function() {
+$('#n').append('<option value="' + this + '">' + this + '</option>');
+});
+$('#n').change(function() {
+t.setup(0, parseInt($('#n').val()));
+lines = t.draw($('#vis').width(), 0, $('#vis').height(), 0);
+vis.selectAll('path').remove();
+var paths = vis.selectAll('path').data(lines);
+paths.enter().append('path')
+  .attr('class', 'line')
+  .attr('d', d3.svg.line()
+    .x(function(d) { return x(d[0]) })
+    .y(function(d) { return x(d[1]) }))
+  .style('fill', function(d) { return d.c; })
+paths.exit().remove()
+}).change();
+});
+
+function redraw() {
+vis.attr("transform",
+  "translate(" + d3.event.translate + ")"
+  + "scale(" + d3.event.scale + ")");
+}
+
+  </script>
+</div>
+<p>Based on <a href="http://www.gregegan.net/">Greg Egan</a>'s <a href="http://www.gregegan.net/APPLETS/31/31.html">applet</a>.</p>
+<h2>Links</h2>
+<ul>
+  <li><a href="http://en.wikipedia.org/wiki/Aperiodic_tiling">Aperiodic tiling</a> on Wikipedia.</li>
+  <li><a href="http://en.wikipedia.org/wiki/Quasicrystal">Quasicrystal</a> on Wikipedia.</li>
+</ul>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

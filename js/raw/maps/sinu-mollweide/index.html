@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Sinu-Mollweide</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Sinu-Mollweide</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Philbrick’s <a href="http://www.progonos.com/furuti/MapProj/Normal/ProjInt/ProjIntC/projIntC.html#SinuMollweide">interrupted Sinu-Mollweide</a> projection.
+  This is a modified version of <a href="http://bl.ocks.org/4481520">Mike Bostock’s</a>, showing how the <a href="http://github.com/d3/d3-plugins/tree/master/geo/polyhedron">geo.polyhedron plugin</a> can be used to create more complex interruptions.
+</div>
+
+<script src="../../d3.min.js?20130517"></script>
+<script src="../d3.geo.projection.min.js?20130517"></script>
+<script src="../d3.geo.polyhedron.js?20130517"></script>
+<script src="../topojson.min.js?1.1.1"></script>
+<script src="../maps.js"></script>
+<script>
+
+var ε = 1e-6,
+    π = Math.PI,
+    degrees = 180 / π;
+
+var width = 960,
+    height = 500;
+
+// Divide the globe into six regions:
+// 1     2
+//    0
+// 3  4  5
+
+// First, define the shared vertices.
+var vertices = [
+  [0, 90],
+
+  [1e-3-180,  35],
+  [   0,  35],
+  [ 180,  35],
+  [ 180, -10],
+  [  77, -10],
+  [ -65, -10],
+  [1e-3-180, -10],
+
+  [0, -90]
+];
+
+// These are the longitude centroids for each polygon face.
+// This tells us where to rotate longitudinally for each face.
+var centroids = [
+  0,
+  -30,
+  30,
+  -100,
+  5,
+  102
+];
+
+var faces = [
+  [1, 2, 3, 4, 5, 6, 7], // middle strip
+  [1, 0, 2], // NW
+  [2, 0, 3], // NE
+  [8, 7, 6], // SW
+  [8, 6, 5], // S
+  [8, 5, 4]  // SE
+].map(function(face, i) {
+  face = face.map(function(i) { return vertices[i]; });
+  return {
+    face: face,
+    project: d3.geo.sinuMollweide().scale(1).translate([0, 0]).rotate([-centroids[i], 0]),
+    centroid: !i ? [0, 0] : i === 1 ? [-90, 0] : i === 2 && [90, 0]
+  };
+});
+
+faces[0].children = faces.slice(1);
+
+function face(λ, φ) {
+  λ *= degrees;
+  φ *= degrees;
+  return faces[
+    φ > 35 ? λ < 0 ? 1 : 2
+    : φ < -10 ? λ < -65 ? 3 : λ < 77 ? 4 : 5
+    : 0
+  ];
+}
+
+var projection = d3.geo.polyhedron(faces[0], face, 0)
+    .rotate([-20, -55])
+    .translate([width / 2, height / 2 - 16])
+    .scale(150)
+    .precision(.1);
+
+d3.select("#map").call(canvasMap().projection(projection));
+
+</script>

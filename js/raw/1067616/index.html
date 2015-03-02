@@ -1,0 +1,39 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script> 
+  </head> 
+  <body> 
+    <script type="text/javascript"> 
+ 
+var w = 960,
+    h = 500;
+ 
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+ 
+svg.append("svg:circle")
+    .attr("cx", 350)
+    .attr("cy", 200)
+    .attr("r", 200)
+    .style("fill", "brown")
+    .style("fill-opacity", ".5");
+ 
+svg.append("svg:circle")
+    .attr("cx", 550)
+    .attr("cy", 200)
+    .attr("r", 200)
+    .style("fill", "steelblue")
+    .style("fill-opacity", ".5");
+ 
+svg.append("svg:circle")
+    .attr("cx", 450)
+    .attr("cy", 300)
+    .attr("r", 200)
+    .style("fill", "green")
+    .style("fill-opacity", ".5");
+ 
+    </script> 
+  </body> 
+</html>

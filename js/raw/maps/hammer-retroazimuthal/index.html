@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Hammer Retroazimuthal Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Hammer Retroazimuthal Projection</h1>
+<div id="hammer"></div>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.hammerRetroazimuthal</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection D3 plugin</a>.
+  <p>This is actually two projections superimposed on each other.
+  Notice the dark border denoting the boundary: the front hemisphere of the globe is projected in the middle, and the back hemisphere is projected to the outermost part and then rotated so it doesn’t overlap the front hemisphere.
+  <p>Don’t forget to drag to adjust the centre.
+  <p>I think it looks like a smiley face!
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var ε = 1e-6;
+
+var projection = d3.geo.hammerRetroazimuthal()
+    .clipAngle(180 - 1)
+    .scale(95)
+    .precision(.1)
+    .parallel(52)
+    .rotate([0, 52]); // forces initial target to be [0, 52] for the canvas
+                      // map; otherwise unnecessary.
+
+var map = canvasMap()
+    .projection(projection)
+    .point(true)
+    .graticule(d3.geo.graticule().extent([[-180, -90 + ε], [180, 90 - ε]])())
+    .outlineRotate(null)
+    .on("drag", function(target) {
+      target[1] = Math.max(-88.5, Math.min(88.5, target[1]));
+      projection.parallel(target[1]).rotate([-target[0], 0]);
+      map.point({type: "Point", coordinates: target});
+    });
+
+d3.select("#hammer").call(map);
+
+</script>

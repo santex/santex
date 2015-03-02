@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  background: steelblue;
+}
+
+.feature {
+  fill-opacity: .5;
+  fill-rule: evenodd;
+}
+
+.hover {
+  fill: none;
+  stroke: #ccc;
+  pointer-events: all;
+}
+
+</style>
+<body>
+<script  src="http://d3js.org/d3.v3.min.js"></script>
+<script  src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var path = d3.geo.path()
+    .projection(d3.geo.albers()
+      .rotate([72.1, 0])
+      .center([0, 42.1])
+      .scale(5000));
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var feature = svg.append("g")
+    .attr("class", "feature")
+  .selectAll("path");
+
+d3.json("/data/us.json", function(error, us) {
+  var states = topojson.feature(us, us.objects.states);
+
+  feature = feature
+      .data(states.features)
+    .enter().append("path")
+      .style("display", "none")
+      .attr("d", function(d) { return "M0,0H" + width + "V" + height + "H0Z" + path(d); });
+
+  svg.append("g")
+      .attr("class", "hover")
+    .selectAll("path")
+      .data(states.features)
+    .enter().append("path")
+      .attr("d", path)
+      .on("mouseover", mouseovered)
+      .on("mouseout", mouseouted);
+});
+
+function mouseovered(d) {
+  feature.style("display", function(p) { return d === p ? null : "none"; });
+}
+
+function mouseouted(d) {
+  feature.style("display", "none");
+}
+
+</script>

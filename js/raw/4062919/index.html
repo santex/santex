@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.one {
+  stroke: steelblue;
+}
+
+.one-two {
+  stroke: steelblue;
+  stroke-dasharray: 2,2;
+}
+
+.two {
+  stroke: brown;
+}
+
+</style>
+<svg width="960" height="500">
+  <path class="line one" d="M100,100V190"></path>
+  <path class="line one-two" d="M100,190a10,10 0 0 0 10,10H190a10,10 0 0 1 10,10"></path>
+  <path class="line two" d="M200,210V300"></path>
+</svg>

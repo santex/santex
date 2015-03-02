@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Atlantis Map</title>
+<style>
+
+@import url(../maps.css);
+
+.foreground {
+  fill: none;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+.graticule {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.graticule:nth-child(2n) {
+  stroke-dasharray: 2,2;
+}
+
+.land {
+  fill: #eee;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.spiral {
+  fill: red;
+  fill-opacity: .5;
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+.boundary {
+  fill: none;
+  stroke: #ccc;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Atlantis Map</h1>
+<div id="map"></div>
+
+<script src="../../d3.min.js?3.0.5"></script>
+<script src="../../queue.min.js"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var π = Math.PI,
+    degrees = 180 / π;
+
+var width = 960,
+    height = 960 * 2;
+
+var graticule = d3.geo.graticule();
+
+var atlantis = d3.geo.mollweide()
+    .scale(335)
+    .translate([width / 2, height / 2])
+    .rotate([30, -45, 90])
+    .precision(.1);
+
+var path = d3.geo.path().projection(atlantis);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "rotate(90 " + [width / 2, height / 2] + ")");
+
+svg.selectAll(".graticule")
+    .data(graticule.lines)
+  .enter().append("path")
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "foreground")
+    .attr("d", path);
+
+d3.json("../world-50m.json", function(error, world) {
+  svg.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+
+  svg.insert("path", ".graticule")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "boundary")
+      .attr("d", path);
+});
+
+</script>

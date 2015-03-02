@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Azimuth and Distance from London</title>
+<style>
+@import url(../maps.css);
+.distance, .land {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+}
+.land {
+  fill: #eee;
+  stroke: none;
+}
+.countries {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+}
+.graticule {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: .5px;
+}
+.outline {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+  pointer-events: all;
+}
+.mouse {
+  pointer-events: none;
+  font-size: 12px;
+}
+.point {
+  pointer-events: none;
+  fill: none;
+  stroke: #000;
+  stroke-dasharray: 5,5;
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.axis {
+  font-size: 12px;
+}
+svg {
+  cursor: crosshair;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Azimuth and Distance from London</h1>
+
+<div id="map"></div>
+
+<div class="wrapper">
+  <div id="output"></div>
+  <p>Measure <i>vertically</i> to find the great-circle distance from London to any other point.
+  The clockwise direction from North is shown horizontally.
+  <p>This is the simplest projection of all, the <a href="http://en.wikipedia.org/wiki/Equirectangular_projection">plate carrée</a>!
+  However, the world is rotated so that London is where the North pole would normally be at the top.
+  <p>This was proposed by F. V. Botley in 1951.
+</div>
+
+<h2>Azimuthal Equidistant Projection</h2>
+<div class="wrapper">
+  <p>The <a href="http://en.wikipedia.org/wiki/Azimuthal_equidistant_projection">azimuthal equidistant projection</a> also shows both azimuth and distance relative to an origin, but in polar coordinates.
+  This projection is far less distorted near the origin, and thus seems better overall.
+  <p>However, it has to be said that rectangular coordinates are somewhat easier to read, and moreover the plate carrée would have been more straightforward to construct without the use of a computer.
+</div>
+<div id="equidistant"></div>
+
+<script src="../../d3.min.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var width = 1280,
+    height = 500,
+    π = Math.PI,
+    radians = π / 180,
+    radius = 6371,
+    format = d3.format(",.1f");
+
+var london = [-2.327815, 52.8382],
+    mouse = london,
+    projection = d3.geo.equirectangular().scale(155).translate([width / 2, height / 2]),
+    botley = d3.geo.equirectangular().scale(155).translate([width / 2, height / 2]).rotate([-london[0], 90 - london[1]]),
+    equidistant = d3.geo.azimuthalEquidistant().translate([width / 2, 400]).clipAngle(180 - 1e-3).scale(120).precision(.1).rotate([-london[0], -london[1]]);
+
+var svg = d3.selectAll("#map, #equidistant")
+    .data([botley, equidistant].map(function(projection) { return d3.geo.path().projection(projection); }))
+  .append("svg")
+    .attr("width", width)
+    .attr("height", function(_, i) { return i ? 800 : height + 40; });
+
+var svg0 = d3.select(svg[0][0]),
+    svg1 = d3.select(svg[0][1]);
+
+svg0.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + projection([0, -90])[1] + ")")
+    .call(d3.svg.axis()
+      .scale(d3.scale.linear().domain([360, 0]).range([projection([-180, 0])[0], projection([180, 0])[0]]))
+      .ticks(18)
+      .orient("bottom"))
+  .append("text")
+    .attr("class", "label")
+    .attr("transform", "translate(" + width / 2 + ")")
+    .attr("y", 30)
+    .attr("dy", ".71em")
+    .style("text-anchor", "middle")
+    .text("Clockwise Bearing from London (°)")
+
+svg0.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + projection([-180, 0])[0] + ")")
+    .call(d3.svg.axis()
+      .scale(d3.scale.linear().domain([0, radius * Math.PI]).range([projection([0, 90])[1], projection([0, -90])[1]]))
+      .tickFormat(d3.format(",f"))
+      .orient("left"))
+  .append("text")
+    .attr("class", "label")
+    .attr("transform", "rotate(-90)translate(" + -height / 2 + ")")
+    .attr("y", -65)
+    .attr("dy", ".71em")
+    .style("text-anchor", "middle")
+    .text("Distance from London (km)")
+
+var axis = svg1.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + width / 2 + "," + 400 + ")");
+
+var tick = axis.selectAll(".tick")
+    .data(d3.range(0, 360, 20))
+  .enter().append("g")
+    .attr("class", "tick")
+    .attr("transform", function(d) { return "rotate(" + (d - 90) + ")translate(" + Math.PI * 120 + ")rotate(" + (d > 270 || d < 90 ? 90 : -90) + ")"; });
+tick.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", function(d) { return d > 270 || d < 90 ? "-.8em" : "1.3em"; })
+    .text(function(d) { return d + "°"; });
+tick.append("line")
+    .attr("y2", function(d) { return d > 270 || d < 90 ? -5 : 5; });
+
+svg.insert("path", ".distance")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule");
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline");
+
+svg.each(function(path) {
+  var projection = path.projection();
+  d3.select(this).selectAll(".outline")
+      .on("mousemove", function() {
+        mouse = projection.invert(d3.mouse(this));
+        d3.event.stopPropagation();
+        point.each(updatePoint);
+      });
+});
+
+var point = svg.append("path")
+    .attr("class", "point");
+
+var mouseDistance = svg1.append("text").attr("class", "mouse");
+
+function updatePoint(path, i) {
+  var m = path.projection()(mouse),
+      point = d3.select(this).style("display", null);
+  if (i) {
+    var dx = m[0] - width / 2,
+        dy = m[1] - 400,
+        a = Math.atan2(dy, dx),
+        r = Math.sqrt(dx * dx + dy * dy);
+    point.attr("d", "M" + [width / 2, 400] + "l" + [120 * Math.PI * Math.cos(a), 120 * Math.PI * Math.sin(a)] + 
+        "M" + m + "a" + [r, r, 0, 0, 1, -2 * dx, -2 * dy] + "A" + [r, r, 0, 0, 1, m]);
+    mouseDistance
+        .attr("transform", "translate(" + [width / 2, 400] + ")rotate(" + a / radians + ")translate(" + r + ")rotate(" + (Math.abs(a) > Math.PI / 2 ? 180 : 0) + ")")
+        .attr("text-anchor", Math.abs(a) < Math.PI / 2 ^ r / 120 > Math.PI / 2 ? "start" : "end")
+        .attr("dx", Math.abs(a) < Math.PI / 2 ^ r / 120 > Math.PI / 2 ? "1em" : "-1em")
+        .attr("dy", "-.3em")
+        .text(format(r / 120 * radius) + "km");
+  } else {
+    point.attr("d", "M" + (width / 2 - Math.PI * 155) + "," + m[1] + "h" + 2 * Math.PI * 155 + 
+        "M" + m[0] + "," + (height / 2 - Math.PI / 2 * 155) + "v" + (height / 2 + Math.PI / 2 * 155));
+  }
+}
+
+d3.select(window).on("mousemove", function() {
+  point.style("display", "none");
+});
+
+svg.each(redraw);
+
+d3.json("../world-50m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land),
+      countries = topojson.mesh(world, world.objects.countries);
+  svg.insert("path", ".graticule")
+      .datum(land)
+      .attr("class", "land")
+  svg.insert("path", ".graticule")
+      .datum(countries)
+      .attr("class", "countries")
+  svg.each(redraw);
+});
+
+function redraw(path) {
+  d3.select(this).selectAll(".land,.graticule,.countries,.outline").attr("d", path);
+}
+
+</script>

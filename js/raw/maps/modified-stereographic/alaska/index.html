@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Modified Stereographic Projection of Alaska</title>
+<style>
+@import url(../../maps.css);
+@import url(../style.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Modified Stereographic Projections</a>
+
+<h1>Modified Stereographic Projection of Alaska</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Scale factors for Alaska range from 0.997 to 1.003, one-fourth the range for a corresponding conic projection.
+</div>
+
+<script src="../../../d3.min.js?3.0.5"></script>
+<script src="../../d3.geo.projection.min.js?1ee2fa"></script>
+<script src="../../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var width = 960,
+    height = 650;
+
+var projection = d3.geo.modifiedStereographic()
+    .coefficients("gs50")
+    .clipAngle(55)
+    .scale(1100)
+    .center([-2, 3])
+    .translate([width / 2, height / 2])
+    .rotate([156, -62.5])
+    .precision(.1);
+
+var path = d3.geo.path().projection(projection);
+
+var graticule = d3.geo.graticule()
+    .step([5, 5])
+    .extent([[-200, 50], [-120, 80]]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("defs").append("clipPath")
+    .attr("id", "clip")
+  .append("path")
+    .datum(graticule.outline)
+    .attr("d", path);
+
+var g = svg.append("g")
+    .attr("clip-path", "url(#clip)");
+
+g.selectAll(".graticule")
+    .data(graticule.lines)
+  .enter().append("path")
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(graticule.outline)
+    .attr("class", "foreground")
+    .attr("d", path);
+
+d3.json("../../world-50m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land);
+  g.insert("path", ".graticule")
+      .datum(land)
+      .attr("class", "land")
+      .attr("d", path);
+});
+
+</script>

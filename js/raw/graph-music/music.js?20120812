@@ -1,0 +1,235 @@
+var w = 800,
+    h = 500,
+    p = 10,
+    cr = 6.5,
+    decompose = science.vector.decompose(),
+    format = d3.format(".2g"),
+    line = d3.svg.line(),
+    points = d3.range(1, 5).map(function(i) { return [i * w / 5, 50 + Math.random() * (h - 100)]; }),
+    links = points.map(function(d, i) { return [d, points[(i + 1) % points.length]]; }),
+    selected = null,
+    matrix,
+    eigenvalues,
+    scales = false,
+    epsilon = 1e-6;
+
+var vis = d3.select("#vis").append("svg")
+    .attr("width", w + 2 * p)
+    .attr("height", h + 2 * p)
+    .on("mouseup", function() {
+      var e = d3.event;
+      if (points.length === 0 || e.ctrlKey || e.altKey || e.shiftKey) {
+        var d = d3.svg.mouse(vis.node());
+        links.push([selected, d]);
+        points.push(selected = d);
+        update();
+      }
+    })
+  .append("g")
+    .attr("transform", "translate(" + [p, p] + ")");
+
+vis.append("rect")
+    .attr("width", w)
+    .attr("height", h);
+
+var lines = vis.append("g"),
+    circles = vis.append("g");
+
+d3.select(window)
+    .on("keydown", keydown);
+
+d3.select("#play").on("click", function() {
+  play(tally(eigenvalues));
+});
+
+d3.select("#scales").on("change", function() {
+  scales = this.checked;
+});
+
+update();
+
+function update() {
+  if (points.length) {
+    matrix = laplacian({nodes: points, links: links});
+    eigenvalues = decompose(matrix).D.map(function(d, i) { return d[i]; });
+    plotSpectrum(tally(eigenvalues));
+  } else {
+    matrix = eigenvalues = [];
+  }
+  table(matrix);
+
+  var line = lines.selectAll("line")
+      .data(links);
+  line.enter().append("line");
+  line.exit().remove();
+  line.attr("x1", function(d) { return d[0][0]; })
+      .attr("y1", function(d) { return d[0][1]; })
+      .attr("x2", function(d) { return d[1][0]; })
+      .attr("y2", function(d) { return d[1][1]; });
+
+  var circle = circles.selectAll("circle")
+      .data(points, Object);
+  circle.enter().append("circle")
+      .attr("class", function(d) { return d === selected ? "selected" : null; })
+      .attr("r", 1e-6)
+      .on("mousedown", function(d) {
+        var e = d3.event;
+        if (e.ctrlKey || e.altKey || e.shiftKey) {
+          links.push([selected, selected = d]);
+          update();
+        }
+      })
+      .call(d3.behavior.drag()
+        .origin(function(d) { return {x: d[0], y: d[1]}; })
+        .on("dragstart", function(d) {
+          selected = d;
+          update();
+        })
+        .on("drag", function(d) {
+          d[0] = Math.max(0, Math.min(w, d3.event.x));
+          d[1] = Math.max(0, Math.min(h, d3.event.y));
+          update();
+        }))
+    .transition()
+      .duration(750)
+      .ease("elastic")
+      .attr("r", cr);
+  circle.exit().remove();
+  circle
+      .attr("class", function(d) { return d === selected ? "selected" : null; })
+      .attr("cx", function(d) { return d[0]; })
+      .attr("cy", function(d) { return d[1]; });
+}
+
+function keydown() {
+  if (!selected) return;
+  switch (d3.event.keyCode) {
+    case 8: // backspace
+    case 46: { // delete
+      var i = points.indexOf(selected);
+      points.splice(i, 1);
+      for (i = links.length; --i >= 0; ) {
+        if (links[i][0] === selected || links[i][1] === selected) {
+          links.splice(i, 1);
+        }
+      }
+      selected = points.length ? points[i > 0 ? i - 1 : 0] : null;
+      update();
+      d3.event.preventDefault();
+      break;
+    }
+  }
+}
+
+function tally(values) {
+  var counts = [],
+      data = [];
+  values.forEach(function(v) {
+    for (var i=0; i<counts.length; i++) {
+      if (Math.abs(data[i] - v) < epsilon) {
+        counts[i]++;
+        return;
+      }
+    }
+    data.push(v);
+    counts.push(1);
+  });
+  return {data: data, counts: counts};
+}
+
+function play(tally) {
+  var notes = tally.data.map(function(note) { return 440 * Math.pow(2, note); });
+  var wave;
+  if (scales) {
+    wave = [];
+    notes.forEach(function(note) {
+      wave = wave.concat(generate([note]));
+    });
+  } else {
+    wave = generate(notes);
+  }
+  var audio = new Audio();
+  audio.src = getWaveURI(wave);
+  audio.play();
+}
+
+function unique(d) {
+  var i = -1,
+      n = d.length,
+      r = [],
+      x,
+      y = Infinity;
+  while (++i < n) {
+    if (Math.abs(y - (x = d[i])) > epsilon) r.push(y = x);
+  }
+  return r;
+}
+
+function table(m) {
+  var tr = d3.select("#matrix").selectAll("tr")
+      .data(m);
+  tr.enter().append("tr");
+  tr.exit().remove();
+  var td = tr.selectAll("td")
+      .data(Object);
+  td.enter().append("td");
+  td.exit().remove();
+  td.text(format);
+}
+
+// Computes an adjacency matrix.
+function adjacency(graph) {
+  var m = [],
+      i = -1,
+      j,
+      row,
+      n = graph.nodes.length;
+  while (++i < n) {
+    row = m[i] = [];
+    j = -1; while (++j < n) {
+      row[j] = adjacent(graph, i, j) ? 1 : 0;
+    }
+  }
+  return m;
+}
+
+// Computes a normalised Laplacian matrix.
+function laplacian(graph) {
+  var m = [],
+      i = -1,
+      j,
+      row,
+      links = graph.links,
+      n = graph.nodes.length;
+  while (++i < n) {
+    row = m[i] = [];
+    j = -1; while (++j < n) {
+      row[j] = i === j ? 1 : adjacent(graph, i, j) ? -1 / Math.sqrt(degree(i) * degree(j)) : 0;
+    }
+  }
+  return m;
+
+  function degree(i) {
+    var v = graph.nodes[i],
+        count = 0,
+        n = links.length;
+    i = -1; while (++i < n) {
+      if (links[i][0] === v || links[i][1] === v) count++;
+    }
+    return count;
+  }
+}
+
+function adjacent(graph, i, j) {
+  var v = graph.nodes[i],
+      w = graph.nodes[j],
+      links = graph.links,
+      n = links.length;
+  i = -1; while (++i < n) {
+    if (links[i][0] === v && links[i][1] === w ||
+        links[i][0] === w && links[i][1] === v) {
+      return true;
+    }
+  }
+  return false;
+}

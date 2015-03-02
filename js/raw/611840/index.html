@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/mbostock/protovis/raw/v3.3.1/protovis.js"></script>
+    <style type="text/css">
+
+body {
+  margin: 0;
+}
+
+    </style>
+  </head>
+  <body><center>
+    <script type="text/javascript+protovis">
+
+var data = [
+  {dept:"Accounting", values: [
+    {name:"sal", value:90000},
+    {name:"equ", value:10000},
+    {name:"trvl", value:267},
+    {name:"extra", value:5000}
+  ]},
+  {dept:"Sales", values: [
+    {name:"sal", value:20000},
+    {name:"equ", value:10000},
+    {name:"trvl", value:3049},
+    {name:"extra", value:7000}
+  ]},
+  {dept:"Consulting", values: [
+    {name:"sal", value:90000},
+    {name:"equ", value:58000},
+    {name:"trvl", value:983},
+    {name:"extra", value:17000}
+  ]}
+];
+
+/* Sizing. */
+var w = 280,
+    h = w,
+    r = w / 2;
+
+/* Scales. */
+data.forEach(function(d) d.scale = pv.Scale.linear(0,
+    pv.sum(d.values, function(d) d.value))
+    .range(0, 2 * Math.PI));
+
+/* The root panel. */
+var vis = new pv.Panel()
+  .data(data)
+    .width(w)
+    .height(h)
+    .margin(10);
+
+/* The wedge, with centered label. */
+vis.add(pv.Wedge)
+    .data(function(d) d.values)
+    .bottom(w / 2)
+    .left(w / 2)
+    .innerRadius(r - 40)
+    .outerRadius(r)
+    .angle(function(d, p) p.scale(d.value))
+  .anchor("center").add(pv.Label)
+    .text(function(d) d.name);
+
+vis.render();
+
+    </script>
+  </center></body>
+</html>

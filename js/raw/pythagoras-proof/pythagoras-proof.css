@@ -1,0 +1,31 @@
+html, body {
+  height: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+p { text-align: justify }
+p abbr { font-weight: bold }
+p.by { text-align: center }
+h1 { text-align: center }
+body { max-width: 720px; margin: 20px auto }
+div.wrapper { max-width: 600px; margin: 20px auto }
+div.vis { text-align: center }
+div.svg { display: inline }
+table { margin: 1.3em auto }
+td { padding: 0 30px; vertical-align: top }
+.circle {
+  fill: white;
+  stroke: black;
+  stroke-width: 1.5px;
+}
+.outline {
+  stroke: #aaa;
+  stroke-width: .5px;
+  shape-rendering: geometricPrecision;
+}
+.square {
+  fill: white;
+}
+.shape {
+  fill-opacity: .6;
+}

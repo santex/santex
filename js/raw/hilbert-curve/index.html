@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hilbert Curve - Jason Davies</title>
+    <link type="text/css" href="../media/style.css" rel="stylesheet" />
+    <script type="text/javascript" src="../media/js/d3.min.js"></script>
+    <script type="text/javascript" src="../media/js/jquery.min.js"></script>
+    <style>
+      path { fill: none; stroke: steelblue; stroke-width: 1.5px; }
+    </style>
+  </head>
+  <body>
+    <h1>Hilbert Curve</h1>
+    <p>
+    Rather astonishingly, curves exist that fill the plane without leaving any gaps.
+    One such curve is the <a href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert curve</a>.
+    If that isn't enough, it can also be proven that these curves are self-intersecting.
+    The following represents the <em>n</em>th approximation of a Hilbert curve for a square.
+    With higher values of <em>n</em>, more of the square is filled.
+    <p>
+    Jolly good, but does this have any real-world applications?  Why, yes!  The
+    Hilbert curve is a mapping between 1D and 2D space that preserves locality
+    quite well.  This means that points near each other in terms of distance
+    along the curve will also be near each other on the 2D plane.  For example,
+    colours of the rainbow can be plotted such that similar colours are always
+    near each other.  Click <em>show colours</em> to see a demonstration below.
+    <p><label for="level">Level <em>n</em></label>: <select id="level"></select>
+    <p><label for="colours"><input type="checkbox" id="colours">
+      Show colours</label>
+    <div id="vis">
+      <script src="hilbert-curve.js"></script>
+    </div>
+    <h2>Further Reading</h2>
+    <ul>
+      <li>A. Bogomolny, <a href="http://www.cut-the-knot.org/do_you_know/hilbert.shtml">Plane Filling Curves</a> from Interactive Mathematics Miscellany and Puzzles.
+      <li>The rainbow colouring example is based on Mike Bostock's <a href="http://bl.ocks.org/597287">Hilbert Tiles</a>.
+      <li>This demonstration was written using
+        <a href="http://mbostock.github.com/d3/">D3.js</a> and requires a
+        browser with SVG support to view it.
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

@@ -1,0 +1,42 @@
+@import url("example.css");
+body {
+  font-family: sans-serif;
+}
+#menu, #menu ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+#menu ul {
+  padding-left: 1em;
+}
+#nav {
+  background: #000;
+  opacity: .5;
+  font-size: 1em;
+  right: 0;
+  bottom: 0;
+  padding: 3px 8px;
+  text-align: right;
+  position: absolute;
+}
+.copy a {
+  color: #ccc;
+}
+a.prev, a.next {
+  margin: 0 .5em 0 1em;
+  color: #fff;
+}
+.by, .copy {
+  font-style: italic;
+  font-size: .8em;
+}
+.copy {
+  color: #ccc;
+}
+#expand-collapse {
+  font-style: italic;
+  font-size: .8em;
+}
+#menu a.selected {
+  font-weight: bold;
+}

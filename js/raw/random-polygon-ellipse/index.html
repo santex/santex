@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>From Random Polygon to Ellipse</title>
+<style>
+@import url(../media/style.css);
+polygon {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+circle {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: .5px;
+}
+</style>
+
+<h1>From Random Polygon to Ellipse</h1>
+<p>Take a polygon with random vertices, find the mid-points of its sides,
+and use these to create a new polygon, replacing the original.  Do this
+repeatedly and an ellipse will eventually form!</p>
+
+<div id="controls">
+  <p>
+    <label for="n">Number of vertices:</label>
+    <select id="n" onchange="randomise()"><option value="10">10</option><option value="100">100</option></select>
+  <p><label for="alternate"><input type="checkbox" id="alternate"> Only show alternate frames (smoother)</label>
+  <p>
+    <input type="button" onclick="randomise()" value="Randomise vertices" />
+    <input type="button" onclick="transform(false)" value="Step" />
+    <input type="button" value="Go" id="go" />
+</div>
+<div id="vis"></div>
+
+<script src="../d3.min.js"></script>
+<script>
+var points = [],
+    timer,
+    w = 500,
+    h = 500,
+    p = 10,
+    alternate = 1;
+
+function randomise() {
+  var n = +d3.select("#n").property("value");
+  for (var i = 0; i < n; i++) {
+    points[i] = {x: Math.random() * w, y: Math.random() * h};
+  }
+  render();
+}
+
+function transform(repeat) {
+  var xmin = Number.MAX_VALUE,
+      ymin = Number.MAX_VALUE,
+      xmax = Number.MIN_VALUE,
+      ymax = Number.MIN_VALUE,
+      n = points.length,
+      p0 = {x: points[0].x, y: points[0].y};
+  for (var j = 0; j < alternate; ++j) {
+    for (var i = 0; i < n; i++) {
+      var p1 = i === n - 1 ? p0 : points[i + 1];
+      points[i].x = (points[i].x + p1.x) / 2;
+      if (points[i].x < xmin) xmin = points[i].x;
+      if (points[i].x > xmax) xmax = points[i].x;
+      points[i].y = (points[i].y + p1.y) / 2;
+      if (points[i].y < ymin) ymin = points[i].y;
+      if (points[i].y > ymax) ymax = points[i].y;
+    }
+  }
+  x.domain([xmin, xmax]);
+  y.domain([ymin, ymax]);
+  for (var i = 0; i < n; i++) {
+    points[i].x = x(points[i].x);
+    points[i].y = y(points[i].y);
+  }
+  render();
+  if (repeat) timer = setTimeout(function() { transform(repeat); }, 51);
+  else if (timer) click();
+}
+
+var x = d3.scale.linear().domain([0, w]).range([0, w]),
+    y = d3.scale.linear().domain([0, h]).range([0, h]);
+
+var vis = d3.select("#vis").append("svg")
+    .attr("width", w + p * 2)
+    .attr("height", w + p * 2)
+  .append("g")
+    .attr("transform", "translate(" + p + "," + p + ")");
+vis.append("polygon");
+
+randomise();
+d3.select("#go").on("click", click);
+d3.select("#alternate").on("change", function() {
+  alternate = 1 + this.checked;
+});
+
+function render() {
+  vis.select("polygon")
+      .attr("points", points.map(function(p) {
+        return p.x + "," + p.y;
+      }).join(" "));
+  var circle = vis.selectAll("circle")
+      .data(points);
+  circle.enter().append("circle")
+      .attr("r", 5)
+      .attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+  circle
+      .attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+  circle.exit().remove();
+}
+
+function click() {
+  if (!timer) {
+    transform(true);
+    d3.select("#go").property("value", "Stop");
+  } else {
+    clearTimeout(timer);
+    timer = null;
+    d3.select("#go").property("value", "Go");
+  }
+}
+</script>
+
+<p>Note that in the above demonstration, the scales are automatically adjusted with each step.</p>
+<p>I discovered this while reading <em>The Mathematical Experience</em>, shown as an example of "order out of chaos".  In fact, Elmachtoub and van Loan show using eigenanalysis that any random polygon will tend towards an ellipse tilted at 45° when undergoing this transformation.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="http://www.amazon.co.uk/Mathematical-Experience-Study-Philip-Davis/dp/0817637397/">The Mathematical Experience</a>, Philip J. Davis, Reuben Hersh, pp. 175-177.
+  <li><a href="http://www.cs.cornell.edu/cv/ResearchPDF/PolygonSmoothingPaper.pdf">From Random Polygon to Ellipse: An Eigenanalysis</a>, Adam N. Elmachtoub, Charles F. van Loan.
+  <li>Thanks to Phil Howard for suggesting the “show alternate frames” option, and to Roy Tu for pointing out a bug in the implementation.
+</ul>

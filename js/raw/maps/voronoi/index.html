@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Spherical Voronoi Diagram</title>
+<style>
+@import url(../maps.css);
+
+.delaunay {
+  stroke: #000;
+  fill: none;
+}
+
+.point {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: red;
+}
+
+.circle {
+  stroke: blue;
+  stroke-width: .5px;
+  fill: none;
+}
+
+.voronoi {
+  stroke: #000;
+}
+
+.graticule {
+  stroke: #000;
+  stroke-width: .25px;
+  fill: none;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Spherical Voronoi Diagram</h1>
+
+<div id="map"></div>
+
+<p><label for="circumcircle"><input type="checkbox" id="circumcircle"> Circumcircles</label>
+  <label for="delaunay"><input type="checkbox" id="delaunay"> Delaunay triangulation</label>
+
+<div class="wrapper">
+  <p>A <a href="http://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</a> for a set of seed points divides space into a number of regions.  There is one region for each seed, consisting of all points closer to that seed than any other.  In this case, the space is the surface of the globe (approximated as a sphere).
+  <p>This implementation uses a randomised incremental algorithm to compute the 3D <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the spherical points.
+  The 3D convex hull of the spherical points is equivalent to the spherical <a href="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangulation</a> of these points.
+  <p>A work in progess!  Remaining items:
+  <ul>
+    <li>Handle coplanar points correctly.
+    <li>Show the spherical convex hull (this is the boundary of the Delaunay triangulation for points ⊆ hemisphere, otherwise the whole sphere).
+  </ul>
+
+  <div class="thumb">
+    <a href="airports/"><img src="airports/thumb.png"></a>
+    <a href="airports/">World Airports Voronoi</a>
+  </div>
+  <div class="thumb">
+    <a href="us-capitals/"><img src="us-capitals/thumb.png"></a>
+    <a href="us-capitals/">United States of Voronoi</a>
+  </div>
+  <div class="thumb">
+    <a href="capitals/"><img src="capitals/thumb.png"></a>
+    <a href="capitals/">World Capitals Voronoi</a>
+  </div>
+  <div class="clear"></div>
+</div>
+
+<!-- References:
+
+Robert J. Renka / Algorithm 772: STRIPACK: Delaunay triangulation and Voronoi diagram on the surface of a sphere / http://dx.doi.org/10.1145/275323.275329
+Kevin Q. Brown / Geometric Transforms for Fast Geometric Algorithms / http://reports-archive.adm.cs.cmu.edu/anon/scan/CMU-CS-80-101.pdf
+Convex Hulls in 3-space / http://www.cs.arizona.edu/classes/cs437/fall11/ch3d.prn.pdf
+Voronoi Diagrams on the Sphere / http://www.cs.uu.nl/research/techreps/repo/CS-2001/2001-47.pdf
+Loren Petrich / Spherical Delaunay triangulation, convex hull, Voronoi diagram / http://lpetrich.org/Science/GeometryDemo/GeometryDemo_GMap.html
+
+Sweeping the Sphere / http://dx.doi.org/10.1109/ISVD.2010.32
+
+Convex Hull Algorithms / http://www.cse.unsw.edu.au/~lambert/java/3d/hull.html
+
+QuickHull:
+Thomas Diewald / Convex Hull 3D – Quickhull Algorithm / http://thomasdiewald.com/blog/?p=1888
+Barber, Dobkin, Huhdanpaa / http://www.cise.ufl.edu/~ungor/courses/fall06/papers/QuickHull.pdf
+
+Other:
+Veronica G. Vergara Larrea / Construction of Delaunay Triangulations on the Sphere: A Parallel Approach / http://diginole.lib.fsu.edu/cgi/viewcontent.cgi?article=5571&context=etd
+Zhang Bei / Spherical Voronoi Diagram (PhiloGL) / http://www.senchalabs.org/philogl/PhiloGL/examples/voronoi/
+
+Idea: show spherical convex hull (this is the boundary of the Delaunay triangulation in the case where we have < hemisphere, otherwise it's the whole sphere, {type: "Sphere"}
+
+-->
+
+<script src="../../d3.min.js"></script>
+<script src="../rotate/d3.geo.zoom.js"></script>
+<script src="d3.geo.voronoi.js?2"></script>
+<script>
+
+var degrees = 180 / Math.PI;
+
+var width = 960,
+    height = 500;
+
+var path = d3.geo.path()
+    .projection(d3.geo.orthographic()
+      .translate([width / 2, height / 2])
+      .scale(height / 2 - 1)
+      .rotate([1, 1]) // shh! clipping issues on this branch!
+      .clipAngle(90)
+      .precision(.1));
+
+var circle = d3.geo.circle(),
+    fill = d3.scale.category20b();
+
+var enableCC = false,
+    enableDelaunay = false,
+    click = true,
+    mousePoint;
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mousemove", function() {
+      var p = path.projection().invert(d3.mouse(this));
+      if (!p || isNaN(p[0])) return;
+      if (mousePoint) mousePoint[0] = p[0], mousePoint[1] = p[1];
+      else points.push(mousePoint = p);
+      update();
+      click = true;
+    })
+    .on("click", function() {
+      if (click) mousePoint = null;
+    })
+    .call(d3.geo.zoom().projection(path.projection())
+      .on("zoom.redraw", function() {
+        d3.event.sourceEvent.preventDefault();
+        svg.selectAll("path").attr("d", path);
+        click = false;
+      }));
+
+var φ = 1.618033988749895;
+
+var points = [
+  [1,φ,0], [-1,φ,0], [1,-φ,0], [-1,-φ,0],
+  [0,1,φ], [0,-1,φ], [0,1,-φ], [0,-1,-φ],
+  [φ,0,1], [-φ,0,1], [φ,0,-1], [-φ,0,-1]
+].map(normalise).map(spherical);
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path").attr("class", "delaunay");
+svg.append("path").attr("class", "point");
+
+d3.select("#circumcircle").on("change", function() {
+  enableCC = this.checked;
+  update();
+});
+
+d3.select("#delaunay").on("change", function() {
+  enableDelaunay = this.checked;
+  update();
+});
+
+update();
+
+function update() {
+  var triangles = d3.geo.delaunay(points);
+
+  svg.select(".delaunay")
+      .datum(enableDelaunay ? {type: "GeometryCollection", geometries: triangles.map(function(triangle) {
+        if (triangle.centre.negative) return null;
+        // TODO mesh
+        triangle = triangle.coordinates.slice();
+        triangle.push(triangle[0]);
+        return {type: "LineString", coordinates: triangle};
+      })} : null)
+      .attr("d", path);
+
+  svg.select(".hull")
+      .datum(null) // TODO
+      .attr("d", path);
+
+  var cell = svg.selectAll(".voronoi")
+      .data(d3.geo.voronoi(points, triangles).geometries);
+  cell.enter().insert("path", ".graticule")
+      .attr("class", "voronoi");
+  cell.exit().remove();
+  cell.style("fill", function(_, i) { return fill(i); })
+      .attr("d", path);
+
+  var circumcircle = svg.selectAll(".circle")
+      .data(enableCC ? triangles.map(function(t) {
+        return circle.origin(spherical(t.centre)).angle(t.centre.radius * degrees)();
+      }) : []);
+  circumcircle.enter().insert("path", ".point").attr("class", "circle")
+  circumcircle.exit().remove();
+  circumcircle.attr("d", path);
+
+  svg.select(".point")
+      .datum({type: "MultiPoint", coordinates: points})
+      .attr("d", path);
+}
+
+function normalise(p) {
+  var n = p.length,
+      s = 0;
+  for (var i = 0; i < n; ++i) s += p[i] * p[i];
+  s = 1 / Math.sqrt(s);
+  for (var i = 0; i < n; ++i) p[i] *= s;
+  return p;
+}
+
+function spherical(cartesian) {
+  return [
+    Math.atan2(cartesian[1], cartesian[0]) * degrees,
+    asin(cartesian[2]) * degrees
+  ];
+}
+
+function asin(x) {
+  return Math.asin(Math.max(-1, Math.min(1, x)));
+}
+
+</script>

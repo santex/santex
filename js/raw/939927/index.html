@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+circle {
+  fill: #000;
+  stroke: #fff;
+  stroke-width: 2px;
+}
+
+path {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: bold 10px sans-serif;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500,
+    radius = 240;
+
+var angle = d3.scale.ordinal()
+    .rangePoints([0, 360], 1);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+d3.json("/data/network.json", function(error, nodes) {
+  var nodeByName = d3.map(),
+      links = [];
+
+  nodes.forEach(function(d) { nodeByName.set(d.name, d); });
+
+  nodes.forEach(function(source) {
+    source.connections.forEach(function(target) {
+      links.push({source: source, target: nodeByName.get(target)});
+    });
+  });
+
+  angle.domain(nodes.map(function(d) { return d.name; }));
+
+  var link = svg.append("g")
+      .attr("class", "links")
+    .selectAll("path")
+      .data(links)
+    .enter().append("path")
+      .attr("d", curve);
+
+  var node = svg.append("g")
+      .attr("class", "nodes")
+    .selectAll("g")
+      .data(nodes)
+    .enter().append("g")
+      .attr("transform", function(d) { return "rotate(" + angle(d.name) + ")translate(" + radius + ",0)"; });
+
+  node.append("circle")
+      .attr("r", 5);
+
+  node.append("text")
+      .attr("dy", ".35em")
+      .attr("x", 6)
+      .text(function(d) { return d.name; })
+    .filter(function(d) { return (angle(d.name) + 90) % 360 > 180; }) // flipped
+      .attr("x", -6)
+      .attr("transform", "rotate(-180)")
+      .style("text-anchor", "end");
+});
+
+function curve(link) {
+  var a0 = angle(link.source.name) / 180 * Math.PI,
+      a1 = angle(link.target.name) / 180 * Math.PI,
+      x0 = Math.cos(a0) * radius, y0 = Math.sin(a0) * radius,
+      x1 = Math.cos(a1) * radius, y1 = Math.sin(a1) * radius,
+      dx = x0 - x1,
+      dy = y0 - y1,
+      l = Math.sqrt(dx * dx + dy * dy);
+  return "M" + x0 + "," + y0
+      + "A" + l * 2 + "," + l * 2 + " 0 0 1 "
+      + x1 + "," + y1;
+}
+
+</script>

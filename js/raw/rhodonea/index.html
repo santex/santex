@@ -1,0 +1,98 @@
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 1em auto;
+    width: 960px;
+  }
+  #vis {
+    margin: 2em 0;
+  }
+</style>
+<div id="vis"><img src="rhodonea.png"></div>
+
+<script src="/assets/js/d3.v2.min.js"></script>
+<script>
+  var w = 960,
+      h = 600,
+      d = 9,
+      n = 19,
+      dx = Math.min(w / (n + .5), h / (d + .5));
+  w = dx * (n + .5);
+  h = dx * (d + .5);
+
+  var line = d3.svg.line()
+      .interpolate("cardinal-closed")
+      .x(function(d) { return d[0]; })
+      .y(function(d) { return d[1]; })
+
+  d3.select("#vis").selectAll("*").remove();
+  var vis = d3.select("#vis").append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+  // Easier to download raw SVG with this.
+  vis.append("style").text("text { font-family: sans-serif; }\nline, path { stroke: #000; fill: none; }");
+
+  var rose = vis.selectAll("g").data(d3.range(d * n).map(function(i) {
+        return [1 + i % n, 1 + ~~(i / n)];
+      }))
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(" + [d[0] * dx, d[1] * dx] + ")"; });
+  rose.append("path")
+      .attr("d", function(d) {
+        var i = gcd.apply(null, d),
+            p = Math.round(d[0] / i),
+            q = Math.round(d[1] / i),
+            k = p / q,
+            period = (p & q & 1 ? 1 : 2) * Math.PI * q;
+        return line(d3.range(0, period + Math.PI / 50, Math.PI / 50).map(function(theta) {
+          var r = (dx - 5) * Math.cos(k * theta) / 2;
+          return [r * Math.cos(theta), r * Math.sin(theta)];
+        }));
+      });
+  rose.filter(function(d) { return d[0] === 1; })
+    .append("text")
+      .style("font-size", "16px")
+      .attr("text-anchor", "end")
+      .attr("dx", "-.3em")
+      .attr("dy", ".3em")
+      .attr("x", -dx / 2)
+      .text(function(d) { return d[1]; });
+  rose.filter(function(d) { return d[1] === 1; })
+    .append("text")
+      .style("font-size", "16px")
+      .attr("text-anchor", "middle")
+      .attr("y", -dx / 2)
+      .attr("dy", "-.3em")
+      .text(function(d) { return d[0]; });
+  var first = vis.select("g");
+  first.append("text")
+      .style("font-size", "12px")
+      .attr("text-anchor", "end")
+      .attr("dx", "-.3em")
+      .attr("dy", "-1.5em")
+      .attr("x", -dx / 2)
+      .text("d");
+  first.append("text")
+      .style("font-size", "12px")
+      .attr("text-anchor", "middle")
+      .attr("dx", "-1.5em")
+      .attr("y", -dx / 2)
+      .attr("dy", "-.3em")
+      .text("n");
+  first.append("line")
+      .attr("x1", -3 * dx / 5)
+      .attr("y1", -3 * dx / 5)
+      .attr("x2", -2 * dx / 5)
+      .attr("y2", -2 * dx / 5);
+
+  function gcd(a, b) {
+    var w;
+    while (b !== 0) {
+      w = a % b;
+      a = b;
+      b = w;
+    }
+    return a;
+  }
+</script>

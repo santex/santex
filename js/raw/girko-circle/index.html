@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Girko's Circular Law - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="../media/js/science.min.js"></script>
+    <script src="../media/js/science.stats.min.js"></script>
+    <meta name="author" content="Jason Davies">
+    <style>
+      #vis { padding: 20px; }
+    </style>
+  </head>
+  <body>
+    <h1>Girko's Circular Law</h1>
+    <p>Fill an <em>n×n</em> matrix with independent and identically distributed values with variance <em>n</em> and mean <em>0</em>.
+    <p>Now plot the eigenvalues in the complex plane.  As <em>n → ∞</em>, the eigenvalues become uniformly distributed in the complex unit disc!
+    <p>For small <em>n</em>, there is a concentration along the real line, but this disappears as <em>n → ∞</em>.
+      For this visualisation I've used 100 iterations of <em>n = 50</em>.
+
+    <div id="vis"><canvas id="canvas" width="500" height="500"></canvas><img id="fallback" src="girko.png"></div>
+
+    <h2>Further Reading</h2>
+    <ul>
+      <li>Inspired by <a href="http://people.maths.ox.ac.uk/trefethen/dec11.pdf">Favorite Eigenvalue Problems</a>, SIAM News, Volume 44, Number 10, December 2011.
+      <li><a href="http://mathworld.wolfram.com/GirkosCircularLaw.html">Girko's Circular Law</a> on MathWorld.
+      <li><a href="http://terrytao.wordpress.com/2007/08/23/random-matrices-the-circular-law/">Random matrices: the circular law</a>: summary of a paper by Terence Tao and Van Vu, which generalises the circular law.
+    </ul>
+    <script src="girko.js"></script>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

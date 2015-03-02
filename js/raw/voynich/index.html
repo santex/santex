@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Voyage the Voynich Manuscript</title>
+    <link href="css/voynich.css" rel="stylesheet">
+    <link rel="image_src" href="voynich.jpg">
+  </head>
+  <body>
+    <div style="float: left; width: 250px; height: 100%; padding: 0 10px; overflow: scroll">
+      <h1 style="font-size: 1em">Voynich Manuscript Voyager</h1>
+      <p class="by">by <a href="http://www.jasondavies.com/">Jason Davies</a>.
+      <p><a href="javascript:void()" id="expand-collapse">Expand/collapse all</a>
+      <ul id="menu"></ul>
+    </div>
+    <div style="margin-left: 270px; height: 100%">
+      <div id="map" style="position:relative; width:100%; height:100%; background: #000">
+        <div id="nav">
+          <span class="copy">All images courtesy of the <a href="http://beinecke.library.yale.edu/digitallibrary/voynich.html">Beinecke Rare Book and Manuscript Library, Yale University</a>.</span>
+          <a href="#" class="prev">&laquo; Previous</a>
+          <a href="#" class="next">Next &raquo;</a>
+        </div>
+      </div>
+    </div>
+    <script src="js/underscore.js"></script>
+    <script src="js/polymaps.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/quires.js?20130112"></script>
+    <script src="js/beinecke.js?20130112"></script>
+    <script src="js/sizes.js?20130112"></script>
+    <script src="js/voynich.js"></script>
+    <script>
+      window.google_analytics_uacct = "UA-54563-3";
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-54563-3']);
+      _gaq.push(['_trackPageview']);
+      setTimeout(function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+      }, 1);
+    </script>
+  </body>
+</html>

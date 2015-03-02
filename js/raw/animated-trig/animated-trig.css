@@ -1,0 +1,26 @@
+.circle, .wave {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+.circle {
+  stroke: black;
+}
+.axis {
+  stroke: black;
+  stroke-width: 1px;
+}
+.edge {
+  stroke: #ccc;
+  stroke-width: 1px;
+}
+.line {
+  stroke: yellow;
+  stroke-width: 1.5px;
+}
+#dot {
+  fill: black;
+}
+.filler {
+  fill: white;
+}

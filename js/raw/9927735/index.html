@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.voronoi-cell {
+  fill: red;
+  fill-opacity: .1;
+  stroke: red;
+  stroke-width: 1.5px;
+}
+
+.voronoi-mesh {
+  fill: none;
+  stroke: black;
+  stroke-dasharray: 1,2;
+  stroke-opacity: .5;
+}
+
+</style>
+<body>
+<script src="d3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var points = d3.range(100).map(function() {
+  return [
+    Math.random() * width,
+    Math.random() * height
+  ]
+});
+
+var voronoi = d3.geom.voronoi()
+    .clipExtent([[-1, -1], [width + 1, height + 1]]);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var topology = voronoi.topology(points);
+
+svg.append("path")
+    .datum(topojson.mesh(topology, topology.objects.voronoi, function(a, b) { return a !== b; }))
+    .attr("class", "voronoi-mesh")
+    .attr("d", d3.geo.path().projection(null));
+
+svg.append("path")
+    .datum(topojson.merge(topology, topology.objects.voronoi.geometries.filter(function(d, i) { return i & 1; })))
+    .attr("class", "voronoi-cell")
+    .attr("d", d3.geo.path().projection(null));
+
+svg.append("g")
+    .attr("class", "voronoi-site")
+  .selectAll("circle")
+    .data(points)
+  .enter().append("circle")
+    .attr("r", 2.5)
+    .attr("transform", function(d) { return "translate(" + d + ")"; });
+
+</script>

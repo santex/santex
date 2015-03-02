@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Interrupted Goode Raster</title>
+<style>
+@import url(../../maps.css);
+
+#map {
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.layer {
+  -webkit-transform-origin: 0 0 0;
+}
+
+.tile {
+  position: absolute;
+  display: block;
+}
+
+#copyright {
+  font-size: 10px;
+  color: #999;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Reprojected Raster Tiles</a>
+<h1>Interrupted Goode Raster</h1>
+<div id="map"></div>
+
+<p>A zoomable world raster map on an <a href="http://bl.ocks.org/mbostock/4448587">interrupted Goode Homolosine projection</a>, using tiles from <a href="http://www.microsoft.com/maps/">Bing</a>.
+<div class="wrapper">
+  <p id="copyright">
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../d3.geo.projection.min.js?20130523"></script>
+<script src="../../topojson.min.js"></script>
+<script src="../../d3.quadtiles.js"></script>
+<script src="../d3.geo.raster.js"></script>
+<script>
+
+var ratio = window.devicePixelRatio || 1,
+    width = 960 * ratio,
+    height = 500 * ratio,
+    p = .5 * ratio,
+    imageUrl,
+    subdomains;
+
+var projection = d3.geo.interrupt(d3.geo.homolosine.raw)
+    .lobes([[ // northern hemisphere
+      [[-180,   0], [-100,  90], [ -40,   0]],
+      [[ -40,   0], [  30,  90], [ 180,   0]]
+    ], [ // southern hemisphere
+      [[-180,   0], [-160, -90], [-100,   0]],
+      [[-100,   0], [ -60, -90], [ -20,   0]],
+      [[ -20,   0], [  20, -90], [  80,   0]],
+      [[  80,   0], [ 140, -90], [ 180,   0]]
+    ]])
+    .translate([width / 2, height / 2])
+    .scale(150 * ratio)
+    //.scale(9600)
+    //.translate([-1295, 8930])
+    .clipExtent([[p, p], [width - p, height - p]]);
+
+var raster = d3.geo.raster(projection);
+
+var layer = d3.select("#map")
+    .style("width", width / ratio + "px")
+    .style("height", height / ratio + "px")
+    .call(d3.behavior.zoom()
+      .translate([.5 * width / ratio, .5 * height / ratio])
+      .scale(projection.scale() / ratio)
+      .scaleExtent([150, 1e8])
+      .on("zoom", function() {
+        var t = d3.event.translate,
+            s = d3.event.scale;
+        projection.translate([t[0] * ratio, t[1] * ratio]).scale(s * ratio);
+        layer.call(raster);
+      }))
+  .append("div").attr("class", "layer")
+    .style(prefix + "transform", "scale(" + 1 / ratio + ")")
+    .style(prefix + "transform-origin", "0 0 0")
+  .append("div")
+    .style(prefix + "transform-origin", "0 0 0");
+
+function callback(json) {
+  d3.select("#copyright").text(json.copyright);
+  var resource = json.resourceSets[0].resources[0];
+  layer.call(raster.subdomains(resource.imageUrlSubdomains).url(resource.imageUrl));
+}
+
+</script>
+<script src="//dev.virtualearth.net/REST/V1/Imagery/Metadata/Aerial?mapVersion=v1&output=json&key=Akd6XrbpI3dRKpqq4XJql_jl1Bjs-vR2d5ktWeFilzbi5mjSN-cmTApUwBjiNOoH&jsonp=callback"></script>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Number of unique rectangle-free 4-colourings for an nxm grid</title>
+<style>
+  body { font-family: sans-serif; }
+  td.c1 { background: red; }
+  td.c2 { background: green; }
+  td.c3 { background: blue; }
+  td.c4 { background: yellow; }
+  table { border: solid #ccc 1px; }
+  td, th { width: 15px; height: 15px; border: solid #ccc 1px; }
+  td, th { text-align: right; width: 1.5em; height: 1.5em; font-size: smaller; }
+  path { fill: none; stroke: steelblue; }
+  text { font-size: 10px; }
+</style>
+<script src="../media/js/d3.v2.min.js"></script>
+
+<h1>Number of unique rectangle-free 4-colourings for an nxm grid</h1>
+
+<script>
+  var colour = d3.scale.log().range(["#fff", "#666"]),
+      table = d3.select("body").append("table");
+  d3.csv("colours.csv", function(data) {
+    var count = data.length,
+        max = 1;
+    data = data.map(function(row, r) {
+      return d3.range(0, r + 2).map(function(i) {
+        if (!i) return r+1;
+        var d = row[i+""];
+        if (d > max) max = d;
+        return d ? format(d) : "?";
+      });
+    });
+    colour.domain([1, max]);
+    var th = table.append("tr").selectAll("th").data(d3.range(0, count+1));
+    th.enter().append("th").text(function(d, i) { return i ? d : "nxm"; });
+    var row = table.selectAll("tr.row").data(data);
+    row.enter().append("tr").attr("class", "row");
+    var cell = row.selectAll("td").data(Object);
+    cell.enter().append("td");
+    cell.text(function(d, i) { return i ? d : d; })
+        .style("background-color", function(d) { return d === "?" ? "lightblue" : null; });
+    table.append("tr").selectAll("td")
+        .data(["n", "4<sup>n</sup>"])
+      .enter().append("td").html(String);
+  });
+
+  function format(d) {
+    var s = [], n = d.length;
+    while ((n -= 3) > 0) {
+      s.unshift(d.substring(n, n + 3));
+    }
+    s.unshift(d.substring(0, n + 3));
+    return s.join(",");
+  }
+</script>
+
+<p>For strange people like myself, a headline like <a href="http://blog.computationalcomplexity.org/2009/11/17x17-challenge-worth-28900-this-is-not.html">The 17x17 challenge. Worth $289.00. This is not a joke.</a>" is like waving a red rag in front of a bull!
+
+<h2>Update (February 2012)</h2>
+<p><a href="http://blog.computationalcomplexity.org/2012/02/17x17-problem-solved-also-18x18.html">17x17 and 18x18 colourings have been found!</a>
+<div id="example" class="YlGnBl"></div>
+<script>
+  d3.text("17.txt", function(data) {
+    d3.select("#example").append("table").selectAll("tr")
+        .data(d3.csv.parseRows(data))
+      .enter().append("tr").selectAll("td")
+        .data(Object)
+      .enter().append("td").attr("class", function(d) { return "c" + d; }).html("&nbsp;");
+  });
+</script>
+
+<h2>Method: Binary Decision Diagrams (BDDs)</h2>
+<p>Having recently encountered binary decision diagrams (BDDs) via Knuth's Computer Musings, I thought they might be a good approach as they tend to be useful for combinatorial problems.  Knuth calculates various large numbers such as the number of possible knight's tours for various board sizes.
+<p>I wrote a program to construct a BDD for an arbitrary nxm board.  Unfortunately, I quickly ran out of memory for relatively small boards, and had to rent time on a 32GB Amazon EC2 cloud computer to compute the number of colourings for the 5x4.  I also ran into issues with the BDD libraries not coping well with more than 400 million nodes.
+<p>I eventually found a better variable ordering that allowed me to solve the 5x5 using a peak of around 24GB of RAM in 1hr40m, but 17x17 still seems beyond reach as each new square seems to roughly double the number of nodes.
+<p>Having said that, the numbers calculated so far would be very useful for verifying a closed-form expression, if it exists.
+
+<h2>Character of the Problem</h2>
+<p>Since we know that the number of possible rectangles in an nxn grid is <em>1/4 n<sup>2</sup>(n-1)<sup>2</sup></em>, we can get a rough idea of what the number of solutions looks like if we take the factorial of the number of possible rectangles and subtract it from the total number of possible 4-colourings i.e. O(<em>4<sup>n<sup>2</sup></sup> - n<sup>4</sup>!)</em>.  Here is a plot of this function.  You can see that the number grows almost exponentially, and then suddenly and sharply drops off to below zero.
+<p>This agrees with what we know already i.e. that there are no solutions for 19x19 and above, but that the number of solutions grows quickly for smaller nxm, so it probably drops off sharply at some point.
+<script>
+  var w = 200,
+      h = 100,
+      p = [10, 20, 30, 30],
+      x = d3.scale.linear().domain([0, 1.6]).range([0, w]),
+      y = d3.scale.linear().domain([0, 6]).range([h, 0]);
+  var svg = d3.select("body").append("svg")
+      .attr("width", w + p[1] + p[3])
+      .attr("height", h + p[0] + p[2])
+    .append("g")
+      .attr("transform", "translate(" + p[3] + "," + p[0] + ")");
+  svg.append("g")
+      .attr("transform", "translate(0," + y(0) + ")")
+      .call(d3.svg.axis().scale(x));
+  svg.append("g")
+      .attr("transform", "translate(" + x(0) + ")")
+      .call(d3.svg.axis().scale(y).orient("left"));
+  svg.append("path")
+      .data([d3.range(0, 1.6, .01).map(f)])
+      .attr("d", d3.svg.line()
+        .interpolate("basis")
+        .x(function(d, i) { return x(i * .01); })
+        .y(y));
+
+  function f(n) { return Math.pow(4, n * n) - factorial(Math.pow(n, 4)); }
+
+  // From: http://stackoverflow.com/a/3959372/64009
+  function factorial(op) {
+    // Lanczos Approximation of the Gamma Function
+    // As described in Numerical Recipes in C (2nd ed. Cambridge University Press, 1992)
+    var z = op + 1;
+    var p = [1.000000000190015, 76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 1.208650973866179E-3, -5.395239384953E-6];
+
+    var d1 = Math.sqrt(2 * Math.PI) / z;
+    var d2 = p[0];
+
+    for (var i = 1; i <= 6; ++i)
+     d2 += p[i] / (z + i);
+
+    var d3 = Math.pow((z + 5.5), (z + 0.5));
+    var d4 = Math.exp(-(z + 5.5));
+
+    d = d1 * d2 * d3 * d4;
+
+    return d;
+  }
+</script>
+
+<h2>The Online Encyclopedia of Integer Sequences (OEIS)</h2>
+<p>I was excited to find that no-one else seemed to have calculated these numbers before, so I was able to make my <a href="https://oeis.org/A200045">first contribution</a> to the OEIS!
+
+<h2>Searching for a Closed-Form Expression</h2>
+<p>I've spent some time trying to analyse the 3x3 solutions by hand (2x2 is trivial: <em>4<sup>4</sup> - 4</em> solutions, because there are only 4 colourings containing a monochromatic rectangle).  I was hoping to find some simplification when analysing the 3x3 that could be extended for arbitrary nxm.
+<p>There are 9 possible rectangles in the 3x3 grid, so it's possible to analyse each one in turn.  The total number of solutions should be <em>4<sup>nm</sup> - R</em>, where <em>R</em> is the number of unique colourings containing monochromatic rectangles.  The uniqueness is the tricky part, of course!
+<p>I found it confusing to even calculate this by hand, so I wrote a small program to compute the number of non-overlapping colourings for each monochromatic rectangle.
+<p>The first few rectangles are simple but it gets more and more difficult to figure out exactly which previous rectangles overlap the current one and how that affects the number of colourings.
+<p>I'm still hopeful that a closed-form expression can be found, or even a non-closed-form expression that's more efficient to compute than constructing the full BDD.  Then we'll have a definitive answer for whether the 17x17 is colourable or not.  Of course, it seems like the experts would have already tried to find such an expression, but maybe they didn't have the numbers above to guide them!
+
+<h2>Further Reading</h2>
+<ul>
+  <li><a href="http://blog.computationalcomplexity.org/2009/11/17x17-challenge-worth-28900-this-is-not.html">The 17x17 challenge. Worth $289.00. This is not a joke.</a>
+  <li><a href="http://blog.computationalcomplexity.org/2011/03/update-on-17x17-problem.html">Update on 17x17 problem</a>.
+  <li>Sloane's <a href="https://oeis.org/A200045">A200045</a>.
+</ul>

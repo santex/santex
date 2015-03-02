@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Hilbert Stocks</title>
+<style>
+@import url(../style.css);
+
+text { fill: #ccc; }
+g.close circle { fill: #333; }
+g.close path { fill: #ccc; }
+g.close { cursor: pointer; }
+div.chart { float: left; width: 180px; height: 200px; background: #000; margin: 3px; }
+#code { font-size: 1.1em; }
+
+h2 {
+  margin: 1em 0 .5em 0;
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+  font-weight: normal;
+}
+
+div.horizon { position: relative; }
+
+div.horizon span {
+  font-size: .9em;
+  font-weight: bold;
+  position: absolute;
+  right: 2px;
+}
+
+#vis {
+  width: 744px;
+}
+
+div.horizon { text-align: right; }
+
+</style>
+<link href="../button.css" rel="stylesheet">
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a>
+<h1>Hilbert Stocks</h1>
+
+<p>Ten years of daily stock prices compressed into Hilbert curves.
+
+<p><a href="../hilbert-curve/">Hilbert curves</a> can be used to compress a
+  1D dataset into a 2D chart.  This is particularly useful for very large
+  datasets.  In this demonstration, ten years of daily stock prices are
+  plotted along hilbert curves.  Data close together in time will appear
+  close together in 2D-space.
+
+<p>The charts below show the <em>similarity</em> between various companies'
+  stock price trends over the past 10 years.  Prices are normalised for each
+  company i.e. the trends are more important than the prices.  Blue
+  indicates low and orange indicates high, on a logarithmic scale.
+
+<p>The curves are in reverse chronological order, so the most recent prices
+  are at the top left.
+
+<div id="vis"></div>
+<div style="clear: left"></div>
+
+<h2>Pros and Cons</h2>
+
+<p>The advantage of using a Hilbert curve is that the data density is very
+  high. The charts above show the data for every single day over 10 years,
+  so that's roughly 2,600 data points.
+
+<p>On the other hand, the Hilbert curve makes it difficult to see the actual
+  chronological location of a particular datum.  It's possible to see
+  roughly where in the ten years a point is by looking at the four
+  quadrants, but only if you are already acquainted with Hilbert curves and
+  know which directions they take.
+
+<h2>Horizon Charts</h2>
+
+<p><a href="http://bost.ocks.org/mike/">Mike Bostock</a> suggested using <a
+  href="http://vis.berkeley.edu/papers/horizon/">horizon charts</a> to
+  achieve a higher data density than normal line charts while retaining the
+  chronological scale.
+
+<div id="horizon"></div>
+
+<h2>Conclusion</h2>
+
+<p>Hilbert curves provide impressive data density and are good at preserving
+  the locality of the original one-dimensional dataset.
+
+<p>However, it becomes almost impossible to discern the precise location of
+  a particular point relative to the original one-dimensional scale, so
+  "high-density" alternatives such as Horizon Charts may be better if that's
+  important.
+  
+<p>Either way, I'm sure Edward Tufte would be impressed by the
+  <a href="http://en.wikipedia.org/wiki/Edward_Tufte#cite_ref-5">data density</a>
+  achieved here!
+
+<h2>Further Reading</h2>
+
+<p>Full credit goes to <a href="http://vis.renci.org/jeff/">Jeff Heard</a> for
+  <a href="http://vis.renci.org/jeff/2009/08/24/plotting-timeseries-in-space-filling-curves/">coming up
+  with this</a> in the first place!
+
+<p>Stock price data from <a href="http://finance.yahoo.com/">Yahoo! Finance</a>.
+
+<script src="../d3.min.js"></script>
+<script src="d3.horizon.js"></script>
+<script src="hilbert.js"></script>
+<script src="horizon.js"></script>
+<script src="hilbert-stocks.js"></script>

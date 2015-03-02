@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>United States of Voronoi</title>
+<style>
+
+@import url(../../maps.css);
+
+path {
+  stroke-linejoin: round;
+}
+
+.voronoi-border {
+  stroke: #fff;
+  stroke-width: .5px;
+  fill: none;
+}
+
+.voronoi-label {
+  fill: #f6f6f6;
+  font: 14px sans-serif;
+}
+
+.voronoi-label.small {
+  fill: #333;
+}
+
+.points {
+  pointer-events: none;
+}
+
+.states {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: none;
+}
+
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Spherical Voronoi Diagrams</a>
+
+<h1>Major League Baseball Voronoi</h1>
+
+<div id="map"></div>
+
+<div class="wrapper">
+  <p class="cite">Data: <a href="http://nationalatlas.gov">National Atlas</a> &amp; <a href="https://gist.github.com/the55/2155142">mlb_stadium.json</a>.
+  Suggested by <a href="http://rynomite.blogspot.com">Eric Rynerson</a>.
+
+  <p>The contiguous United States partitioned by nearest <a href="http://en.wikipedia.org/wiki/Major_League_Baseball">Major League Baseball</a> stadium.
+  Compare with <a href="http://www.nytimes.com/interactive/2014/04/23/upshot/24-upshot-baseball.html">Up Close on Baseball’s Borders</a> by The New York Times.
+  <p>Calculated using a <a href="../">spherical Voronoi diagram</a>, which takes into account the curvature of the Earth when computing distances.
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../../queue.min.js"></script>
+<script src="../../topojson.min.js"></script>
+<script src="../d3.geo.voronoi.js?1"></script>
+<script>
+
+var width = 960,
+    height = 600;
+
+var projection = d3.geo.albers()
+    .clipExtent([[0, 0], [width, height]])
+    .translate([width / 2, height / 2])
+    .scale(1300)
+    .precision(.1);
+
+var path = d3.geo.path()
+    .projection(projection)
+    .pointRadius(2);
+
+var svg = d3.selectAll("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var fill = d3.scale.category20();
+
+queue()
+    .defer(d3.json, "../../us-10m.json")
+    .defer(d3.csv, "mlb.csv")
+    .await(ready);
+
+function ready(error, us, stadiums) {
+  var defs = svg.append("defs");
+  defs.append("path")
+      .datum(topojson.feature(us, us.objects.land))
+      .attr("id", "land")
+      .attr("d", path);
+
+  defs.append("clipPath")
+      .attr("id", "clip")
+    .append("use")
+      .attr("xlink:href", "#land");
+
+  svg.append("use")
+      .attr("xlink:href", "#land")
+      .attr("class", "land");
+
+  var coordinates = stadiums.map(function(d) { return [+d.longitude, +d.latitude]; });
+
+  var delaunay = d3.geo.delaunay(coordinates),
+      voronoi = d3.geo.voronoi(coordinates, delaunay).geometries;
+
+  var g = svg.append("g")
+      .attr("clip-path", "url(#clip)");
+
+  g.selectAll(".voronoi")
+      .data(voronoi)
+    .enter().append("path")
+      .attr("class", "voronoi")
+      .style("fill", function(d, i) { return fill(d.color = d3.max(d.neighbors, function(n) { return voronoi[n].color; }) + 1 | 0); })
+      .attr("d", path);
+
+  g.append("path")
+      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+      .attr("class", "states")
+      .attr("d", path);
+
+  g.selectAll(".voronoi-border")
+      .data(voronoi)
+    .enter().append("path")
+      .attr("class", "voronoi-border")
+      .attr("d", path);
+
+  svg.append("path")
+      .datum({type: "MultiPoint", coordinates: coordinates})
+      .attr("class", "points")
+      .attr("d", path);
+
+  svg.selectAll(".voronoi-label")
+      .data(voronoi)
+    .enter().append("text")
+      .attr("class", "voronoi-label")
+      .attr("transform", function(_, i) { return "translate(" + projection(coordinates[i]) + ")"; })
+      .attr("dx", function(_, i) { return stadiums[i].x; })
+      .attr("dy", function(_, i) { return stadiums[i].y; })
+      .text(function(_, i) { return stadiums[i].name; })
+      .classed("small", function(_, i) { return /^Blue Jays|(M(ets|arlins))$/.test(stadiums[i].name); });
+  /*
+      .call(d3.behavior.drag()
+        .origin(function(d, i) { d = stadiums[i]; return {x: d.x || 0, y: d.y || 0}; })
+        .on("drag", function(d, i) {
+          d = stadiums[i];
+          d3.select(this)
+              .attr("dx", d.x = d3.event.x)
+              .attr("dy", d.y = d3.event.y);
+        }));
+
+  window.dump = function() {
+    var headers = ["name", "address", "longitude", "latitude", "x", "y"];
+    d3.select("body").append("textarea")
+        .style({width: "100%", height: "300px"})
+        .text(d3.csv.formatRows([headers].concat(stadiums.map(function(d) {
+          return headers.map(function(key) { return d[key]; });
+        }))));
+  };
+  */
+}
+
+</script>

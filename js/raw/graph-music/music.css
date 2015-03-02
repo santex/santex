@@ -1,0 +1,45 @@
+#matrix td {
+  text-align: right;
+  border: solid #ccc 1px;
+}
+
+rect {
+  fill: #fff;
+}
+
+#vis svg {
+  border: solid #ccc 1px;
+}
+
+#vis circle, #vis line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+#vis circle {
+  fill: #fff;
+  fill-opacity: .5;
+  cursor: move;
+}
+
+#vis circle.selected {
+  fill: #ff7f0e;
+  stroke: #ff7f0e;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+#spectrum circle {
+  fill: #fff;
+  stroke: #000;
+}
+
+#spectrum line {
+  stroke: #000;
+}

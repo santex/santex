@@ -1,0 +1,55 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    
+<style type="text/css"> 
+    @import url("http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/example.css");
+ 
+    html, body {height: 100%;}
+    svg {display: block;}
+    .layer circle {fill: #aaa;stroke: #000;stroke-width: 2px;}
+</style> 
+<script type="text/javascript" src="http://www.magerleagu.es/simplegeo-JSONP/simplegeo.js/build/simplegeo.min.js"></script> 
+<script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/polymaps.js"></script> 
+ 
+</head> 
+ 
+<body> 
+<script type="text/javascript"> 
+    var client = new simplegeo.Client('qZhhZJbMWk2pgfp7RZUJTnVSTud8anQE');
+ 
+    var lat = 37.797933;
+    var lon = -122.423937;
+ 
+    client.getNearby('com.simplegeo.global.flickr', lat, lon, {"limit": 100}, displayData);
+        
+    var po = org.polymaps;
+ 
+    var map = po.map()
+        .container(document.body.appendChild(po.svg("svg")))
+        .center({lat: lat, lon: lon})
+        .zoom(17)
+        .zoomRange([12, 16])
+        .add(po.interact());
+ 
+    map.add(po.image()
+        .url(po.url("http://{S}tile.cloudmade.com"
+        + "/5814d279db61404b9e52115b06b9e7b3" // http://cloudmade.com/register
+        + "/1714/256/{Z}/{X}/{Y}.png")
+        .hosts(["a.", "b.", "c.", ""])));
+    
+    var geoJson = po.geoJson()
+        .features([]);
+
+    map.add(geoJson);
+
+    map.add(po.compass()
+        .pan("none"));
+    
+    function displayData(data) {
+       geoJson.features(data.data.features);
+    }
+ 
+</script> 
+</body> 
+</html>

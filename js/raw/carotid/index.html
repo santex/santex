@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<title>Carotid-Kundalini Fractal Explorer - Jason Davies</title>
+<link rel="stylesheet" href="../media/style.css">
+<link rel="stylesheet" href="carotid.css">
+<script src="../media/js/d3.v2.min.js"></script>
+
+<h1>Carotid-Kundalini Fractal Explorer</h1>
+<p>It turns out that if you superimpose plots of Carotid-Kundalini functions <em>CK<sub>n</sub>(x) = cos(nx cos<sup>-1</sup>x)</em> for different <em>n</em>, you get an intriguing fractal-like structure.
+<div id="vis"><img src="carotid.png"><p>Sorry, you need an SVG-compatible browser to view the interactive version.</div>
+<p><label for="n">n</label> <input id="n" type="range" min="1" max="100" value="25"> <span id="n-value">25</span>
+<p>You can pan and zoom by dragging and scrolling a mouse (or dragging and pinching on a touch device).
+<h2>See Also</h2>
+<ul>
+  <li><a href="http://sprott.physics.wisc.edu/pickover/carotid.htm">Are Infinite Carotid-Kundalini Functions Fractal?</a> by Clifford Pickover.
+  <li><a href="http://paulbourke.net/fractals/carotid/">Carotid Function Fractal</a> by Paul Bourke.
+  <li><a href="http://mathworld.wolfram.com/Carotid-KundaliniFractal.html">Carotid-Kundalini Fractal</a> on MathWorld.
+  <li><a href="http://www.cut-the-knot.org/Curriculum/Algebra/ChebyshevTest.shtml">Chebyshev Polynomials</a> by A. Bogomolny: these closely related functions show similar behaviour when superimposed.
+</ul>
+<p>Built with <a href="http://mbostock.github.com/d3/">D3</a>.
+<script src="carotid.js"></script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

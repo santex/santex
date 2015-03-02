@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/polymaps.js"></script>
+    <script type="text/javascript" src="simplegeo.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/example.css");
+
+html, body {
+  height: 100%;
+}
+
+svg {
+  display: block;
+}
+
+circle {
+  fill: lightsteelblue;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var client = new simplegeo.Client('***');
+client.getNearby('com.simplegeo.global.flickr', 37.781027, -122.421684, alertData);
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .center({lat: 37.781027, lon: -122.421684})
+    .zoom(16)
+    .add(po.interact());
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+map.add(geoJson = po.geoJson());
+
+map.add(po.compass()
+    .pan("none"));
+
+function alertData(data) {
+  geoJson.features(data.data.features);
+}
+
+    </script>
+  </body>
+</html>

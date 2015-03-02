@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Spilhaus Shoreline Map XVI</title>
+<style>
+@import url(../../maps.css);
+@import url(../spilhaus.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Spilhaus</a>
+
+<h1>Spilhaus Shoreline Map XVI</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>This interrupted map by <a href="http://en.wikipedia.org/wiki/Athelstan_Spilhaus">Athelstan Spilhaus</a> leaves continents completely intact and interrupts oceans only at minimum junctions.
+  <p>The projection is a transverse sinusoidal equal-area with central meridians at 60°E, 165°W and 45°W.
+
+  <p class="cite">Data: <a href="http://www.naturalearthdata.com/downloads/50m-physical-vectors/">Natural Earth, 1:50m Physical Vectors</a>.
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../topojson.min.js"></script>
+<script src="../../d3.geo.projection.min.js"></script>
+<script>
+
+var ε = 1e-6,
+    width = 960,
+    height = 500;
+
+var path = d3.geo.path();
+
+var graticule = d3.geo.graticule().minorExtent([[-180, -75], [180, 75 + ε]]).minorStep([15, 15]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var defs = svg.append("defs");
+
+d3.json("../spilhaus-50m.json?2014", function(error, world) {
+  var land = topojson.feature(world, world.objects.land),
+      outlines = topojson.feature(world, world.objects["16"]).geometry.coordinates,
+      middle = transverseSinusoidal(),
+      dx = middle([1, 0])[0] - middle([0, 0])[0];
+
+  [360 - 60, 165, 45].forEach(function(d, i) {
+    path.projection(transverseSinusoidal().translate([width / 2 + (178 - d) * dx, height / 2]).rotate([d, 0, 90]));
+
+    defs.append("clipPath")
+        .attr("id", "clip-" + i)
+      .append("use")
+        .attr("xlink:href", "#boundary-" + i);
+    svg.append("path")
+        .datum({type: "Polygon", coordinates: outlines[i]})
+        .attr("id", "boundary-" + i)
+        .attr("class", "sea")
+        .attr("d", path);
+    svg.append("path")
+        .datum(land)
+        .attr("class", "land")
+        .attr("clip-path", "url(#clip-" + i + ")")
+        .attr("d", path);
+    svg.append("path")
+        .datum(graticule)
+        .attr("clip-path", "url(#clip-" + i + ")")
+        .attr("d", path);
+  });
+});
+
+function transverseSinusoidal() {
+  return d3.geo.projection(function(λ, φ) {
+        var coordinates = d3.geo.sinusoidal.raw(λ, φ);
+        return [coordinates[1], -coordinates[0]];
+      })
+      .rotate([0, 0, 90])
+      .scale(125);
+}
+</script>

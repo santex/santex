@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>U.S. Centric World on a Gingery Projection</title>
+<style>
+
+@import url(../../katex/katex.min.css);
+
+body {
+  width: auto;
+  font-family: sans-serif;
+  line-height: 1.3em;
+}
+
+h1, h2, h3 {
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin: .5em;
+}
+
+h3 {
+  margin: .5em;
+}
+
+#header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+#header h1 {
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+  pointer-events: all;
+}
+
+#header .meta, #header h3 {
+  margin-left: auto;
+  margin-right: auto;
+  width: 250px;
+  pointer-events: all;
+}
+
+.meta {
+  font-style: italic;
+  font-size: small;
+  color: #999;
+}
+
+.meta a {
+  text-decoration: none;
+  color: #666;
+}
+
+blockquote {
+  border-left: solid #eee 10px;
+  margin-left: 0;
+  padding-left: 2em;
+}
+
+#map {
+  text-align: center;
+}
+
+.wrapper {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.background {
+  fill: #587e81;
+}
+
+.land {
+  fill: #dbbc51;
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-linejoin: round;
+}
+
+.graticule {
+  fill: none;
+  stroke: #333;
+  stroke-width: .5px;
+}
+
+.circle {
+  fill: none;
+  stroke: #f00;
+  stroke-dasharray: 5,2;
+  stroke-width: .5px;
+}
+
+.route {
+  fill: none;
+  stroke: #f00;
+  stroke-opacity: .8;
+  stroke-width: 2.5px;
+}
+
+.airport {
+  fill: #f00;
+  fill-opacity: .8;
+}
+
+.parallel, .meridian {
+  fill: none;
+  stroke: #000;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.slider .handle {
+  fill: #f00;
+  stroke: #000;
+  stroke-width: .5px;
+  cursor: move;
+}
+
+</style>
+
+<script src="../../d3.min.js"></script>
+<script src="gingery.js"></script>
+<script src="../../queue.min.js"></script>
+<script src="../topojson.min.js"></script>
+
+<div id="map">
+
+<div id="header">
+  <h1>U.S. Centric World</h1>
+  <div class="meta">on a</div>
+  <h3>Gingery Projection</h3>
+  <div class="meta">by <a href="http://www.jasondavies.com">Jason Davies</a></div>
+</div>
+
+<script>(function() {
+
+var π = Math.PI;
+
+var width = 1350,
+    height = width * Math.cos(π / 6);
+
+var origin = [-90, 40];
+
+var projection = d3.geo.gingery()
+    .rotate([-origin[0], -origin[1]])
+    .radius(30)
+    .clipAngle(180 - 1e-3)
+    .translate([width / 2, height / 2])
+    .scale(width / (2 * Math.PI))
+    .precision(.1);
+
+var color = d3.scale.category20(),
+    graticule = d3.geo.graticule()
+      .minorStep([15, 10])
+      .minorExtent([[-180, -88], [180, 88]]);
+
+var path = d3.geo.path()
+    .pointRadius(3.5)
+    .projection(projection);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var defs = svg.append("defs");
+defs.append("path")
+    .datum({type: "Sphere"})
+    .attr("id", "sphere")
+    .attr("d", path);
+
+defs.append("clipPath")
+    .attr("id", "clip")
+  .append("use")
+    .attr("xlink:href", "#sphere");
+
+svg.append("use")
+    .attr("class", "background")
+    .attr("xlink:href", "#sphere");
+
+var g = svg.append("g")
+    .attr("clip-path", "url(#clip)");
+
+g.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum(d3.geo.circle().angle(30).origin(origin))
+    .attr("class", "circle")
+    .attr("d", path);
+
+queue()
+    .defer(d3.json, "../world-110m.json")
+    .defer(d3.csv, "routes.csv")
+    .defer(d3.csv, "airports.csv")
+    .await(ready);
+
+function ready(error, world, routes, airports) {
+  g.insert("path", ".graticule")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+
+  var airportByCode = {};
+  airports.forEach(function(d) {
+    airportByCode[d.ident] = d;
+  });
+
+  g.insert("path", ".graticule")
+      .datum({type: "MultiLineString", coordinates: routes.map(function(d) {
+        var a = airportByCode[d.from],
+            b = airportByCode[d.to];
+        return [[+a.longitude_deg, +a.latitude_deg], [+b.longitude_deg, +b.latitude_deg]];
+      })})
+      .attr("class", "route")
+      .attr("d", path);
+
+  g.selectAll(".airport")
+      .data(airports)
+    .enter().insert("path", ".graticule")
+      .datum(function(d) {
+        return {
+          type: "Point",
+          coordinates: [+d.longitude_deg, +d.latitude_deg],
+          municipality: d.municipality
+        };
+      })
+      .attr("class", "airport")
+      .attr("d", path)
+    .append("title")
+      .text(function(d) { return d.municipality; });
+}
+
+})()</script>
+
+<h2>Cram’s Air Age</h2>
+
+<p>The above map is inspired by <a href="http://www.davidrumsey.com/luna/servlet/detail/RUMSEY~8~1~272461~90046279:Cram-s-Air-Age--U-S--Centric-World-">Cram’s Air Age</a>.
+The red lines show air routes.
+
+<p><a href="http://www.davidrumsey.com/luna/servlet/detail/RUMSEY~8~1~272461~90046279:Cram-s-Air-Age--U-S--Centric-World-"><img src="gingery.jpg" style="width: 800px"></a>
+
+</div>
+<div class="wrapper">
+
+<p><a href="https://twitter.com/_cingraham/status/523620915859718144">Christopher Ingraham</a> brought this map to my attention recently.
+
+<p>The only mathematical explanation I could find was <a href="http://www.google.com/patents/US2352380">U.S. patent 2,352,380</a>, filed by Walter G. Gingery in June 1944.
+
+<p><img src="US2352380-000.png" style="width: 395px">
+<img src="US2352380-001.png" style="width: 395px">
+
+<p>The globe is divided into a number of <a href="http://en.wikipedia.org/wiki/Lune_(mathematics)#Spherical_geometry">lunes</a>, in this case six lunes, with the vertices of the lunes being at the projection’s origin (near Chicago) and its antipode.
+
+<p>The central portion is projected using the azimuthal equidistant projection, up to a given distance from the origin, in this case 30°.
+The remainder is cut along the lune boundaries outside this 30° circle, and the resulting gores are flattened.
+
+<p>The flattening of the lunes is the tricky (fun) part to implement.
+Gingery gives equations for the boundaries of the lunes in projected Cartesian coordinates.
+I have simplified them slightly by taking the origin to be the centre of the small circle, rather than the centre of the lune:
+
+<p><i>y = \alpha \sin x - k \left(x - \frac{\pi}{2}\right)</i>, where <i>k = \frac{\rho \sin \alpha - \alpha \sin(\rho \cos \alpha)}{\frac{\pi}{2} - \rho \cos \alpha}</i> for <i>x \le \frac{\pi}{2}</i>, otherwise <i>k = 0</i>.
+
+<p>We can assume these equations apply to all geodesics going from the origin to its antipode, not just the boundaries.
+Each geodesic can be parameterised by an angle <i>\alpha</i> relative to the gore’s central axis.
+
+<p>The parameter <i>\rho</i> is the radius of the central circle, which you can adjust below:
+
+<script>
+
+gore(false);
+  
+function gore(parallels) {
+
+var margin = {top: 10, right: 20, bottom: 50, left: 20},
+    width = 800 - margin.left - margin.right,
+    height = 200 - margin.top - margin.bottom;
+
+var svg = d3.select(".wrapper").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var π = Math.PI,
+    degrees = 180 / π,
+    halfπ = π / 2,
+    δ = π / 100;
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d[0] * degrees); })
+    .y(function(d) { return y(d[1] * degrees); });
+
+var gingery = d3.geo.gingery().rotate([90, 90]).translate([0, 0]).scale(1);
+
+var α = π / 6; // 30°
+
+var x = d3.scale.linear().domain([0, π * degrees]).range([0, width]),
+    y = d3.scale.linear().domain([0, α * 1.3 * degrees]).range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .tickFormat(function(d) { return d + "°"; });
+
+var brush = d3.svg.brush()
+    .x(x)
+    .extent([0, 0])
+    .on("brush", brushed);
+
+function redraw() {
+  var meridian = svg.selectAll(".meridian")
+      .data(d3.range(0, α + .5 * α / 10, α / 10).map(function(α) {
+        return d3.range(-90, 91, 1).map(function(r) { return gingery([α * degrees - 1e-2, r - 1e-2]); });
+      }));
+  meridian.enter().insert("path", ".axis").attr("class", "meridian");
+  meridian.attr("d", line);
+
+  if (parallels) {
+    var parallel = svg.selectAll(".parallel")
+        .data(d3.range(-90, 91, 10).map(function(r) {
+          return d3.range(0, α + α * .05, α * .1).map(function(α) { return gingery([α * degrees, r - 1e-2]); });
+        }));
+    parallel.enter().insert("path", ".axis").attr("class", "parallel");
+    parallel.attr("d", line);
+  }
+}
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+var slider = svg.append("g")
+    .attr("class", "slider")
+    .call(brush);
+
+slider.selectAll(".extent,.resize,.background")
+    .remove();
+
+var handle = slider.append("circle")
+    .attr("class", "handle")
+    .attr("transform", "translate(0," + height + ")")
+    .attr("r", 6.5);
+
+slider.call(brush.extent([30, 30]).event);
+
+function brushed() {
+  var value = brush.extent()[0];
+
+  if (d3.event.sourceEvent) {
+    value = Math.max(0, Math.min(80, x.invert(d3.mouse(this)[0])));
+    brush.extent([value, value]);
+  }
+
+  handle.attr("cx", x(value));
+  gingery.radius(value);
+  redraw();
+}
+
+}
+</script>
+
+<p>The step where the central circle meets the gore becomes more obvious as <i>\rho</i> gets larger; this projection is only useful for <i>\rho</i> smaller than around 60°.
+
+<p>The question is, how do we convert from geographic coordinates to Cartesian coordinates?
+Perhaps this is why his projection never really took off: Gingery gives no explanation of how this is actually done!
+However, we can figure this out from a few clues.
+From the patent:
+
+<blockquote>
+  The lunes and circle thus determined, are flattened into a single plane surface providing a plurality of gores with the axes of the lunes projected as straight lines unchanged in length and each bounded by two smooth curves such that the gore approximates the shape of a lune.
+</blockquote>
+
+<p>In other words, distances are preserved along the central axis of each gore, which is projected to a straight line.
+Note that distances are also preserved going from the origin to any point within the central circle of radius <i>\rho</i>, due to the azimuthal equidistant projection.
+
+<p>For points outside this central circle, it’s reasonable to assume that distances from the origin to these points are uniformly distorted along the portion outside the central circle.
+This is not clear from the patent, but it can be verified by closely inspecting the high-resolution Air Age map.
+
+<h2>Arc Length</h2>
+<p>In order to ensure uniform distortion of distances along the curves, we need to calculate the length of the curves, which will give us an elongation factor <i>e</i> for each <i>\alpha</i>.
+
+<p>For a given geographic distance <i>r</i> along the geodesic, we need to find <i>x</i> and <i>y</i> such that the distance along the projected curve is equal to the geographic distance with the elongation factor applied.
+
+<p>The <a href="http://en.wikipedia.org/wiki/Arc_length">arc length</a> along a curve <i>y = f(x)</i> from <i>x = a</i> to <i>x = b</i> can be found as follows:
+
+<p class="tex">s = \int_{a}^{b} \sqrt{ 1 + f'(x)^2 } \, dx
+
+<p>In our case:
+
+<p class="tex">s(x) = \rho + \int_{\rho}^{x} \sqrt{ 1 + \left( \alpha \cos t - k \right)^2 } \, dt
+
+<p>Using <a href="https://en.wikipedia.org/wiki/Numerical_integration">numerical integration</a> (trapezoidal rule for now), we can find the total length of the projected curve: <i>s(\pi)</i>, which gives us the elongation factor <i>e = \frac{\pi - \rho}{s\left(\pi\right)}</i>.
+
+<p>Finally, we’d like to find <i>x</i> such that <i>r = \rho + \int_{\rho}^{x} \sqrt{ 1 + \left( \alpha \cos t - k \right)^2 } \, dt</i>.
+
+<p>This time we use <a href="https://en.wikipedia.org/wiki/Newton's_method">Newton’s method</a>.
+We use numerical integration again to calculate <i>s(x_{i})</i> for each iteration, eventually converging on a close enough value for <i>x</i>.
+
+<script>gore(true)</script>
+
+<p>I believe it’s possible to solve this last step more efficiently using other means.
+Any ideas would be welcomed!
+For example, when <i>k = 0</i>, <i>s(x)</i> becomes an <a href="https://en.wikipedia.org/wiki/Elliptic_integral">elliptical integral</a>.
+Moreover, there are more efficient numerical integration methods than the simple trapezoidal rule that I’m using at the moment, and it feels wasteful to repeatedly perform numerical integration over the same range.
+
+<h2>Map Shows World As It Is</h2>
+
+<p>Here is a <a href="http://www.ebay.co.uk/itm/1943-Press-Photo-Walter-G-Gingery-High-school-principal-presented-The-Map-/351183264312">press photo</a> of Gingery’s map, with an amusing caption:
+
+<blockquote>
+  <p>INDIANAPOLIS, IND. - Walter G. Gingery, Washington high school principal, presents “<b>the most accurate map on the world</b>” which experts for <b>2000</b> years have called impossible to make. Gingery’s projection map has six gores, the United States as its center, and all other distances and countries figured in proportion, a system which will be a boon to air navigation.
+</blockquote>
+
+<p><img src="7624832.jpg" style="width: 395px">
+<img src="7624833.jpg" style="width: 395px">
+
+<p>The same photo <a href="http://books.google.co.uk/books?id=Jt8DAAAAMBAJ&pg=PA49">appears</a> in Popular Mechanics 81, no. 6 (June, 1944), page 49.
+
+<h2>Further Reading</h2>
+<ul>
+  <li>Gingery discusses the projection in a general fashion in <a href="http://dx.doi.org/10.1111/j.1949-8594.1944.tb06046.x">Map Projections for an Air Age</a> (School Science and Mathematics Volume 44, Issue 2, pages 101–111, February 1944).
+  <li>The Gingery Projection is available as <code>d3.geo.gingery</code> in D3’s <a href="https://github.com/d3/d3-geo-projection">extended geographic projections</a> plugin.
+</ul>
+
+</div>
+
+<script src="../../katex/katex.min.js"></script>
+<script>(function() {
+d3.selectAll(".tex").each(function() {
+  katex.render("\\displaystyle {" + this.textContent + "}", this);
+});
+d3.selectAll("i").each(function() {
+  katex.render(this.textContent, this);
+});
+})()</script>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Interrupted Transverse Mercator</title>
+<style>
+@import url(../maps.css);
+
+.outline {
+  stroke: #000;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+.background {
+  stroke: #000;
+  fill: none;
+}
+
+.graticule {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+  fill: none;
+}
+
+.mask {
+  mask: url(#mask);
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Interrupted Transverse Mercator</h1>
+<div id="map"></div>
+<p class="caption">Interrupted transverse Mercator projection with central meridians at 165°W, 75°W, 15°E and 105°E. 15° graticule.
+
+<div class="wrapper">
+  <p>This interrupted arrangement of the transverse Mercator projection uses <a href="http://www.w3.org/TR/SVG/masking.html#Masking">SVG masking</a> to show extended detail beyond the interrupted regions in light grey.
+  <p>Victor Schrader came up with this arrangement in the 1960s, and explains:
+  <blockquote>
+    <p>The extension of map detail beyond the 90° gores minimizes discontinuities produced by this interrupted arrangement of the graticule.
+  </blockquote>
+  <p style="font-style: italic">—Victor Schrader, <a href="http://www.tandfonline.com/doi/abs/10.1559/152304089783813963#preview">World Map on an Interrupted Transverse Mercator Projection</a>, The American Cartographer, Volume 16, Issue 4, 1989.
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../topojson.min.js"></script>
+<script>
+
+var width = 960,
+    height = 600,
+    width_ = width / 4,
+    λ0 = 15,
+    dλ = 2 * d3.geo.transverseMercator.raw(0, Math.PI / 4)[0],
+    scale = width_ / dλ,
+    dx = 10,
+    p = 1;
+
+var projection = d3.geo.transverseMercator()
+    .clipAngle(135)
+    .clipExtent([[0, 0], [width_, height]])
+    .translate([width_ / 2, height / 2])
+    .scale(scale)
+    .precision(.1);
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width + p * 2)
+    .attr("height", height + p * 2)
+  .append("g")
+    .attr("transform", "translate(" + [p, p] + ")");
+
+var defs = svg.append("defs");
+defs.append("path")
+    .attr("id", "outline")
+    .attr("d", "M" + [dx, 0] + "H" + (width_ - dx) + "L" + [width_, height / 2] + " " + [width_ - dx, height] + "H" + dx + "L" + [0, height / 2] + "Z");
+
+defs.append("path")
+    .attr("id", "gore")
+    .attr("d", path({type: "Polygon", coordinates: [
+      [[0, 90], [45, 0], [0, -90], [-45, 0], [0, 90]]
+    ]}));
+
+defs.append("clipPath")
+    .attr("id", "clip")
+  .append("use")
+    .attr("xlink:href", "#outline");
+
+var mask = svg.append("defs").append("mask")
+    .attr("id", "mask");
+mask.append("use")
+    .attr("xlink:href", "#outline")
+    .style("fill", "#222");
+mask.append("use")
+    .attr("xlink:href", "#gore")
+    .style("fill", "#fff");
+
+var lobe = svg.selectAll("g.lobe")
+    .data([-180, -90, 0, 90])
+  .enter().append("g")
+    .attr("class", "lobe")
+    .attr("transform", function(_, i) { return "translate(" + i * width_ + ")"; });
+
+lobe.append("use")
+    .attr("xlink:href", "#gore")
+    .attr("class", "background");
+
+var g = lobe.append("g").attr("class", "mask");
+
+lobe.append("path")
+    .datum(d3.geo.graticule().minorStep([15, 15]).minorExtent([[-180, -75], [180, 75 + 1e-6]]))
+    .attr("clip-path", "url(#clip)")
+    .attr("class", "graticule");
+
+lobe.append("use")
+    .attr("xlink:href", "#outline")
+    .attr("class", "outline");
+
+lobe.each(redraw);
+
+d3.json("../world-50m.json", function(error, world) {
+  g.append("path").datum(topojson.feature(world, world.objects.land));
+  g.each(redraw);
+});
+
+function redraw(rotate) {
+  projection.rotate([-λ0 - rotate, 0]);
+  d3.select(this).selectAll("path:not(.outline)").attr("d", path);
+}
+
+</script>

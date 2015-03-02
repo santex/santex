@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Animated Bézier Curves - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <script src="../media/js/jquery.min.js"></script>
+    <script src="../media/js/d3.v2.min.js"></script>
+    <meta name="author" content="Jason Davies">
+    <style>
+      .curve, .line {
+        fill: none;
+        stroke-width: 1px;
+      }
+      .curve {
+        stroke: red;
+        stroke-width: 3px;
+      }
+      .control {
+        fill: #ccc;
+        stroke: #000;
+        stroke-width: .5px;
+      }
+      .t, .controltext {
+        font-size: .6em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Animated Bézier Curves</h1>
+    <p>Play with the control points to modify the curves!</p>
+    <div id="vis">
+      <script src="animated-bezier.js"></script>
+    </div>
+    <p>
+    These animations illustrate how a parametric <a href="http://en.wikipedia.org/wiki/Bezier_Curve">Bézier curve</a> is constructed.
+    The parameter <em>t</em> ranges from 0 to 1.
+    In the simplest case, a first-order Bézier curve, the curve is a straight line between the control points.
+    </p>
+    <p>
+    For a second-order or quadratic Bézier curve, first we find two intermediate points that are <em>t</em> along the lines between the three control points.
+    Then we perform the same interpolation step again and find another point that is <em>t</em> along the line between those two intermediate points.
+    Plotting this last point yields a quadratic Bézier curve.
+    The same steps can be repeated for higher orders.
+    </p>
+    <p>
+    Written using the <a href="http://mbostock.github.com/d3/">D3 visualisation library</a>.
+    Suggested by <a href="http://graphics.stanford.edu/~mbostock/">Mike Bostock</a> and inspired by a <a href="http://en.wikipedia.org/wiki/Bezier_Curve#Constructing_B.C3.A9zier_curves">similar animation on Wikipedia</a>.
+    <p>Requires a SVG-capable browser e.g. <a
+      href="http://www.mozilla.org/firefox/">Mozilla Firefox</a>, WebKit (<a
+      href="http://www.google.com/chrome">Google Chrome</a>, <a
+      href="http://www.apple.com/safari/">Safari</a> &amp;c.) or Internet Explorer 9+.
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

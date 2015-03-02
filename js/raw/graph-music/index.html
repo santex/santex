@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>The Music of Graphs - Jason Davies</title>
+    <link href="music.css" rel="stylesheet">
+    <link href="../media/style.css" rel="stylesheet">
+    <link href="../media/css/button.css" rel="stylesheet">
+    <link href="music.png" rel="image_src">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="../media/js/science.min.js"></script>
+    <script src="../media/js/science.lin.min.js"></script>
+  </head>
+  <body>
+    <h1>The Music of Graphs</h1>
+    <p>Can you hear the shape of a graph?  It turns out graphs have <em>spectra</em>, which can be computed by representing the graph as a matrix, and computing the eigenvalues.
+    <p>In this example, we compute the normalised <a href="http://mathworld.wolfram.com/LaplacianMatrix.html">Laplacian matrix</a> for a given graph, then map its eigenvalues onto two octaves: <em>0</em> becomes <em>440 Hz</em> (<em>A</em>), <em>1</em> becomes <em>880 Hz</em> (<em>A</em> again), and finally, <em>2</em> becomes <em>1760 Hz</em>.
+
+    <div id="vis"></div>
+    <p><button id="play" class="first last">Play music!</button>
+      <label for="scales"><input id="scales" type="checkbox"> Scales</label>
+
+    <h2>Instructions</h2>
+    <p>To add a new vertex, first select the vertex you want to connect it to.  Then <strong>shift-click</strong> (ctrl-click or alt-click will also work).  You can shift-click on an existing vertex to connect it to a selected vertex.
+    <p>To delete a vertex, press delete or backspace.
+    <p>Do you notice any relationship between symmetry in the graph and the harmoniousness of the chord?
+
+    <h2>Graph Spectrum</h2>
+    <div id="spectrum"></div>
+
+    <h2>Laplacian Matrix</h2>
+    <table id="matrix"></table>
+
+    <script src="spectrum.js"></script>
+    <script src="music.js?20120812"></script>
+    <script src="wav.js"></script>
+
+    <h2>Credits and Further Reading</h2>
+    <ul>
+      <li>I was inspired by <a href="http://www.math.ucsd.edu/~fan/hear/index.html">Can you hear the shape of a graph?</a>, found <a href="https://twitter.com/#!/_onionesque/status/157439211161653248">via</a> <a href="http://onionesquereality.wordpress.com/">Shubhendu Trivedi</a>.
+      <li>It turns out this was originally developed by <a href="http://www.math.tamu.edu/~rellis/">Robert Ellis</a> and he has a more <a href="http://math.iit.edu/~rellis/comb/graph.html">extensive description</a> including more sounds!
+      <li><a href="http://en.wikipedia.org/wiki/Spectral_graph_theory">Spectral graph theory</a> on Wikipedia.
+      <li><a href="http://mathworld.wolfram.com/GraphSpectrum.html">Graph spectrum</a> on MathWorld.
+    </ul>
+    <p>Built with <a href="http://mbostock.github.com/d3/">D3</a>.
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

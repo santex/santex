@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Littrow Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Littrow Projection</h1>
+<div id="map"></div>
+
+<p>The <a href="http://en.wikipedia.org/wiki/Littrow_projection">Littrow projection</a> is available as <code>d3.geo.littrow</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection D3 plugin</a>.
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var φ1 = 60,
+    ε = 1e-6,
+    map = canvasMap()
+      .point(true)
+      .projection(d3.geo.littrow()
+        .clipAngle(90 - 1e-3)
+        .scale(170))
+      .outline(d3.geo.graticule()
+        .extent([[-90 + ε, -φ1], [90 - ε, φ1 + ε]])
+        .outline());
+
+d3.select("#map").call(map);
+
+</script>

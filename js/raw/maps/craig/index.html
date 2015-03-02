@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Craig Retroazimuthal Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Craig Retroazimuthal Projection</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.craig</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection D3 plugin</a>.
+  <p>James Ireland Craig created this projection while working in Egypt to help Muslims find the <a href="http://en.wikipedia.org/wiki/Qibla">Qibla</a>.
+  <p>Sometimes known as the <i>Mecca projection</i>.
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var φ1 = 90,
+    map = canvasMap()
+      .point(true)
+      .projection(d3.geo.craig()
+        .clipAngle(90)
+        .scale(295));
+
+d3.select("#map").call(map);
+
+</script>

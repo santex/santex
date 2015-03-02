@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>D3 Dependencies</title>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a>
+<style>
+
+@import url(../style.css);
+
+path.arc {
+  cursor: move;
+  fill: #fff;
+}
+
+.node {
+  font-size: 10px;
+}
+
+.node:hover {
+  fill: #1f77b4;
+}
+
+.link {
+  fill: none;
+  stroke: #1f77b4;
+  stroke-opacity: .4;
+  pointer-events: none;
+}
+
+.link.source, .link.target {
+  stroke-opacity: 1;
+  stroke-width: 2px;
+}
+
+.node.target {
+  fill: #d62728 !important;
+}
+
+.link.source {
+  stroke: #d62728;
+}
+
+.node.source {
+  fill: #2ca02c;
+}
+
+.link.target {
+  stroke: #2ca02c;
+}
+
+</style>
+<h1>D3 Dependencies</h1>
+<div id="chart"></div>
+<p class="caption">Dependencies between source files for D3 version 3.4.13.
+<div class="wrapper">
+  <p>In version <a href="https://github.com/mbostock/d3/releases/tag/v3.1.0">3.1</a>, <a href="http://bost.ocks.org/mike">Mike</a> and I added import statements to D3 for use with <a href="https://github.com/mbostock/smash">SMASH</a>.
+  These import statements specify dependencies between the source files, allowing custom bundles to be generated containing only the dependencies required for particular functionality.
+  <p>A nice side-effect is that a full dependency graph can be generated for D3, seen above.
+  <p>Inspired by <a href="http://driven-by-data.net">Gregor Aisch</a>’s <a href="https://gist.github.com/gka/5145771">D3 dependency network visualisation</a>.
+</div>
+
+<script src="../d3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 680,
+    radius = 420;
+
+var cluster = d3.layout.cluster()
+    .size([360, radius - 140])
+    .sort(function(a, b) { return d3.ascending(a.name, b.name); });
+
+var bundle = d3.layout.bundle();
+
+var line = d3.svg.line.radial()
+    .interpolate("bundle")
+    .tension(.85)
+    .radius(function(d) { return d.y; })
+    .angle(function(d) { return d.x / 180 * Math.PI; });
+
+function filter(d) {
+  return d.length && !/(d3|index|start|end)$/.test(d);
+}
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + [width / 2, height / 2] + ")");
+
+d3.text("graph.txt", function(error, text) {
+  var nodes = {},
+      root = {children: []},
+      links = [];
+  text.split(/\n/g).forEach(function(line) {
+    if (!line.length || /^d3/.test(line)) return;
+    var words = line.split(/\s/g), source;
+    words[0] = words[0].substring(0, words[0].length - 1);
+    if (!filter(words[0].replace(/\..*$/, ""))) return;
+    words.forEach(function(word, j) {
+      word = word.replace(/\..*$/, "");
+      if (!filter(word)) return;
+      var tokens = word.split(/[\/]/g),
+          key = [],
+          n = tokens.length,
+          i = 0,
+          parent = root;
+      do {
+        key.push(tokens[i]);
+        var k = key.join("-");
+        if (nodes.hasOwnProperty(k)) parent = nodes[k];
+        else parent.children.push(nodes[k] = parent = {children: [], name: tokens[i], key: k});
+      } while (++i < n);
+      if (j) links.push({source: source, target: parent, index: links.length});
+      else source = parent;
+    });
+  });
+
+  var nodes = cluster.nodes(root),
+      splines = bundle(links);
+
+  var path = svg.selectAll("path.link")
+      .data(links)
+    .enter().append("path")
+      .attr("class", function(d) { return "link source-" + d.source.key + " target-" + d.target.key; })
+      .attr("d", function(d) { return line(splines[d.index]); });
+
+  svg.selectAll("g.node")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("id", function(d) { return "node-" + d.key; })
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+    .append("text")
+      .attr("dx", function(d) { return d.x < 180 ? 8 : -8; })
+      .attr("dy", ".31em")
+      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+      .attr("transform", function(d) { return d.x < 180 ? null : "rotate(180)"; })
+      .text(function(d) { return d.name; })
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
+  function mouseover(d) {
+    svg.selectAll(".node").classed("source", false).classed("target", false);
+    var g = svg.append("g").attr("class", "active");
+
+    ["source", "target"].forEach(function(name) {
+      g.selectAll("path.link." + name)
+          .data(links.filter(function(link) {
+            return link[name] === d;
+          }))
+        .enter().append("path")
+          .attr("class", "link " + name)
+          .attr("d", function(d) { return line(splines[d.index]); })
+          .style("stroke-dasharray", "0,1000")
+          .each(updateNodes(name === "target" ? "source" : "target", true))
+        .transition()
+          .duration(500)
+          .ease("cubic-in")
+          .style("stroke-dasharray", "1000,1000");
+    });
+  }
+});
+
+function mouseout(d) {
+  svg.selectAll(".active").remove();
+}
+
+function updateNodes(name, value) {
+  return function(d) {
+    if (value) this.parentNode.appendChild(this);
+    svg.select("#node-" + d[name].key).classed(name, value);
+  };
+}
+
+</script>

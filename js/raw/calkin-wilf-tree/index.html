@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>Calkin–Wilf Tree - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <link rel="stylesheet" href="calkin.css">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="../media/js/d3.layout.min.js"></script>
+    <meta name="author" content="Jason Davies">
+  </head>
+  <body>
+    <h1>Calkin–Wilf Tree</h1>
+    <p>The <a href="http://en.wikipedia.org/wiki/Calkin%E2%80%93Wilf_tree">Calkin–Wilf tree</a> contains every positive rational number exactly once.
+    <p>Each vertex <em>a/b</em> has two children: <em>(a+b)/b</em> and <em>a/(a+b)</em>.
+    <p>Traversing the tree breadth-first results in the Calkin–Wilf sequence, depicted by the spiral below.
+    <div id="vis"><img src="calkin.png"></div>
+    <h2>Further Reading</h2>
+    <ul>
+      <li><a href="http://en.wikipedia.org/wiki/Calkin%E2%80%93Wilf_tree">Calkin–Wilf tree</a> on Wikipedia.
+      <li><a href="http://www.math.clemson.edu/~calkin/Papers/calkin_wilf_recounting_rationals.pdf">Recounting the Rationals</a>, the original paper by Neil Calkin and Herbert Wilf.
+      <li><a href="http://mathlesstraveled.com/2007/12/27/recounting-the-rationals-part-i/">Recounting the Rationals, part I</a>: a series of expository blog posts about the original paper on <a href="http://mathlesstraveled.com/">The Math Less Traveled</a>.  Highly recommended!
+      <li><a href="http://www.cut-the-knot.org/blue/Fusc.shtml">Fractions on a Binary Tree II</a> by A. Bogomolny.
+      <li><a href="http://home.comcast.net/~bretm/site/?/blog/view/2/">Enumerating the Rationals</a>: some remarkable properties of the Calkin–Wilf sequence.
+    </ul>
+    <p>Built with <a href="http://mbostock.github.com/d3/">D3</a>.
+    <script src="calkin.js"></script>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

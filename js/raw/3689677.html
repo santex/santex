@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+.longscroll {
+  overflow-y: auto;
+  width: 480px;
+  height: 500px;
+  float: left;
+}
+.longscroll .row {
+  height: 19px;
+  padding: 0 8px;
+  border-bottom: solid #eee 1px;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="longscroll.js"></script>
+<script>
+
+d3.select("body").selectAll("div.longscroll")
+    .data([0, 1])
+  .enter().append("div")
+    .attr("class", "longscroll")
+    .call(d3.longscroll()
+      .size(1e6)
+      .render(function(g) { g.text(String); }));
+
+</script>

@@ -440,7 +440,7 @@ function showMenu(x){
     v= v == 0 ? 1 : v;
     
     if(h && v) {
-   // document.location.href="#"+h+"/"+v;
+    document.location.href="#"+h+"/"+v;
     }
 
 
@@ -471,7 +471,7 @@ function showMenu(x){
   
     
   
-    if(v == undefined || v == 0 || h==3){   
+    if(v == undefined || v == 0){   
 
 
       showMenu(h);      

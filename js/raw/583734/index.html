@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/polymaps.min.js"></script>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/canvas/procedural.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/example.css");
+
+#map {
+  background: #ddd;
+}
+
+    </style>
+  </head>
+  <body id="map">
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.getElementById("map").appendChild(po.svg("svg")))
+    .zoomRange([0, 5])
+    .zoom(1)
+    .tileSize({x: 512, y: 512})
+    .center({lat: 0, lon: 0})
+    .add(po.interact())
+    .add(po.hash());
+
+map.add(po.procedural()
+    .zoom(function(z) { return Math.min(4, z); })
+    .worker("cell-worker.js"));
+
+map.add(po.compass()
+    .pan("none"));
+
+    </script>
+  </body>
+</html>

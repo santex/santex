@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://bl.ocks.org/larskotthoff/7830074#force.csv -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="utf-8">
+<title>7830074</title>
+<link rel="icon" href="http://bl.ocks.org/favicon.png">
+<style>
+
+@import url("/style.css?20120730");
+
+header,
+footer {
+  color: #555;
+}
+
+a.gist {
+  color: #000;
+}
+
+</style>
+
+</head><body><header>
+  <a href="http://bl.ocks.org/larskotthoff">larskotthoff</a>’s block
+  <a class="gist" title="View gist #7830074 on GitHub" href="https://gist.github.com/larskotthoff/7830074">#7830074</a>
+  <span class="date">December 6, 2013</span>
+</header>
+
+<h1>7830074</h1>
+
+
+<iframe src="./force_files/saved_resource.html" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<p></p><aside><a style="position:relative;top:6px;" href="http://bl.ocks.org/larskotthoff/raw/7830074/" target="_blank">Open in a new window.</a></aside>
+
+
+<div class="gist-readme"><p>This is an adaption of two of Mike Bostock's force layout examples (<a href="http://bl.ocks.org/mbostock/1153292">Mobile Patent Suits</a> and <a href="http://bl.ocks.org/mbostock/2706022">Force-Directed Graph with Mouseover</a>).</p>
+
+<p>This particular graph is intended as a 'basic' example of a directional force layout graph (hence the arrows) and I intend to add additional examples with variations.</p></div>
+
+<div class="gist-sources"><div class="gist-source"><h2>index.html<a name="index.html" href="http://bl.ocks.org/larskotthoff/7830074#index.html">#</a></h2><pre><code class="html xml"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;<span class="title">meta</span> <span class="attribute">charset</span>=<span class="value">"utf-8"</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"http://d3js.org/d3.v3.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css">
+
+<span class="tag">path</span><span class="class">.link</span> <span class="rules">{
+  <span class="rule"><span class="attribute">fill</span>:<span class="value"> none</span>;</span>
+  <span class="rule"><span class="attribute">stroke</span>:<span class="value"> <span class="number">#666</span></span>;</span>
+  <span class="rule"><span class="attribute">stroke-width</span>:<span class="value"> <span class="number">1.5</span>px</span>;</span>
+<span class="rule">}</span></span>
+
+<span class="tag">circle</span> <span class="rules">{
+  <span class="rule"><span class="attribute">fill</span>:<span class="value"> <span class="hexcolor">#ccc</span></span>;</span>
+  <span class="rule"><span class="attribute">stroke</span>:<span class="value"> <span class="hexcolor">#fff</span></span>;</span>
+  <span class="rule"><span class="attribute">stroke-width</span>:<span class="value"> <span class="number">1.5</span>px</span>;</span>
+<span class="rule">}</span></span>
+
+<span class="tag">text</span> <span class="rules">{
+  <span class="rule"><span class="attribute">fill</span>:<span class="value"> <span class="number">#000</span></span>;</span>
+  <span class="rule"><span class="attribute">font</span>:<span class="value"> <span class="number">10</span>px sans-serif</span>;</span>
+  <span class="rule"><span class="attribute">pointer-events</span>:<span class="value"> none</span>;</span>
+<span class="rule">}</span></span>
+
+</span><span class="tag">&lt;/<span class="title">style</span>&gt;</span>
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+
+<span class="comment">// get the data</span>
+d3.csv(<span class="string">"force.csv"</span>, <span class="function"><span class="keyword">function</span><span class="params">(error, links)</span> {</span>
+
+<span class="keyword">var</span> nodes = {};
+
+<span class="comment">// Compute the distinct nodes from the links.</span>
+links.forEach(<span class="function"><span class="keyword">function</span><span class="params">(link)</span> {</span>
+    link.source = nodes[link.source] || 
+        (nodes[link.source] = {name: link.source});
+    link.target = nodes[link.target] || 
+        (nodes[link.target] = {name: link.target});
+    link.value = +link.value;
+});
+
+<span class="keyword">var</span> width = <span class="number">960</span>,
+    height = <span class="number">500</span>;
+
+<span class="keyword">var</span> force = d3.layout.force()
+    .nodes(d3.values(nodes))
+    .links(links)
+    .size([width, height])
+    .linkDistance(<span class="number">60</span>)
+    .charge(-<span class="number">300</span>)
+    .on(<span class="string">"tick"</span>, tick)
+    .start();
+
+<span class="keyword">var</span> svg = d3.select(<span class="string">"body"</span>).append(<span class="string">"svg"</span>)
+    .attr(<span class="string">"width"</span>, width)
+    .attr(<span class="string">"height"</span>, height);
+
+<span class="comment">// build the arrow.</span>
+svg.append(<span class="string">"svg:defs"</span>).selectAll(<span class="string">"marker"</span>)
+    .data([<span class="string">"end"</span>])      <span class="comment">// Different link/path types can be defined here</span>
+  .enter().append(<span class="string">"svg:marker"</span>)    <span class="comment">// This section adds in the arrows</span>
+    .attr(<span class="string">"id"</span>, String)
+    .attr(<span class="string">"viewBox"</span>, <span class="string">"0 -5 10 10"</span>)
+    .attr(<span class="string">"refX"</span>, <span class="number">15</span>)
+    .attr(<span class="string">"refY"</span>, -<span class="number">1.5</span>)
+    .attr(<span class="string">"markerWidth"</span>, <span class="number">6</span>)
+    .attr(<span class="string">"markerHeight"</span>, <span class="number">6</span>)
+    .attr(<span class="string">"orient"</span>, <span class="string">"auto"</span>)
+  .append(<span class="string">"svg:path"</span>)
+    .attr(<span class="string">"d"</span>, <span class="string">"M0,-5L10,0L0,5"</span>);
+
+<span class="comment">// add the links and the arrows</span>
+<span class="keyword">var</span> path = svg.append(<span class="string">"svg:g"</span>).selectAll(<span class="string">"path"</span>)
+    .data(force.links())
+  .enter().append(<span class="string">"svg:path"</span>)
+<span class="comment">//    .attr("class", function(d) { return "link " + d.type; })</span>
+    .attr(<span class="string">"class"</span>, <span class="string">"link"</span>)
+    .attr(<span class="string">"marker-start"</span>, <span class="string">"url(#end)"</span>)
+    .attr(<span class="string">"marker-end"</span>, <span class="string">"url(#end)"</span>);
+
+<span class="comment">// define the nodes</span>
+<span class="keyword">var</span> node = svg.selectAll(<span class="string">".node"</span>)
+    .data(force.nodes())
+  .enter().append(<span class="string">"g"</span>)
+    .attr(<span class="string">"class"</span>, <span class="string">"node"</span>)
+    .call(force.drag);
+
+<span class="comment">// add the nodes</span>
+node.append(<span class="string">"circle"</span>)
+    .attr(<span class="string">"r"</span>, <span class="number">5</span>);
+
+<span class="comment">// add the text </span>
+node.append(<span class="string">"text"</span>)
+    .attr(<span class="string">"x"</span>, <span class="number">12</span>)
+    .attr(<span class="string">"dy"</span>, <span class="string">".35em"</span>)
+    .text(<span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> <span class="keyword">return</span> d.name; });
+
+<span class="comment">// add the curvy lines</span>
+<span class="function"><span class="keyword">function</span> <span class="title">tick</span><span class="params">()</span> {</span>
+    path.attr(<span class="string">"d"</span>, <span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span>
+        <span class="keyword">var</span> dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = Math.sqrt(dx * dx + dy * dy);
+        <span class="keyword">return</span> <span class="string">"M"</span> + 
+            d.source.x + <span class="string">","</span> + 
+            d.source.y + <span class="string">"A"</span> + 
+            dr + <span class="string">","</span> + dr + <span class="string">" 0 0,1 "</span> + 
+            d.target.x + <span class="string">","</span> + 
+            d.target.y;
+    });
+
+    node
+        .attr(<span class="string">"transform"</span>, <span class="function"><span class="keyword">function</span><span class="params">(d)</span> {</span> 
+  	    <span class="keyword">return</span> <span class="string">"translate("</span> + d.x + <span class="string">","</span> + d.y + <span class="string">")"</span>; });
+}
+
+});
+
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre></div><div class="gist-source"><h2>force.csv<a name="force.csv" href="./force_files/force.csv">#</a></h2><pre><code class="undefined">source,target,value
+Harry,Sally,1.2
+Harry,Mario,1.3
+Sarah,Alice,0.2
+Eveie,Alice,0.5
+Peter,Alice,1.6
+Mario,Alice,0.4
+James,Alice,0.6
+Harry,Carol,0.7
+Harry,Nicky,0.8
+Bobby,Frank,0.8
+Alice,Mario,0.7
+Harry,Lynne,0.5
+Sarah,James,1.9
+Roger,James,1.1
+Maddy,James,0.3
+Sonny,Roger,0.5
+James,Roger,1.5
+Alice,Peter,1.1
+Johan,Peter,1.6
+Alice,Eveie,0.5
+Harry,Eveie,0.1
+Eveie,Harry,2.0
+Henry,Mikey,0.4
+Elric,Mikey,0.6
+James,Sarah,1.5
+Alice,Sarah,0.6
+James,Maddy,0.5
+Peter,Johan,0.7</code></pre></div></div>
+
+<script src="./force_files/d3.v3.min.js"></script>
+<script src="./force_files/highlight.min.js"></script>
+<script>
+
+var gist = {"history":[{"version":"dcd9ffc3d3236f58c5f5db844ded4816c5fa90f6"}],"files":{"force.csv":{"language":null,"type":"text/csv","filename":"force.csv","size":467,"sha":"fcd1386cfcf36e3331f5d8d4d8f93f96aa544a61"},"index.html":{"language":"HTML","type":"text/html","filename":"index.html","size":2653,"sha":"9b4d1ea9370d5812cea5db49b001ff9ea5eeeb92"},"readme.md":{"language":"Markdown","type":"text/plain","filename":"readme.md","size":375,"sha":"c285db777229b4521b90dca459038c1a99b3f09b"},"thumbnail.png":{"language":null,"type":"image/png","filename":"thumbnail.png","size":4918,"sha":"045987de2fa42c7180afae3118309e4ad9dccd1e"}},"created_at":"2013-12-06T18:44:38.000Z","updated_at":"2013-12-06T18:45:08.000Z","description":"","owner":{"login":"larskotthoff"},"id":"7830074"};
+
+var files = d3.values(gist.files)
+    .sort(function(a, b) { return (b.filename === "index.html") - (a.filename === "index.html") || a.filename.localeCompare(b.filename); });
+
+var readme = d3.selectAll(".gist-readme")
+    .data(files.filter(function(d) { return /^readme\b/i.test(d.filename) && d.language === "Markdown"; }))
+    .each(function(d) {
+      var readme = d3.select(this);
+      d3.text("/larskotthoff/raw/7830074/dcd9ffc3d3236f58c5f5db844ded4816c5fa90f6/" + d.filename, function(error, content) {
+        readme.html(new Showdown.converter().makeHtml(content));
+        readme.selectAll("code").each(function() { hljs.highlightBlock(this); });
+      });
+    });
+
+var source = d3.select(".gist-sources").selectAll(".gist-source")
+    .data(files.filter(function(d) { return !/^readme\b/i.test(d.filename) && d.size < 50000 && text(d.type); }))
+  .enter().append("div")
+    .attr("class", "gist-source");
+
+source.append("h2")
+    .text(function(d) { return d.filename; })
+  .append("a")
+    .attr("name", function(d) { return d.filename; })
+    .attr("href", function(d) { return "#" + d.filename; })
+    .text("#");
+
+source.append("pre").append("code")
+    .attr("class", function(d) { return d.language && (d.language === "JSON" ? "javascript" : d.language.toLowerCase()); })
+    .each(function(d) {
+      var code = d3.select(this);
+      d3.text("/larskotthoff/raw/7830074/dcd9ffc3d3236f58c5f5db844ded4816c5fa90f6/" + (d.filename === "index.html" ? "" : d.filename), function(error, content) {
+        code.text(content);
+        hljs.highlightBlock(code.node());
+      });
+    });
+
+function text(type) {
+  return /(^text\/)|(^application\/(javascript|json)$)|(^image\/svg$)|(\+xml$)/.test(type);
+}
+
+</script>
+
+<footer>
+  <a href="http://bl.ocks.org/larskotthoff">larskotthoff</a>’s block
+  <a class="gist" title="View gist #7830074 on GitHub" href="https://gist.github.com/larskotthoff/7830074">#7830074</a>
+  <span class="date">December 6, 2013</span>
+</footer>
+
+<script>
+
+GoogleAnalyticsObject = "ga", ga = function() { ga.q.push(arguments); }, ga.q = [], ga.l = +new Date;
+ga("create", "UA-48272912-1", "ocks.org");
+ga("send", "pageview");
+
+</script>
+<script async="" src="./force_files/analytics.js"></script>
+</body></html>

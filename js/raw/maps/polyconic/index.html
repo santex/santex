@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Polyconic Projections</title>
+<style>
+@import url(../maps.css);
+
+#map {
+  cursor: move;
+}
+
+.fill {
+  fill: #f9f9f9;
+  stroke: none;
+}
+
+.stroke {
+  fill: #f00;
+  fill-opacity: .5;
+  stroke: #000;
+}
+
+.graticule {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5;
+}
+
+.ghost {
+  fill: #f9f9f9;
+  stroke: #e5e5e5;
+}
+
+.land {
+  stroke: #000;
+  stroke-width: .5;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>The Polyconic Projection</h1>
+<div id="map"></div>
+
+<p><label for="slices" id="slices-slider"><input type="range" id="slices" step="1" min="4" max="36" value="4">
+<br><output id="slices-output">4</output> slices</label>
+
+<div class="wrapper">
+  <p>Cut the globe into <i>n</i> strips, each centred at a different parallel, and project each strip using the <a href="http://www.progonos.com/furuti/MapProj/Normal/ProjCon/projCon.html#EqdCon">equidistant conic projection</a> for each standard parallel.
+  <p>In the limit, this produces the <a href="http://www.progonos.com/furuti/MapProj/Normal/ProjCon/projCon.html#Polyconic">Polyconic projection</a>!
+  <p>The Polyconic projection is also known as the American Polyconic.
+  “Polyconic” can also refer to the class of projections whose parallels are non-concentric circular arcs.
+  <p>Created using <a href="http://d3js.org/">D3</a>’s <a href="https://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection</a> plugin.
+  <p class="cite" style="text-align: left">Data: <a href="http://www.naturalearthdata.com/downloads/50m-physical-vectors/">Natural Earth, 1:50m Physical Vectors</a>.
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js?6f6ca5"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var ε = 1e-6,
+    π = Math.PI,
+    degrees = 180 / π;
+
+var width = 960,
+    height = 500;
+
+var graticule = d3.geo.graticule(),
+    path = d3.geo.path(),
+    rotate = [0, 0];
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.behavior.drag()
+      .origin(function() { return {x: rotate[0], y: -rotate[1]}; })
+      .on("drag", function() {
+        rotate[0] = d3.event.x;
+        rotate[1] = -d3.event.y;
+        path.projection().rotate(rotate);
+        svg.selectAll("path:not(.ghost)").attr("d", path);
+      }));
+
+var defs = svg.append("defs");
+
+defs.append("clipPath")
+    .attr("id", "clip")
+  .append("use")
+    .attr("xlink:href", "#sphere");
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "ghost")
+    .attr("d", d3.geo.path().projection(d3.geo.polyconic().scale(100)));
+
+var g = svg.append("g").attr("clip-path", "url(#clip)");
+
+g.append("path")
+    .datum(graticule)
+    .attr("class", "graticule");
+
+g.append("path")
+    .datum({type: "Sphere"})
+    .attr("id", "sphere")
+    .attr("class", "stroke");
+
+d3.json("../world-110m.json", function(error, world) {
+  g.append("path")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land")
+      .attr("d", path);
+});
+
+change(4);
+
+d3.select("#slices").on("change", change);
+
+function change(n) {
+  d3.select("#slices-output").text(n = n || +this.value);
+  svg.selectAll("path:not(.ghost)").attr("d", path.projection(stackedConics(d3.geo.conicEquidistant.raw, n).rotate(rotate).scale(100)));
+}
+
+function stackedConics(conic, n) {
+  var step = (180 / n) / degrees,
+      conics = d3.range(-π / 2 + step / 2, π / 2, step).map(function(φ0) { return conic(φ0, φ0); });
+  n = conics.length - 1;
+
+  var projection =  d3.geo.projection(function(λ, φ) {
+    return conics[Math.min(n, (φ + π / 2) / step | 0)](λ, φ);
+  });
+
+  var stream_ = projection.stream;
+
+  projection.stream = function(stream) {
+    var rotate = projection.rotate(),
+        rotateStream = stream_(stream),
+        sphereStream = (projection.rotate([0, 0]), stream_(stream));
+    projection.rotate(rotate);
+    rotateStream.sphere = function() {
+      var stepDegrees = step * degrees,
+          dλ = 1,
+          ε = 1e-2;
+      for (var i = 0; i <= n; i++) {
+        var y0 = -90 + (i + 1) * stepDegrees - ε,
+            y1 = -90 + i * stepDegrees + ε;
+        sphereStream.polygonStart(), sphereStream.lineStart();
+        for (var λ = -180; λ < 180 + dλ / 2; λ += dλ) sphereStream.point(λ, y0);
+        while ((λ -= dλ) > -180 - dλ / 2) sphereStream.point(λ, y1);
+        sphereStream.point(-180, y0);
+        sphereStream.lineEnd(), sphereStream.polygonEnd();
+      }
+    };
+    return rotateStream;
+  };
+
+  return projection;
+}
+
+</script>

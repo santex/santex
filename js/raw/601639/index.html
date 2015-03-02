@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/mbostock/polymaps/raw/2142f192bc527e4cb17a113ef46219bf1999b269/polymaps.min.js"></script>
+    <script type="text/javascript" src="http://github.com/mbostock/polymaps/raw/2142f192bc527e4cb17a113ef46219bf1999b269/lib/crimespotting/crimespotting.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/mbostock/polymaps/raw/2142f192bc527e4cb17a113ef46219bf1999b269/examples/example.css");
+
+html, body {
+  height: 100%;
+  background: #E6E6E6;
+}
+
+svg {
+  display: block;
+  font: 10px sans-serif;
+}
+
+circle {
+  fill: white;
+  fill-opacity: .6;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .center({lat: 37.787, lon: -122.228})
+    .zoomRange([12,12])
+    .add(po.interact());
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+map.add(po.geoJson()
+    .url(crimespotting("http://oakland.crimespotting.org"
+        + "/crime-data"
+        + "?count=100"
+        + "&format=json"
+        + "&bbox={B}"
+        + "&dstart=2010-04-01"
+        + "&dend=2010-04-01"))
+    .on("load", load)
+    .clip(false)
+    .zoom(12));
+
+/* Post-process the GeoJSON points and add text labels. */
+function load(e) {
+  for (var i = 0; i < e.features.length; i++) {
+    var f = e.features[i],
+        c = f.element,
+        t = po.svg("text");
+    t.setAttribute("transform", c.getAttribute("transform"));
+    t.setAttribute("text-anchor", "middle");
+    t.setAttribute("dy", ".35em");
+    t.appendChild(document.createTextNode(i));
+    c.setAttribute("r", 10);
+    c.parentNode.insertBefore(t, c.nextSibling);
+  }
+}
+
+    </script>
+    <span id="copy">
+      &copy; 2010
+      <a href="http://www.cloudmade.com/">CloudMade</a>,
+      <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors,
+      <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>.
+    </span>
+  </body>
+</html>

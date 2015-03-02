@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.3.0/polymaps.min.js"></script>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.3.0/lib/crimespotting/crimespotting.js"></script>
+    <script type="text/javascript" src="http://github.com/protovis/protovis/raw/v3.3.1/examples/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="http://github.com/protovis/protovis/raw/v3.3.1/examples/slider/jquery-ui-1.8rc3.custom.min.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.3.0/examples/example.css");
+@import url("http://github.com/protovis/protovis/raw/v3.3.1/examples/slider/ui-lightness/jquery-ui-1.8rc3.custom.css");
+
+html, body {
+  height: 100%;
+  background: #E6E6E6;
+}
+
+svg {
+  display: block;
+}
+
+.layer circle {
+  fill: lightcoral;
+  fill-opacity: .5;
+  stroke: brown;
+}
+
+#slider {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 300px;
+  height: 20px;
+  display: block;
+  background: #ccc;
+}
+
+.ui-slider {
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.ui-state-focus {
+  outline: none;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var r = 4.5;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .center({lat: 37.787, lon: -122.228})
+    .zoomRange([10, 16])
+    .add(po.interact());
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+map.add(geoJson = po.geoJson()
+    .url(crimespotting("http://oakland.crimespotting.org"
+        + "/crime-data"
+        + "?count=100"
+        + "&format=json"
+        + "&bbox={B}"
+        + "&dstart=2010-04-01"
+        + "&dend=2010-04-01"))
+    .on("show", show)
+    .clip(false)
+    .scale("fixed")
+    .zoom(12));
+
+/* Resize the GeoJSON points! */
+function show(e) {
+  for (var i = 0; i < e.features.length; i++) {
+    e.features[i].element.setAttribute("r", r);
+  }
+}
+
+    </script>
+    <div id="slider"></div>
+    <script type="text/javascript">
+
+$("#slider").slider({
+  min: 0, max: 1000, value: r * r, slide: function(e, ui) {
+    r = Math.sqrt(ui.value);
+    geoJson.reshow();
+  }
+});
+
+    </script>
+    <span id="copy">
+      &copy; 2010
+      <a href="http://www.cloudmade.com/">CloudMade</a>,
+      <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors,
+      <a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>.
+    </span>
+  </body>
+</html>

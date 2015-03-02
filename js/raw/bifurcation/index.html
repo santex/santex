@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<head>
+  <title>Monte Carlo simulation of bifurcations in the logistic map</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <link href="../media/style.css" rel="stylesheet">
+  <link href="../media/ui-lightness/jquery-ui-1.8rc3.custom.css" rel="stylesheet">
+  <style>
+.ui-slider {
+font-size: 10px;
+width: 300px;
+margin-top: 5px;
+}
+
+.ui-state-focus {
+outline: none;
+}
+
+#max-age, #rpoints, #rmin, #rate {
+width: 300px;
+display: inline-block;
+margin-left: 10px;
+margin-right: 10px;
+}
+  </style>
+  <script src="../media/js/jquery.min.js"></script>
+  <script src="../media/js/jquery-ui-1.8rc3.custom.min.js"></script>
+</head>
+<body>
+  <h1>Monte Carlo simulation of bifurcations in the logistic map</h1>
+  <div style="width: 550px; float: left">
+    <p><label for="rpoints">Points per r-value</label>: <span id="rpoints"></span></p>
+    <p><label for="max-age">Maximum point age</label>: <span id="max-age"></span></p>
+    <p><label for="rmin">Minimum r-value</label>: <span id="rmin"></span></p>
+    <p><label for="rate">Frame rate</label>: <span id="rate"></span><span id="rate-val"></span></p>
+    <p style="float: left; margin-right: .2em; height: 500px; line-height: 500px">
+      <em>A<sub>n</sub></em>
+    </p>
+    <div style="float: left">
+      <canvas id="vis" width="500" height="500"></canvas>
+      <p style="width: 500px; text-align: center; margin: 0">
+        <span style="float: left" id="graph-rmin">0</span>
+        <span style="float: right">4</span>
+        <br>
+        Combined reproduction and starvation rate <em>r</em>
+      </p>
+    </div>
+    <script type="text/javascript">
+
+var width = 500, height = 500, minRPoints = 0, maxRPoints = 50,
+  rMin = 0, rMax = 4,
+  minAge = 0, maxAge = 1000,
+  rPoints = 20,
+  points = null;
+
+var c = document.getElementById("vis").getContext("2d");
+var imageData, data, dataWidth, dataHeight;
+var resetData = function() {
+c.fillRect(0, 0, width, height);
+imageData = c.getImageData(0, 0, width, height);
+data = imageData.data;
+dataWidth = dataHeight = Math.sqrt(data.length >> 2);
+}
+var setPixel = function(x, y, a) {
+var index = (x + y * dataWidth) * 4;
+for (var i=0; i<3; i++) data[index++] = 0;
+data[index++] = a;
+};
+
+var Point = function(r) {
+this.r = r;
+this.init();
+}
+Point.prototype = {
+init: function() {
+  this.x = Math.random();
+  this.xCoord = this.getX();
+  this.yCoord = this.getY();
+  this.age = Math.floor(Math.random() * (maxAge - minAge)) + minAge;
+},
+update: function() {
+  if (this.age > 0) {
+    this.x = this.r * this.x * (1 - this.x);
+    this.yCoord = this.getY();
+    this.age--;
+  } else {
+    this.init();
+  }
+},
+draw: function() {
+  var alpha = Math.floor(255 - (this.age / maxAge) * 255);
+  setPixel(this.xCoord, this.yCoord, alpha);
+},
+getX: function() {
+  return Math.floor((this.r - rMin) / (rMax - rMin) * (dataWidth - 1));
+},
+getY: function() {
+  return (dataHeight - 1) - Math.floor(this.x * (dataHeight - 1));
+}
+}
+
+var setupPoints = function() {
+var xPoints = dataWidth;
+if (points == null) {
+  points = new Array(xPoints);
+  for (var i=0; i<points.length; i++) {
+    points[i] = new Array(maxRPoints);
+  }
+}
+var dr = (rMax - rMin) / xPoints;
+var r = rMin;
+
+for (var i=0; i<points.length; i++) {
+  for (var j=0; j<points[0].length; j++) {
+    if (!points[i][j]) {
+      points[i][j] = new Point(r);
+    } else {
+      points[i][j].r = r;
+    }
+  }
+  r += dr;
+}
+}
+var draw = function() {
+resetData();
+for (var i = 0; i < points.length; i++) {
+  for (var j = 0; j < rPoints; j++) {
+    points[i][j].draw();
+    points[i][j].update();
+  }
+}
+c.putImageData(imageData, 0, 0);
+}
+resetData();
+setupPoints();
+var timer = setInterval(draw, 51);
+$('#max-age').slider({
+value: 100, min: minAge, max: maxAge, slide: function(e, ui) {
+  maxAge = ui.value;
+}
+}).change();
+$('#rpoints').slider({
+value: rPoints, min: minRPoints, max: maxRPoints, slide: function(e, ui) {
+  rPoints = ui.value;
+}
+});
+$('#rmin').slider({
+value: 0, min: 0, max: 4, step: .01, slide: function(e, ui) {
+  rMin = ui.value;
+  setupPoints();
+  $('#graph-rmin').text(rMin.toFixed(2));
+}
+});
+$('#rate').slider({
+value: 149, min: 0, max: 199, slide: function(e, ui) {
+  var rate = 200 - ui.value;
+  clearInterval(timer);
+  timer = setInterval(draw, rate);
+  $('#rate-val').text((1000 / rate).toFixed(2) + 'Hz');
+}
+});
+    </script>
+  </div>
+  <div style="margin-left: 550px">
+    <p>The <a href="http://en.wikipedia.org/wiki/Logistic_map">logistic map</a> was originally used to approximate an animal population over time.  Mathematically, it is written as:</p>
+    <p>A<sub>n+1</sub> = rA<sub>n</sub>(1 - A<sub>n</sub>)</p>
+    <p>where:</p>
+    <ul>
+      <li>A<sub>n</sub> represents the population at year n, with 0 &lt;= A<sub>n</sub> &lt;= 1.  Of course, in reality a population is a whole number, but this makes the maths simpler.  A value of 1 means the maximum population i.e. the capacity of the physical environment.</li>
+      <li>r represents a combined rate for reproduction and starvation, with r &gt; 0.</li>
+    </ul>
+    <p>All initial populations A<sub>0</sub> eventually settle into one of three behaviours:</p>
+    <ol>
+      <li>A fixed value.</li>
+      <li>Periodic oscillation between values.</li>
+      <li>Chaotic i.e. unpredictable values.</li>
+    </ol>
+    <p>A <a href="http://en.wikipedia.org/wiki/Bifurcation_diagram">bifurcation diagram</a> shows these three behaviours.  The x-axis shows r and the y-axis shows the population.  The population eventually stabilises to a fixed value for r = 1 to 3, and you can see the periodic behavior starting after this, eventually becoming chaotic at around r = 3.5699457...
+    <p>The <a href="http://en.wikipedia.org/wiki/Monte_carlo_method">Monte Carlo simulation</a> on the left uses repeated random sampling to produce the bifurcation diagram.  The algorithm is roughly:</p>
+    <ol>
+      <li>For each value of r, generate a multiple points with a random initial population and random maximum age (remaining number of iterations).</li>
+      <li>Set the population of each point to A<sub>n+1</sub> = rA<sub>n</sub>(1-A<sub>n</sub>) and update its remaining number of iterations.</li>
+      <li>If the remaining number of iterations for any point reaches zero, then we pick a new random initial population and age for that point.</li>
+      <li>Clear the plotting area and plot each point at (r, A<sub>n</sub>).</li>
+      <li>Go to 2.</li>
+    </ol>
+    <p>The plot is updated for every iteration, so you can see how the populations are changing over time.</p>
+  </div>
+  <div style="clear: both"></div>
+  <h2>References</h2>
+  <ol>
+    <li>Inspired and largely based on <a href="http://www.node99.org/">Sean Whalen</a>'s Java applet in <a href="http://www.node99.org/bifurcation/">Monte Carlo visualization of bifurcations in the logistic map</a>.</li>
+    <li><a href="http://yuval.bar-or.org/index.php?item=4">Logistic Map Simulation</a> A Java applet simulating the Logistic Map by Yuval Baror.</li>
+  </ol>
+</body>

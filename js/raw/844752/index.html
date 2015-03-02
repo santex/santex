@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://github.com/mbostock/d3/raw/v1.2.1/d3.js"></script>
+  </head>
+  <body>
+    <table id="countries">
+    </table>
+    <script type="text/javascript">
+
+d3.json("/data/sample.json", function(json) {
+  var data = d3.nest()
+      .key(function(d) { return d.Country.toLowerCase(); })
+      .sortKeys(d3.ascending)
+      .map(json);
+
+  var tr = d3.select("#countries")
+    .selectAll("tr")
+      .data(d3.entries(data))
+    .enter().append("tr");
+
+  tr.append("th")
+      .text(function(d) { return d.key; });
+
+  tr.selectAll("td")
+      .data(function(d) { return d.value; })
+    .enter().append("td")
+      .text(function(d) { return d.Aspect + ":  " + d.Value; });
+});
+
+    </script>
+  </body>
+</html>

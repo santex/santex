@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <title>Morley's trisector theorem - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <script src="../media/js/d3.min.js"></script>
+    <meta name="author" content="Jason Davies">
+    <style>
+      polygon {
+        fill: none;
+        stroke: #000;
+        stroke-width: .5px;
+      }
+      polygon.trisector {
+        stroke: green;
+      }
+      circle {
+        fill: #fff;
+        stroke: #000;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Morley's trisector theorem</h1>
+    <p>Trisect the angles of any triangle and the adjacent intersections will
+      form an equilateral triangle.  Drag the corners and see for yourself!
+    <div id="vis"></div>
+    <script>
+(function() {
+  var w = 800, h = 500, p = 10;
+  var vis = d3.select("#vis").append("svg")
+      .attr("width", w + p * 2)
+      .attr("height", h + p * 2)
+    .append("g")
+      .attr("transform", "translate(" + p + "," + p + ")");
+
+  var p0 = [530, 34],
+      p1 = [401, 460],
+      p2 = [100, 150],
+      ps = [p0, p1, p2];
+
+  var dist = function(p0, p1) {
+    var x = p1[0] - p0[0];
+    var y = p1[1] - p0[1];
+    return Math.sqrt(x * x + y * y);
+  }
+  var magnitude = function(v) {
+    return Math.sqrt(v.x * v.x + v.y * v.y);
+  }
+
+  var angle = function(p0, p1, p2) {
+    var a = {x: p0[0] - p1[0], y: p0[1] - p1[1]};
+    var b = {x: p2[0] - p1[0], y: p2[1] - p1[1]};
+    return Math.acos((a.x * b.x + a.y * b.y) / (magnitude(a) * magnitude(b)));
+  }
+
+  var polygon = function(d) {
+        return d.map(function(x) {
+          return x.join(",");
+        }).join(" ");
+      };
+
+  var update = function() {
+    var a = dist(p1, p2),
+        b = dist(p0, p2),
+        c = dist(p0, p1),
+        A = angle(p1, p0, p2),
+        B = angle(p0, p1, p2),
+        C = angle(p0, p2, p1);
+    var abc = [A, B, C].map(function(d) { return 2 * Math.cos(d / 3); });
+    var d = [
+      {a: 1, b: abc[2], c: abc[1]},
+      {a: abc[2], b: 1, c: abc[0]},
+      {a: abc[1], b: abc[0], c: 1}
+    ];
+    data = d.map(function(d) {
+      var s = a * d.a + b * d.b + c * d.c;
+      return [
+        (p0[0] * a * d.a + p1[0] * b * d.b + p2[0] * c * d.c) / s,
+        (p0[1] * a * d.a + p1[1] * b * d.b + p2[1] * c * d.c) / s
+      ];
+    });
+
+    var trisector = vis.selectAll("polygon.trisector")
+        .data(ps);
+    trisector.enter().append("polygon")
+        .attr("class", "trisector")
+        .attr("points", function(d, i) {
+          return polygon([data[(i + 1) % 3], d, data[(i + 2) % 3]]);
+        });
+    trisector
+        .attr("points", function(d, i) {
+          return polygon([data[(i + 1) % 3], d, data[(i + 2) % 3]]);
+        });
+
+    var outer = vis.selectAll("polygon.outer")
+        .data([ps]);
+    outer.enter().append("polygon")
+        .attr("class", "outer");
+    outer
+        .attr("points", polygon);
+
+    var circle = vis.selectAll("circle")
+        .data(ps);
+    circle.enter().append("circle")
+        .attr("r", 7.5)
+        .call(d3.behavior.drag()
+          .on("dragstart", function(d) {
+            this.__origin__ = d.slice();
+          })
+          .on("drag", function(d) {
+            d[0] = Math.max(0, Math.min(this.__origin__[0] += d3.event.dx, w));
+            d[1] = Math.max(0, Math.min(this.__origin__[1] += d3.event.dy, h));
+            update();
+          })
+          .on("dragend", function() {
+            delete this.__origin__;
+          }));
+    circle
+        .attr("cx", function(d) { return d[0]; })
+        .attr("cy", function(d) { return d[1]; })
+  };
+
+  update();
+})();
+    </script>
+    <p>
+    Written using the <a href="http://mbostock.github.com/">D3 visualisation library</a>.
+    Inspired by <a href="http://www.futilitycloset.com/2010/05/22/a-better-nature/">A Better Nature</a>.
+    <p>Requires a SVG-capable browser e.g. <a
+      href="http://www.mozilla.org/firefox/">Mozilla Firefox</a>, WebKit (<a
+      href="http://www.google.com/chrome">Google Chrome</a>, <a
+      href="http://www.apple.com/safari/">Safari</a> &amp;c.) or Internet Explorer 9.
+    <h2>Links and Proofs</h2>
+    <ul>
+      <li>A. Bogomolny, <a href="http://www.cut-the-knot.org/triangle/Morley/index.shtml">Morley's Miracle</a> from Interactive Mathematics Miscellany and Puzzles. Includes a long list of different proofs, in particular <a href="http://www.cut-the-knot.org/triangle/Morley/conway.shtml">John Conway's proof</a> is rather elegant.</li>
+      <li><a href="http://www.mathpages.com/home/kmath376/kmath376.htm">Morley's Trisection Theorem</a>: a detailed proof at MathWorld.</li>
+      <li><a href="http://mathworld.wolfram.com/MorleysTheorem.html">Morley's Theorem</a> at MathWorld.</li>
+      <li><a href="http://en.wikipedia.org/wiki/Morley's_trisector_theorem">Morley's trisector theorem</a> at Wikipedia.</li>
+    </ul>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

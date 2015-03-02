@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hamming Quilt - Jason Davies</title>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="description" content="A visualisation of the Hamming distance.">
+    <link href="hamming.css" rel="stylesheet">
+    <link href="hamming.png" rel="image_src">
+  </head>
+  <body>
+    <div id="vis"></div>
+    <div id="center" style="display: none">
+      <div id="overlay"><p id="about-box">This is a visualisation of the
+        <a href="http://en.wikipedia.org/wiki/Hamming_distance">Hamming
+          distance</a>.  For each pixel, the hamming distance between the
+        binary representations of the <em>x</em> and <em>y</em> coordinates is
+        used to determine the darkness.  Darker means closer!
+      </div>
+    </div>
+    <div id="about">
+      <a href="javascript:void()" id="about-link">?</a>
+    </div>
+    <script src="../media/js/d3.min.js"></script>
+    <script src="hamming.js"></script>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

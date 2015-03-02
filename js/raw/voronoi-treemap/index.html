@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Voronoi Treemaps</title>
+<style>
+@import url(../style.css?20140510);
+path {
+  fill: none;
+  stroke: #000;
+  pointer-events: all;
+}
+.right {
+  float: right;
+  text-align: right;
+}
+#polygon svg {
+  vertical-align: middle;
+}
+.stats {
+  font-family: monospace;
+}
+#errors text {
+  font: 10px sans-serif;
+}
+#errors path, #errors line {
+  stroke: #999;
+  shape-rendering: crispEdges;
+}
+#errors rect {
+  fill: #666;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com">Jason Davies</a>
+<h1>Voronoi Treemaps</h1>
+<div id="chart"></div>
+
+<aside id="errors"></aside>
+
+<div style="margin: 1em 0; font-style: italic; font-size: small">
+  Packages of the <a href="http://flare.prefuse.org/">Flare visualization toolkit</a> by
+  <label for="size"><input id="size" type="radio" name="treemap-value" checked> size</label> or
+  <label for="count"><input id="count" type="radio" name="treemap-value"> count</label>, by subdividing a polygon
+  <span id="polygon"></span>
+  <input id="sides" type="range" min="4" max="13" value="13">.
+</div>
+
+<p>Voronoi treemaps visualise hierarchical data by recursively partitioning convex polygons using weighted centroidal Voronoi diagrams.
+The polygon areas are proportional to the relative weights of their corresponding nodes.
+
+<p>The animation above shows the algorithm running one iteration at a time for each node of the tree.
+
+<p>For a static treemap, it’s more efficient to iterate until convergence for each node separately, rather than interleaving iterations.
+<p>This is because moving a parent Voronoi region can cause its child regions to be outside their parent, and this can happen repeatedly when interleaving.
+When this does happen, we simply reinsert such nodes at random locations within their parent.
+
+<p>This particular type of weighted Voronoi diagram is a <a href="../power-diagram/">power diagram</a>.
+
+<h2>Further Reading</h2>
+<ul>
+  <li><a href="http://graphics.uni-konstanz.de/publikationen/2005/voronoi_treemaps/Balzer%20et%20al.%20--%20Voronoi%20Treemaps.pdf">Voronoi Treemaps</a>, by Michael Balzer and Oliver Deussen.
+  <li><a href="http://dx.doi.org/10.1111/j.1467-8659.2012.03078.x">Computing Voronoi Treemaps: Faster, Simpler, and Resolution-independent</a>, by Arlind Nocaj and Ulrik Brandes.
+</ul>
+
+<script src="../d3.min.js"></script>
+<script src="../d3.geom.nhull.js"></script>
+<script src="../power-diagram/power.js?20140511"></script>
+<script src="treemap.js?1"></script>
+<script>
+
+var format = d3.format(".4f");
+
+(function() {
+
+var ratio = window.devicePixelRatio || 1,
+    width = 960 * ratio,
+    height = 600 * ratio,
+    stop = false,
+    sides;
+
+var treemap = d3.layout.voronoiTreemap().iterations(1),
+    commaFormat = d3.format(",f");
+
+var categoryFill = d3.scale.category20c(),
+    errorFill = d3.scale.linear().domain([-1, 0, 1]).range(["#00f", "#fff", "#f00"]);
+
+var fill = function(d) { return errorFill(d.error); };
+
+var margin = {top: 5, right: 8, bottom: 25, left: 25},
+    errorWidth = 180 - margin.right,
+    errorHeight = 100 - margin.top - margin.bottom,
+    x = d3.scale.linear().range([0, errorWidth]),
+    y = d3.scale.linear().range([errorHeight, 0]),
+    histogram = d3.layout.histogram().bins(x.ticks(50)).frequency(false);
+
+d3.selectAll("#size, #count").on("change", change);
+d3.select("#sides").on("input", change);
+
+change();
+
+function change() {
+  sides = +d3.select("#sides").property("value");
+  if (sides > 12) sides = 120;
+  d3.select("#polygon").call(smallPolygon, sides);
+  treemap
+      .polygon(regularPolygon(sides, width, height, 2 * ratio))
+      .value(d3.select("#size").property("checked")
+          ? function(d) { return d.size; }
+          : function() { return 1; });
+  stop = false;
+}
+
+var context = d3.select("#chart").append("canvas")
+    .attr("width", width)
+    .attr("height", height)
+    .style("width", width / ratio + "px")
+    .style("height", height / ratio + "px").node().getContext("2d");
+context.lineCap = "round";
+context.strokeStyle = "#000";
+
+var svg = d3.select("#errors").append("svg")
+    .attr("width", errorWidth + margin.left + margin.right)
+    .attr("height", errorHeight + margin.top + margin.bottom)
+    .style("margin-left", -margin.left + "px")
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("g")
+    .call(d3.svg.axis().scale(y).ticks(5).orient("left"));
+
+svg.append("g")
+    .attr("transform", "translate(0," + errorHeight + ")")
+    .call(d3.svg.axis().scale(x).ticks(5));
+
+svg.append("text")
+    .attr("dy", "-.2em")
+    .attr("text-anchor", "end")
+    .attr("transform", "translate(" + errorWidth + "," + errorHeight + ")")
+    .text("relative error");
+
+d3.json("flare.json", function(error, json) {
+  d3.timer(function() {
+    if (stop) return;
+    stop = redraw(json);
+  });
+});
+
+function redraw(json) {
+  var nodes = treemap(json).sort(function(a, b) { return a.depth - b.depth; }),
+      root = nodes[0],
+      rootArea = polygonArea(root.polygon),
+      edges = {},
+      ε = 1e-6;
+
+  var errors = [];
+
+  context.clearRect(0, 0, width, height);
+  for (var i = 0, n = nodes.length; i < n; ++i) {
+    var d = nodes[i], polygon = d.polygon;
+    if (polygon) {
+      var p0 = polygon[0],
+          k0 = Math.round(p0[0] / ε) * ε + "," + Math.round(p0[1] / ε) * ε;
+      for (var j = 1, m = polygon.length; j < m; ++j, p0 = p, k0 = k) {
+        var p = polygon[j],
+            k = Math.round(p[0] / ε) * ε + "," + Math.round(p[1] / ε) * ε,
+            key = (k0 < k ? k0 + "," + k : k + "," + k0) + "," + d.depth;
+        edges[key] = !d.depth || edges.hasOwnProperty(key) ? [p0, p, d.depth] : null;
+      }
+
+      if (d.parent) {
+        errors.push(Math.abs(d.error = (polygonArea(polygon) / rootArea) / (d.value / root.value) - 1));
+      }
+
+      if (d.children && d.children.length) {
+        var point = polygon[0];
+        context.beginPath();
+        context.moveTo(point[0], point[1]);
+        for (var j = 1, m = polygon.length; j < m; ++j) {
+          point = polygon[j];
+          context.lineTo(point[0], point[1]);
+        }
+        context.closePath();
+        context.fillStyle = categoryFill(d.name);
+        context.fill();
+      }
+    }
+  }
+
+  for (var k in edges) {
+    var e = edges[k];
+    if (e == null) continue;
+    var e0 = e[0], e1 = e[1];
+    context.beginPath();
+    context.moveTo(e0[0], e0[1]);
+    context.lineTo(e1[0], e1[1]);
+    context.lineWidth = Math.max(.25, 5 - Math.max(1, e[2])) * ratio;
+    context.stroke();
+  }
+
+  var rect = svg.selectAll("rect")
+      .data(histogram(errors));
+  rect.enter().append("rect");
+  rect.attr("x", function(d) { return x(d.x) + .5; })
+      .attr("y", function(d) { return y(d.y); })
+      .attr("width", function(d) { return x(d.dx) - 1; })
+      .attr("height", function(d) { return errorHeight - y(d.y); });
+  rect.exit().remove();
+
+  return d3.max(errors) < .01;
+}
+
+})();
+
+function regularPolygon(n, w, h, p) {
+  w *= .5, h *= .5;
+  var θ = 2 * Math.PI / n,
+      polygon = d3.range(n).map(function(i) {
+        return [w + (w - p) * Math.sin(i * θ), h + (h - p) * -Math.cos(i * θ)];
+      });
+  polygon.push(polygon[0].slice());
+  return polygon;
+}
+
+function smallPolygon(g, n) {
+  var r = 10,
+      p = 1,
+      polygon = regularPolygon(n, 2 * r, 2 * r, p);
+
+  var svg = g.selectAll("svg").data([polygon]);
+  svg.enter().append("svg")
+      .attr("width", 2 * (r + p))
+      .attr("height", 2 * (r + p))
+    .append("path");
+  svg.select("path")
+      .attr("d", "M" + polygon.join("L") + "Z");
+}
+
+function powerLaw(x0, x1, n) {
+  ++n;
+  var x0_n = Math.pow(x0, n),
+      x1_n = Math.pow(x1, n);
+  return function() {
+    return Math.pow((x1_n - x0_n) * Math.random() + x0_n, 1 / n);
+  };
+}
+
+function polygonArea(polygon) {
+  var a = polygon[0],
+      area = 0;
+  for (var i = 1, n = polygon.length; i < n; ++i, a = b) {
+    var b = polygon[i];
+    area += a[0] * b[1] - a[1] * b[0];
+  }
+  return .5 * area;
+}
+
+</script>

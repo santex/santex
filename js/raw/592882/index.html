@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.2.0/polymaps.min.js"></script>
+    <script type="text/javascript" src="http://github.com/mbostock/polymaps/raw/30a15c8165afc55a43df54779c232f3e5f8ee544/examples/loupe/loupe.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.2.0/examples/example.css");
+
+html, body {
+  height: 100%;
+}
+
+svg {
+  display: block;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .add(po.interact())
+    .on("move", move);
+
+map.add(po.image()
+    .url(po.url("http://{S}tile.cloudmade.com"
+    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+    + "/998/256/{Z}/{X}/{Y}.png")
+    .hosts(["a.", "b.", "c.", ""])));
+
+var timeout,
+    delay = 500;
+
+function move() {
+  if (timeout) clearTimeout(timeout);
+  timeout = setTimeout(refresh, delay);
+}
+
+function refresh() {
+  alert("The map has stabilized. Load new data now!");
+}
+
+    </script>
+  </body>
+</html>

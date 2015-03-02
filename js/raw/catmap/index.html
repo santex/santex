@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <title>Arnold's Cat Map - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <link rel="stylesheet" href="catmap.css">
+    <link href="../media/ui-lightness/jquery-ui-1.8rc3.custom.css" rel="stylesheet">
+    <script src="../media/js/jquery.min.js"></script>
+    <script src="../media/js/jquery-ui-1.8rc3.custom.min.js"></script>
+    <script src="../media/js/jquery.ba-hashchange.min.js"></script>
+  </head>
+  <body>
+    <h1>Arnold's Cat Map</h1>
+    <p>Arnold's Cat Map is a transformation that can be applied to an image.
+    The pixels of the image appear to be randomly rearranged, but when the transformation is repeated enough times, the original image will reappear!</p>
+    <script><!--
+      if (typeof FileReader !== 'undefined') {
+        document.write('<p><label for="imagefile">Choose your own image:</label>' +
+          '<input type="file" id="imagefile" onchange="handleFiles(this.files)" /></p><p>...or enter');
+      } else {
+        document.write('<p>Enter');
+      }
+      document.write(' any image URL: <input type="text" id="imageurl" /> ' +
+        '<input type="button" value="Update" onclick="location.hash = \'#\' + $(\'#imageurl\').val()" /></p>');
+    //--></script>
+    <div id="preview"><img src="catmap.jpg" /></div>
+    <div style="margin: 20px 0"><canvas id="vis" width="500" height="500"></canvas></div>
+    <div id="controls">
+      <p>Iteration currently showing: <span id="iteration-count">0</span></p>
+      <p>
+      <input type="button" value="&lt;&lt;" id="step-back" />
+      <input type="button" value="&gt;&gt;" id="step-forward" />
+      <input type="button" value="Iterate until original image reappears" id="play" />
+      </p>
+      <p>Iteration: <span id="iterations"></span> <span id="iteration-target">0</span></p>
+    </div>
+    <p>The transformation is as follows:</p>
+    <ol>
+      <li>Shear the image in the both the x- and y-directions by a factor of 1.</li>
+      <li>Wrap the image back onto itself i.e. treat it like a <a href="http://en.wikipedia.org/wiki/Torus">torus</a> (doughnut shape).  This is a way of treating a 2D grid like it has no edges.</li>
+    </ol>
+    <p>This transformation demonstrates some of the principles of chaos i.e. underlying order to an apparently random evolution of a system.  Arnold's Cat Map is named after the Russian mathematician <a href="http://en.wikipedia.org/wiki/Vladimir_Arnold">Vladimir Arnold</a>, who discovered it using an image of a cat.</p>
+    <h2>Links</h2>
+    <ul>
+      <li><a href="http://node99.org/catmap/">arnold's cat map</a> by Sean Whalen.</li>
+      <li><a href="http://en.wikipedia.org/wiki/Arnold's_cat_map">Arnold's cat map</a> on Wikipedia.</li>
+      <li><a href="http://mathworld.wolfram.com/ArnoldsCatMap.html">Arnold's cat map</a> on Wolfram Mathworld.</li>
+    </ul>
+    <p class="credits">Cat image courtesy of <a href="http://www.flickr.com/photos/miss_pupik/">miss pupik</a>.</p>
+    <p class="credits">Thanks to <a href="http://www.voxelsoft.com/">Denis Lukianov</a> for his comments and inspiring the buttons for stepping through iterations one at a time.</p>
+    <script src="catmap.js"></script>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

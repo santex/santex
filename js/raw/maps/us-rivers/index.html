@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Rivers of the U.S.A.</title>
+<style>
+@import url(../maps.css);
+path {
+  stroke: #000;
+  fill: none;
+}
+.tile path {
+  stroke: #33e;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.outline {
+  stroke: #000;
+  stroke-width: .5px;
+}
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Rivers of the U.S.A.</h1>
+<div id="map"></div>
+<p class="caption">Zoomable vector tiles on an Albers equal-area conic projection.
+<div class="wrapper">
+  <p>The minimal set of Mercator tiles needed for the current projection and viewport is <a href="../tile/">automatically computed</a>.
+  These are then loaded and projected using the Albers equal-area conic projection.
+  <p>River data from <a href="http://www.horizon-systems.com/nhdplus/">NHDPlus</a>, vector tiles by <a href="http://www.somebits.com/weblog/tech/vector-tile-river-map.html">Nelson Minar</a>, and inspired by <a href="http://bl.ocks.org/mbostock/5608230">Mike Bostock</a>!
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../d3.quadtiles.js"></script>
+<script src="../topojson.min.js"></script>
+<script>
+
+var width = 960,
+    height = 600,
+    p = .5;
+
+var projection = d3.geo.albers()
+    .translate([width / 2, height / 2])
+    .clipExtent([[p, p], [width - p, height - p]]);
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.behavior.zoom()
+      .translate(projection.translate())
+      .scale(projection.scale())
+      .scaleExtent([1e2, 1e8])
+      .on("zoom", function() {
+        projection.translate(d3.event.translate).scale(d3.event.scale);
+        redraw();
+      }));
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline")
+    .attr("d", path);
+
+svg = svg.append("g");
+
+redraw();
+
+function redraw() {
+
+  // TODO improve zoom level computation
+  var pot = Math.log(projection.scale()) / Math.LN2 | 0,
+      ds = projection.scale() / (1 << pot),
+      z = pot - 5;
+
+  svg.attr("transform", "translate(" + projection.translate() + ")scale(" + ds + ")");
+
+  var tile = svg.selectAll("g.tile")
+      .data(d3.quadTiles(projection, z), key);
+  tile.enter().append("g")
+      .attr("class", "tile")
+      .each(function(d) {
+        var g = d3.select(this),
+            k = d.key,
+            x = k[0], y = k[1], z = k[2];
+        //this.__request = d3.json("http://www.somebits.com:8001/rivers/" + z + "/" + x + "/" + y + ".json", function(error, json) {
+        this.__request = d3.json("http://tile.openstreetmap.us/vectiles-water-areas/" + z + "/" + x + "/" + y + ".json", function(error, json) {
+          var t = projection.translate(), s = projection.scale(), c = projection.clipExtent();
+          projection.translate([0, 0]).scale(1 << pot).clipExtent(null);
+          g.selectAll("path")
+              .data(json.features/*.filter(function(d) { return d.properties.kind === "riverbank"; })*/)
+            .enter().append("path")
+              //.style("stroke-width", function(d) { return Math.max(.1, d.properties.strahler * z / 30); })
+              .attr("d", path);
+          projection.translate(t).scale(s).clipExtent(c);
+        });
+      });
+  tile.exit()
+      .each(function() { this.__request.abort(); })
+      .remove();
+}
+
+function key(d) { return d.key.join(", "); }
+
+</script>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Bloom Filters</title>
+<style>
+@import url(../style.css);
+@import url(../button.css);
+
+rect { stroke: #000; fill: #fff; shape-rendering: crispEdges; }
+rect.on { fill: #fc0; }
+rect.off { fill: #0cf; }
+path { stroke: #000; fill: none; }
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a>
+<h1>Bloom Filters</h1>
+<p>Everyone is always raving about bloom filters.  But what exactly are they, and what are they useful for?
+<h2>Operations</h2>
+<p>The basic bloom filter supports two operations: <strong>test</strong> and <strong>add</strong>.
+<p><strong>Test</strong> is used to check whether a given element is in the set or not.  If it returns:
+<ul>
+  <li><em>false</em> then the element is definitely not in the set.
+  <li><em>true</em> then the element is <em>probably</em> in the set.  The <em>false positive rate</em> is a function of the bloom filter's size and the number and independence of the hash functions used.
+</ul>
+<p><strong>Add</strong> simply adds an element to the set.  Removal is impossible without introducing false negatives, but extensions to the bloom filter are possible that allow removal e.g. counting filters.
+<h2>Applications</h2>
+<p>The classic example is using bloom filters to reduce expensive disk (or network) lookups for non-existent keys.
+<p>If the element is not in the bloom filter, then we know for sure we don't need to perform the expensive lookup.  On the other hand, if it <em>is</em> in the bloom filter, we perform the lookup, and we can expect it to fail some proportion of the time (the false positive rate).
+<h2>Bloomfilter.js</h2>
+<p>I wrote a very fast bloom filter implementation in JavaScript called <a href="http://github.com/jasondavies/bloomfilter.js">bloomfilter.js</a>.  It uses the non-cryptographic <a href="http://www.isthe.com/chongo/tech/comp/fnv/">Fowler–Noll–Vo hash function</a> for speed.  We can get away with using a non-cryptographic hash function as we only care about having a uniform distribution of hashes.
+<p>The implementation also uses JavaScript typed arrays if possible, as these are faster when performing low-level bitwise operations.
+<h2>Interactive Demonstration</h2>
+<p>Below you should see an interactive visualisation of a bloom filter, powered by bloomfilter.js.
+<p>You can add any number of elements (keys) to the filter by typing in the textbox and clicking "Add".  Then use the second textbox to see if an element is probably there or definitely not!
+<p><label for="key">Key:</label> <input type="text" id="key"> <button id="add" class="first last">Add</button>
+<div id="vis"><img src="full.png"><p>Sorry, you need an SVG-compatible browser to view the interactive version.</div>
+<h2>Explanation</h2>
+<p>The bloom filter essentially consists of a bit vector of length <em>m</em>, represented by the central column.
+<p>To add an item to the bloom filter, we feed it to <em>k</em> different hash functions and set the bits at the resulting positions.
+  In this example, I've set <em>m</em> to <em>50</em> and <em>k</em> to <em>3</em>.  Note that sometimes the hash functions produce overlapping positions, so less than <em>k</em> positions may be set.
+<p>To test if an item is in the filter, again we feed it to the <em>k</em> hash functions.  This time, we check to see if any of the bits at these positions are not set.  If any are not set, it means the item is definitely not in the set.  Otherwise, it is probably in the set.
+<h2>Implementation Notes</h2>
+<p>Astute readers will note that I only mentioned one hash function, Fowler–Noll–Vo, but bloom filters require several.  It turns out that <a href="http://willwhim.wpengine.com/2011/09/03/producing-n-hash-functions-by-hashing-only-once/">you can produce <em>k</em> hash functions using only two to start off with</a>.  In fact, I just perform an additional round of FNV as the second hash function, and this works great.  Unfortunately I can't use the 64-bit trick in the linked post as JavaScript only supports bitwise operations on 32 bits.
+<p>
+<h2>See Also</h2>
+<ul>
+  <li><a href="http://en.wikipedia.org/wiki/Bloom_filter">Bloom filter</a> on Wikipedia.
+  <li>László Kozma’s <a href="http://www.lkozma.net/cuckoo_hashing_visualization/">cuckoo hashing visualisation</a>.
+</ul>
+<script src="../d3.min.js"></script>
+<script src="bloomfilter.js"></script>
+<script>
+var width = 750,
+    height = 600;
+
+var bloom = new BloomFilter(50, 3),
+    keys = [],
+    keySet = {},
+    colour = d3.scale.category20c();
+
+var bw = height / bloom.m,
+    dy = 20;
+
+var queryText = "";
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; })
+    .source(function(d) { return {y: 100, x: d.from * dy}; })
+    .target(function(d) { return {y: (width - bw) / 2, x: (d.to + .5) * bw}; });
+
+d3.select("#vis").selectAll("*").remove();
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width - 100)
+    .attr("height", height + 20);
+
+svg.append("defs")
+  .append("marker")
+    .attr("id", "arrow")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 10)
+    .attr("refY", 0)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 10)
+    .attr("orient", "auto")
+  .append("path")
+    .style("fill", "#000")
+    .attr("d", "M0,-5L10,0L0,5Z");
+
+var vis = svg.append("g")
+    .attr("transform", "translate(10,10)");
+
+var div = d3.select("#vis")
+    .style("position", "relative")
+  .append("div")
+    .style("position", "absolute")
+    .style("left", width - 100 + "px")
+    .style("top", "50%")
+    .style("margin-top", "-1.5em");
+div.append("input")
+    .attr("type", "text")
+    .on("keyup", function() {
+      queryText = this.value;
+      update();
+    });
+var result = div.append("span");
+
+update();
+
+var keyInput = d3.select("#key")
+    .on("keyup", function() {
+      if (d3.event.keyCode === 13) add();
+    });
+d3.select("#add").on("click", add);
+
+function add() {
+  var key = keyInput.property("value");
+  if (!(key in keySet)) {
+    keySet[key] = 1;
+    bloom.add(key);
+    keys.push({key: key, value: locations(bloom, key)});
+    update();
+  }
+  keyInput.property("value", "");
+}
+
+function update() {
+  var offLocations = locations(bloom, queryText);
+
+  var rect = vis.selectAll("rect")
+      .data(buckets(bloom, offLocations));
+  rect.enter().append("rect")
+      .attr("width", bw)
+      .attr("height", bw)
+      .attr("x", (width - bw) / 2)
+      .attr("y", function(d, i) { return i * bw; });
+  rect.exit().remove();
+  rect.attr("class", function(d) { return d === 1 ? "on" : d === -1 ? "off" : null; });
+
+  var key = vis.selectAll("text.key")
+      .data(keys);
+  key.enter().append("text")
+      .attr("class", "key")
+      .attr("x", 100)
+      .attr("text-anchor", "end")
+      .attr("dx", "-.3em")
+      .attr("dy", ".2em")
+      .text(function(d) { return d.key; });
+  key.exit().remove();
+  key.attr("y", function(d, i) { return height / 2 + (i - keys.length / 2) * dy; });
+
+  var link = vis.selectAll("path.location")
+      .data(links(bloom, keys));
+  link.enter().append("path")
+      .attr("class", "location")
+      .attr("marker-end", "url(#arrow)")
+      .attr("transform", "translate(0," + height / 2 + ")");
+  link.exit().remove();
+  link.attr("d", diagonal);
+
+  var link = vis.selectAll("path.query")
+      .data(links(bloom, [{key: queryText, value: offLocations}]));
+  link.enter().append("path")
+      .attr("class", "query")
+      .attr("marker-end", "url(#arrow)")
+      .attr("transform", "translate(" + width + "," + height / 2 + ")scale(-1,1)");
+  link.exit().remove();
+  link.attr("d", diagonal);
+  result.text(bloom.test(queryText) ? " Probably there." : " Definitely not there.");
+}
+
+function links(bloom, list) {
+  var a = [];
+  list.forEach(function(d, i) {
+    var b = {};
+    d.value.forEach(function(target) {
+      b[target] = 1;
+    });
+    for (var target in b) {
+      a.push({from: +i - list.length / 2, to: +target - bloom.m / 2});
+    }
+  });
+  return a;
+}
+
+function buckets(bloom, off) {
+  var d = bloom.buckets,
+      a = [],
+      m = bloom.m,
+      k,
+      x,
+      n;
+  for (var i = 0, j = 0; i < m; i += 32, j++) {
+    var x = d[j];
+    for (var k = 0, n = Math.min(m - i, 32); k < n; ++k) {
+      a.push((x >> k) & 1);
+    }
+  }
+  off.forEach(function(i) {
+    if (a[i] === 0) a[i] = -1;
+  });
+  return a;
+}
+
+function locations(bloom, key) {
+  var l = bloom.locations(key),
+      k = bloom.k,
+      i = -1,
+      a = [];
+  for (var i = 0; i < k; ++i) a[i] = l[i];
+  return a;
+}
+</script>

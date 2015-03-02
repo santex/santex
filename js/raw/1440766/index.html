@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  </head>
+  <body>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.6.0"></script>
+    <script type="text/javascript">
+
+d3.selection.prototype.order = function() {
+  for (var j = 0, m = this.length; j < m; j++) {
+    for (var group = this[j], i = 1, n = group.length, prev = group[0]; i < n; i++) {
+      var node = group[i];
+      if (node) {
+        if (prev) prev.parentNode.insertBefore(node, prev.nextSibling);
+        prev = node;
+      }
+    }
+  }
+  return this;
+};
+
+var div = d3.select("body").selectAll("div")
+    .data(["a", "b", "f"])
+  .enter().append("div")
+    .text(String);
+
+var div = d3.select("body").selectAll("div")
+    .data(["a", "b", "c", "d", "e", "f"], String);
+
+div.enter().append("div")
+    .text(String);
+
+div.order();
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.title {
+  display: inline-block;
+  font-size: 48px;
+  line-height: 90px;
+  text-align: center;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var diameter = 960 / 3,
+    radius = diameter >> 1,
+    velocity = .01,
+    then = Date.now();
+
+var projection = d3.geo.orthographic()
+    .scale(radius - 2)
+    .translate([radius, radius])
+    .clipAngle(90)
+    .precision(0);
+
+d3.select("body").selectAll(".title")
+    .data(["λ", "φ", "γ"])
+  .enter().append("div")
+    .attr("class", "title")
+    .style("width", diameter + "px")
+    .text(function(d) { return d; });
+
+var canvas = d3.select("body").selectAll("canvas")
+    .data(d3.range(3))
+  .enter().append("canvas")
+    .attr("width", diameter)
+    .attr("height", diameter);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+d3.json("/data/world-110m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land),
+      globe = {type: "Sphere"};
+
+  d3.timer(function() {
+    var angle = velocity * (Date.now() - then);
+    canvas.each(function(i) {
+      var rotate = [0, 0, 0], context = this.getContext("2d");
+      rotate[i] = angle, projection.rotate(rotate);
+      context.clearRect(0, 0, diameter, diameter);
+      context.beginPath(), path.context(context)(land), context.fill();
+      context.beginPath(), path(globe), context.stroke();
+    });
+  });
+});
+
+</script>

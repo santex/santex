@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <body><pre><script type="text/javascript">
+
+var proto = [];
+proto.foo = 42;
+if (proto.foo) {
+  document.write("Can assign properties to array literals.\n");
+} else {
+  document.write("Cannot assign properties to array literals.\n");
+}
+
+if ([].__proto__) {
+  document.write("Array literals have a __proto__.\n");
+
+  var subclass = [];
+  subclass.__proto__ = proto;
+  if (subclass.__proto__ === proto) {
+    document.write("Can assign __proto__.\n");
+  } else {
+    document.write("Cannot assign __proto__.\n");
+  }
+  if (subclass.foo) {
+    document.write("Subclasses inherit prototype properties.\n");
+  } else {
+    document.write("Subclasses do not inherit prototype properties.\n");
+  }
+} else {
+  document.write("Array literals do not have a __proto__.\n");
+}
+
+    </script></pre></body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Combinatorial Necklaces and Bracelets - Jason Davies</title>
+
+<link rel="image_src" href="necklaces.png">
+<style>
+
+html, body { font-family: sans-serif; }
+body { width: 770px; margin: 2em auto; }
+line { stroke: #000; }
+circle { stroke: #000; fill: none; }
+#n, #k { width: 30px; }
+
+</style>
+
+<h1>Combinatorial Necklaces and Bracelets</h1>
+
+<p>A <a href="http://mathworld.wolfram.com/Necklace.html">combinatorial necklace</a>
+  is a circle of <em>n</em> coloured beads, with up to <em>k</em> different
+  colours.
+
+<p>If we think of a necklace as a string of <em>n</em> characters from an
+  alphabet of size <em>k</em>, we can say that two strings are equivalent if one
+  can be rotated to be the same as the other i.e. <em>aabb = abba = bbaa = baab</em>.
+
+<p>A bracelet is a necklace that can be turned over i.e. strings are equivalent
+  under reversal e.g. <em>abcd = dcba</em>.
+
+<p>Below you can see all unique necklaces or bracelets given <em>n</em> and <em>k</em>.
+
+<p>
+  <label for="n">n:</label> <input type="number" id="n" value="4" min="1">
+  <label for="k">k:</label> <input type="number" id="k" value="3" min="1">
+  <label for="b"> <input type="checkbox" id="b" value="1"> bracelets</label>
+
+<p>Total: <span id="count"></span>
+
+<div id="vis"></div>
+
+<h2>Further Reading</h2>
+<ul>
+  <li>To generate the necklaces, I used the “FKM algorithm” due to Fredricksen, Kessler and Maiorana.
+  <li>For the bracelets, I used the algorithm described in Joe Sawada’s <a href="http://dl.acm.org/citation.cfm?id=586928">Generating Bracelets in constant amortized  time</a>.
+  <li><a href="http://mathworld.wolfram.com/Necklace.html">Necklace</a> on MathWorld.
+  <li><a href="http://en.wikipedia.org/wiki/Necklace_%28combinatorics%29">Necklace (combinatorics)</a> on Wikipedia.
+  <li><a href="http://www.theory.csc.uvic.ca/~cos/inf/neck/NecklaceInfo.html">Information on necklaces, unlabelled necklaces, Lyndon words, De Bruijn sequences</a>.
+  <li><a href="http://undergraduate.csse.uwa.edu.au/units/CITS7209/polya.pdf">Pólya Counting I</a> (PDF).
+</ul>
+
+<script src="../media/js/d3.min.js"></script>
+<script src="necklaces.js"></script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

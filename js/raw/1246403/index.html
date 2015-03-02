@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 720,
+    origin = [71, -42],
+    velocity = [.010, -.002],
+    t0 = Date.now();
+
+var sphere = {type: "Sphere"};
+
+var projection = d3.geo.orthographic()
+    .scale(height / 2.1)
+    .translate([width / 2, height / 2])
+    .clipAngle(90)
+    .precision(.5);
+
+var canvas = d3.select("body").append("canvas")
+    .attr("width", width)
+    .attr("height", height);
+
+var context = canvas.node().getContext("2d");
+
+var path = d3.geo.path()
+    .projection(projection)
+    .context(context);
+
+d3.json("/data/world-110m.json", function(error, topo) {
+  var land = topojson.feature(topo, topo.objects.land);
+
+  d3.timer(function() {
+    var dt = Date.now() - t0;
+    projection.rotate([velocity[0] * dt + origin[0], velocity[1] * dt + origin[1]]);
+
+    context.clearRect(0, 0, width, height);
+
+    context.beginPath();
+    path(sphere);
+    context.lineWidth = 2;
+    context.strokeStyle = "#000";
+    context.stroke();
+
+    context.beginPath();
+    path(land);
+    context.lineWidth = 1;
+    context.strokeStyle = "#000";
+    context.stroke();
+  });
+});
+
+d3.select(self.frameElement).style("height", height + "px");
+
+</script>

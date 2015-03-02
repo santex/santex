@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>World Capitals Voronoi</title>
+<style>
+
+@import url(../../maps.css);
+
+path {
+  stroke-linejoin: round;
+}
+
+.ocean {
+  stroke: #000;
+  fill: #4682b4;
+}
+
+.voronoi-border {
+  stroke: #000;
+  stroke-width: .25px;
+  fill: none;
+}
+
+.voronoi {
+  fill-opacity: .5;
+  stroke: #000;
+  pointer-events: all;
+}
+
+.voronoi:hover {
+  fill-opacity: .5;
+  fill: #ff0 !important;
+}
+
+.countries {
+  stroke: #fff;
+  stroke-width: .5px;
+  fill: none;
+}
+
+.points, .graticule, .countries {
+  pointer-events: none;
+}
+
+.graticule {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+  fill: none;
+}
+
+.outline {
+  stroke: #000;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Spherical Voronoi Diagrams</a>
+
+<h1>World Capitals Voronoi</h1>
+
+<div id="map"></div>
+
+<div class="wrapper">
+  <p class="cite">Data: <a href="http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/">Natural Earth, 1:10m Cultural Vectors: Populated Places (Admin-0 capitals)</a>.
+  <p>World territories have been redrawn so that a region is determined by the closest capital city.
+  This is calculated using a <a href="../">spherical Voronoi diagram</a>, which takes into account the curvature of the Earth when computing distances.
+  <p>See also <a href="../us-capitals">United States of Voronoi</a>.
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../../queue.min.js"></script>
+<script src="../../d3.geo.projection.min.js"></script>
+<script src="../../topojson.min.js"></script>
+<script src="../../rotate/d3.geo.zoom.js"></script>
+<script src="../d3.geo.voronoi.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+var projection = d3.geo.orthographic()
+    .clipAngle(90)
+    .clipExtent([[1, 1], [width - 1, height - 1]])
+    .precision(.1)
+    .translate([width / 2, height / 2])
+    .scale(height / 2 - 1)
+    .rotate([-30, -30]);
+
+var path = d3.geo.path()
+    .projection(projection)
+    .pointRadius(1.5);
+
+var svg = d3.selectAll("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.geo.zoom().projection(projection)
+    .on("zoom.redraw", function() {
+      d3.event.sourceEvent.preventDefault();
+      svg.selectAll("path").attr("d", path);
+    }));
+
+var fill = d3.scale.category20b();
+
+queue()
+    .defer(d3.json, "../../world-110m.json")
+    .defer(d3.json, "ocean.json")
+    .defer(d3.json, "cities.json")
+    .await(ready);
+
+function ready(error, world, ocean, cities) {
+  svg.append("path")
+      .datum(topojson.feature(ocean, ocean.objects.ocean))
+      .attr("class", "ocean")
+      .attr("d", path);
+
+  var coordinates = cities.map(function(d) { return d.coordinates; }),
+      multiPoint = {type: "MultiPoint", coordinates: coordinates};
+
+  svg.append("path")
+      .datum(multiPoint)
+      .attr("class", "points")
+      .attr("d", path);
+
+  var delaunay = d3.geo.delaunay(coordinates),
+  voronoi = d3.geo.voronoi(cities, delaunay).geometries;
+
+  voronoi.forEach(function(d, i) {
+    d.name = cities[i].name + ", " + cities[i].region;
+  });
+
+  svg.append("path")
+      .datum(d3.geo.graticule())
+      .attr("class", "graticule")
+      .attr("d", path);
+
+  svg.append("path")
+      .datum({type: "Sphere"})
+      .attr("class", "outline")
+      .attr("d", path);
+
+  svg.selectAll(".voronoi")
+      .data(voronoi)
+    .enter().insert("path", ".ocean")
+      .attr("class", "voronoi")
+      .style("fill", function(d, i) { return fill(d.color = d3.max(d.neighbors, function(n) { return voronoi[n].color; }) + 1 | 0); })
+      .attr("d", path)
+    .append("title")
+      .text(function(d) { return d.name; });
+
+  svg.insert("path", ".ocean")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "countries")
+      .attr("d", path);
+
+  // TODO voronoi.mesh
+  svg.selectAll(".voronoi-border")
+      .data(voronoi.map(function(cell) {
+        return {type: "LineString", coordinates: cell.coordinates[0]};
+      }))
+    .enter().insert("path", ".ocean")
+      .attr("class", "voronoi-border")
+      .attr("d", path);
+}
+
+</script>

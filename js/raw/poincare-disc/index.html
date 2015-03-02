@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Poincaré Disc - Jason Davies</title>
+
+<link rel="stylesheet" href="../media/style.css">
+<script src="../d3.min.js"></script>
+<link rel="image_src" href="http://www.jasondavies.com/screenshots/poincare-disc-full.png">
+<style>
+  #vis {
+    width: 100%;
+    height: 500px;
+    border: solid #000 2px;
+  }
+  .line {
+    stroke: black;
+    fill: none;
+  }
+</style>
+
+<h1>Poincaré Disc</h1>
+<p>The following is a tiling of the hyperbolic plane by ideal triangles.  These have area π in the Poincaré metric (constant curvature -1).</p>
+<p>You can zoom/pan by scrolling/dragging the mouse within the box,
+  or pinching, double-tapping and dragging on a touch-enabled device.
+<div id="vis">
+  <script src="poincare-disc.js"></script>
+</div>
+<p>Thus saith Wikipedia:</p>
+<blockquote>
+  In geometry, the Poincaré disk model, also called the conformal disk model, is a model of n-dimensional hyperbolic geometry in which the points of the geometry are in an n-dimensional disk, or unit ball, and the straight lines of the hyperbolic geometry are segments of circles contained in the disk orthogonal to the boundary of the disk, or else diameters of the disk.
+</blockquote>
+<p>In plain English, this means you can squash an infinite 2D plane into a circular disc!</p>
+<p>Written using JavaScript and <a href="http://mbostock.github.com/d3/">D3</a>.</p>
+<h2>References</h2>
+<ul>
+  <li>Code based on <a href="http://haishibai.blogspot.com/2010/07/draw-hyperbolic-geometry-poincare-disc.html">this C# WPF/GDI+ tutorial</a></li>
+  <li>Excellent explanation of hyperbolic geometry: <a href="http://moniker.name/worldmaking/?p=362">Hyperbolic Geometry: Poincaré Disc</a></li>
+</ul>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

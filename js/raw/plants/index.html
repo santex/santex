@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Plant Generator - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css" type="text/css" />
+    <script type="text/javascript" src="../media/js/protovis-r3.3.js"></script>
+    <meta name="author" content="Jason Davies" />
+  </head>
+  <body>
+    <h1>Plant Generator</h1>
+    <p>Watch how they grow! Click the regenerate button below to grow new random plants.</p>
+    <div id="vis" style="width: 726px; height: 400px; margin: 10px 0"></div>
+    <script type="text/javascript+protovis">
+var plants = 7, leafCount = 30;
+var random = function(n) { return Math.floor(Math.random() * n) };
+var centerX = 363, offsetX = centerX - 100;
+var h = 400, dy = 5, offset = 0.007;
+var data, timer = null;
+var reset = function() {
+  if (timer) clearTimeout(timer);
+  data = pv.range(0, plants).map(function() [{x: centerX + random(2*offsetX) - offsetX, y: h, count: 30 + random(35)}]);
+  step();
+}
+var step = function() {
+  var finished = true;
+  for (var i=0; i<plants; i++) {
+    var count = data[i].length;
+    if (count > data[i][0].count) continue;
+    var d = data[i][count-1];
+    var angle = (Math.random() - 1) * Math.PI;
+    data[i].push({
+      x: d.x + count * offset * (random(21) - 10),
+      y: d.y - dy,
+      lx: Math.cos(angle),
+      ly: Math.sin(angle),
+      green: 110 + random(50),
+      alpha: (1 + Math.random()) / 2
+    });
+    finished = false;
+  }
+  if (!finished) {
+    vis.render();
+    timer = setTimeout(step, 51);
+  }
+}
+var vis = new pv.Panel()
+    .canvas('vis')
+    .fillStyle('black')
+var plant = vis.add(pv.Panel)
+    .data(function() data)
+plant.add(pv.Line)
+    .data(function(d) d)
+    .left(function(d) d.x)
+    .top(function(d) d.y)
+    .strokeStyle('green')
+plant.add(pv.Panel)
+    .data(function(d) d)
+    .visible(function(d) this.parent.data().length - this.index < leafCount)
+  .add(pv.Line)
+    .data(function(d) {
+      var scale = this.parent.parent.data().length - this.parent.index / 2;
+      return [d, {x: d.x + scale * d.lx, y: d.y + scale * d.ly}, d];
+    })
+    .left(function(d) d.x)
+    .top(function(d) d.y)
+    .interpolate('polar')
+    .eccentricity(0.5)
+    .strokeStyle(null)
+    .fillStyle(function(d) pv.rgb(0, d.green, 0, d.alpha))
+reset();
+    </script>
+    <p><input type="button" value="Regenerate!" onclick="reset()" /></p>
+    <p>Based on <a href="http://www.kevlindev.com/alife/plants/plants.svg">Kevin Lindsey's Plant Generator</a>.</p>
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

@@ -1,0 +1,11 @@
+path {
+  fill: none;
+  stroke: #000;
+  stroke-width: .5px;
+}
+.sea {
+  fill: rgb(106,158,238);
+}
+.land {
+  fill: rgb(235,217,35);
+}

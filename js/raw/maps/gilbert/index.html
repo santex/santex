@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Gilbert’s Two-World Perspective</title>
+<style>
+@import url(../maps.css?20130528);
+
+.background {
+  fill: #ccf;
+}
+
+.world {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: #fff;
+}
+
+.graticule {
+  stroke: #000;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+  fill: none;
+}
+
+.outline {
+  stroke: #000;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+svg {
+  cursor: move;
+}
+
+p.caption {
+  width: 450px;
+  text-align: left;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Gilbert’s Two-World Perspective</h1>
+<div id="map"></div>
+<p class="caption">Gilbert’s Two-World Perspective Projection, centred at <span id="origin">5°N, 5°E</span>.
+
+<div class="wrapper">
+  <h2>What’s unusual about this globe?</h2>
+  <p>Notice how all countries are shown, even though only half the globe is visible?
+  <p>In fact, the whole world has first been transformed conformally onto each hemisphere of a globe, using a construction by <a href="http://en.wikipedia.org/wiki/Edgar_Gilbert">Edgar N. Gilbert</a>, resulting in a globe with two images of the world, one on each hemisphere.
+  It is then projected to 2D using the orthographic projection.
+  <p>Gilbert had a real globe like this to play tricks on unsuspecting visitors:
+  <blockquote>
+    <p>When people visit Gilbert’s office, he likes to ask them what is wrong with his globe.
+    If the visitor cannot see what is wrong, Gilbert gives the globe one slow, complete turn.
+    “Even this hint”, he writes, “does not always succeed”.
+  </blockquote>
+  <p style="font-style: italic">–Martin Gardner, On Mathematical Games, Scientific American, Nov. 1975.
+  <blockquote>
+    <p>The Gilbert Two-World Perspective Projection is a useful visual illusion.
+    It resembles the world as people will increasingly see it, from space and in the round.
+    Also, the map communicates its message to the reader in a natural manner, by relying on each viewer’s well-developed powers of perspective sight.
+  </blockquote>
+  <p style="font-style: italic">–Alan A. DeLucia and John P. Snyder, <a href="http://www.tandfonline.com/doi/abs/10.1559/152304086783900112">An Innovative World Map Projection</a>, The American Cartographer, Vol. 13, No. 2, 1986, pp. 165-167.
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../../queue.min.js"></script>
+<script src="../d3.geo.projection.min.js?20130614"></script>
+<script src="../d3.geo.zoom.js"></script>
+<script src="../topojson.min.js"></script>
+<script>
+
+var width = 960,
+    height = 960,
+    format = d3.format(".1f");
+
+var projection = d3.geo.orthographic()
+    .clipAngle(90)
+    .rotate([-5, -5])
+    .precision(.1)
+    .translate([width / 2, height / 2])
+    .scale(470);
+
+var gilbert = d3.geo.gilbert(projection);
+
+var path = (function() {
+  var path = d3.geo.path().projection(gilbert);
+  return function(d) {
+    var rotate = projection.rotate();
+    d = path(d) + (projection.rotate([rotate[0] + 180, rotate[1], rotate[2]]), path(d));
+    projection.rotate(rotate);
+    return d;
+  };
+})();
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .call(d3.geo.zoom()
+      .projection(projection)
+      .on("zoomstart", function() {
+        world.datum(world110m);
+      })
+      .on("zoom", function() {
+        d3.select("#origin").text(formatOrigin(projection.rotate()));
+        svg.selectAll("path").attr("d", path);
+      })
+      .on("zoomend", function() {
+        world.datum(world50m).attr("d", path);
+      }));
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background")
+    .attr("d", path);
+
+var world110m,
+    world50m,
+    world = svg.append("path").attr("class", "world");
+
+svg.append("path")
+    .datum(d3.geo.graticule())
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline")
+    .attr("d", path);
+
+queue()
+    .defer(d3.json, "../world-110m.json")
+    .defer(d3.json, "../world-50m.json")
+    .await(function(error, w110m, w50m) {
+      world
+          .datum(world50m = topojson.feature(w50m, w50m.objects.land))
+          .attr("d", path);
+      world110m = topojson.feature(w110m, w110m.objects.land);
+    });
+
+function formatOrigin(o) {
+  return format(Math.abs(o[1])) + "°" + (o[1] > 0 ? "S" : "N") + ", " + format(Math.abs(o[0])) + "°" + (o[0] > 0 ? "W" : "E");
+}
+
+</script>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Rapidly-exploring Random Tree</title>
+<style>
+@import url(../style.css);
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a>
+
+<h1>Rapidly-Exploring Random Tree</h1>
+
+<div id="vis"></div>
+<p><input type="range" min="1" max="5" step="0.1" value="2.5" id="epsilon"> growth factor = <span id="epsilon-value">2.5</span>
+
+<h2>See Also</h2>
+<ul>
+  <li><a href="http://msl.cs.uiuc.edu/rrt/about.html">About RRTs</a>.
+  <li><a href="http://en.wikipedia.org/wiki/Rapidly_exploring_random_tree">Rapidly-exploring random tree</a> on Wikipedia.
+  <li><a href="http://aigamedev.com/open/highlights/rapidly-exploring-random-trees/">Applying Rapidly-Exploring Random Trees to Games</a>.
+</ul>
+
+<script src="../d3.min.js"></script>
+<script>
+
+var ratio = window.devicePixelRatio || 1,
+    width = 960 * ratio,
+    height = 500 * ratio,
+    ε = 2.5 * ratio,
+    format = d3.format(".1f"),
+    nodes;
+
+d3.select("#epsilon").on("input", function() {
+  d3.select("#epsilon-value").text(format(this.value));
+  ε = this.value * ratio;
+  reset(nodes[0]);
+});
+
+var canvas = d3.select("#vis").append("canvas")
+    .attr("width", width)
+    .attr("height", height)
+    .style("width", width / ratio + "px")
+    .style("height", height / ratio + "px")
+    .on("click", function() {
+      var mouse = d3.mouse(this);
+      mouse[0] *= ratio, mouse[1] *= ratio;
+      reset(mouse);
+    });
+
+var context = canvas.node().getContext("2d");
+context.fillStyle = "#000";
+context.fillRect(0, 0, width, height);
+context.lineWidth = ratio;
+context.lineCap = "round";
+reset([width / 2, height / 2]);
+
+d3.timer(function() {
+  var start = Date.now();
+  context.beginPath();
+  context.lineWidth = (2 - .1 * Math.log(nodes.length)) * ratio;
+  do {
+    var random = [Math.random() * width, Math.random() * height],
+        nearest = nodes[0],
+        nearestDistance = distance(random, nearest);
+    for (var i = 1, n = nodes.length; i < n; ++i) {
+      var d = distance(nodes[i], random);
+      if (d < nearestDistance) nearest = nodes[i], nearestDistance = d;
+    }
+    if (nearestDistance < ε * ε) continue;
+    var node = step(nearest, random);
+    nodes.push(node);
+    context.moveTo(nearest[0], nearest[1]);
+    context.lineTo(node[0], node[1]);
+  } while (Date.now() - start < 50);
+  context.stroke();
+});
+
+function step(a, b) {
+  var θ = Math.atan2(b[1] - a[1], b[0] - a[0]);
+  return [a[0] + ε * Math.cos(θ), a[1] + ε * Math.sin(θ)];
+}
+
+function distance(a, b) {
+  var dx = a[0] - b[0],
+      dy = a[1] - b[1];
+  return dx * dx + dy * dy;
+}
+
+function strokeStyle() { return d3.hcl(Date.now() % 360, 27, 83) + ""; }
+
+function reset(node) {
+  context.globalAlpha = .8;
+  context.fillRect(0, 0, width, height);
+  context.globalAlpha = 1;
+  context.strokeStyle = strokeStyle();
+  nodes = [node];
+}
+</script>

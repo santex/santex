@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Distances from North Korea</title>
+<style>
+@import url(../maps.css);
+
+body {
+  background: #fcfcfc;
+}
+
+.background {
+  fill: #fff;
+}
+
+.outline {
+  stroke: #000;
+  stroke-width: 1px;
+  fill: none;
+}
+
+.land {
+  fill: #fff;
+}
+
+.land-glow {
+  fill: #000;
+  fill-opacity: .5;
+  filter: url(#glow);
+}
+
+.border {
+  stroke: #000;
+  stroke-width: .5px;
+  fill: none;
+}
+
+.circle {
+  stroke: #f00;
+  stroke-width: .5px;
+  fill: none;
+}
+
+.major {
+  stroke-width: 1.5px;
+  stroke-dasharray: none;
+}
+
+.graticule {
+  stroke: #99f;
+  stroke-width: .5px;
+  stroke-opacity: .3;
+  fill: none;
+}
+
+.caption {
+  font-style: italic;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Distances from North Korea</h1>
+<div id="map"></div>
+<p class="caption">An azimuthal equidistant projection of distances from North Korea (up to 120°).
+<div class="wrapper">
+  <p>BBC News has been illustrating <a href="http://www.bbc.co.uk/news/world-asia-21710644">North Korean missile ranges</a> using an orthographic projection centred at North Korea, as reproduced below.
+  <p>Unfortunately, this is slightly misleading, as distances measured relative to the centre are not <a href="http://www.progonos.com/furuti/MapProj/Normal/CartProp/DistPres/distPres.html">preserved</a> under this projection, particularly near the edges.
+</div>
+<div id="orthographic"></div>
+<p class="caption">An orthographic projection of distances from North Korea.
+<div class="wrapper">
+  <p>Furthermore, the orthographic projection is limited to a single hemisphere at a time, and so much of the U.S. mainland is not shown, despite it being of interest to the story.
+  <p>The first map shown above uses an azimuthal equidistant projection, which preserves distances from the centre and is not restricted to a hemisphere.
+  <p>See also: <a href="../azimuth-distance/">azimuth and distance from London</a>.
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var origin = [127.2565, 40.2012],
+    degrees = 180 / Math.PI,
+    δ = 1000 / 6371 * degrees;
+
+var equidistant = d3.geo.azimuthalEquidistant().translate([400, 400]).clipAngle(120),
+    orthographic = d3.geo.orthographic().translate([200, 200]).clipAngle(90);
+
+var path = d3.geo.path().pointRadius(2.5),
+    circle = d3.geo.circle().origin(origin),
+    format = d3.format(",d");
+
+function northKorea(projection) {
+  return projection
+      .scale(190)
+      .rotate([-origin[0], -origin[1], 0])
+      .precision(.1);
+}
+
+var svg = d3.selectAll("#map, #orthographic")
+    .data([equidistant, orthographic].map(northKorea))
+  .append("svg");
+
+svg.each(function(projection) {
+  var t = projection.translate();
+  d3.select(this)
+      .attr("width", 2 * t[0])
+      .attr("height", 2 * t[1]);
+});
+
+svg.each(function(projection) {
+  var angle = projection.clipAngle(),
+      t = projection.translate();
+  d3.select(this).append("defs").selectAll("path")
+      .data([5000, 10000])
+    .enter().append("path")
+      .datum(function(d) { return circle.angle(d / 6371 * degrees)(); })
+      .attr("transform", function(_, i) { return "rotate(" + [190 + i * 48, t] + ")"; })
+      .attr("id", function(projection, i) { return "text-" + angle + "-" + i; });
+});
+
+svg.append("filter")
+    .attr("id", "glow")
+  .append("feGaussianBlur")
+    .attr("stdDeviation", 3);
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "background");
+
+var g = svg.append("g");
+
+svg.append("path")
+    .attr("class", "graticule")
+    .datum(d3.geo.graticule()());
+
+svg.each(function(projection) {
+  var g = d3.select(this),
+      angle = projection.clipAngle();
+  g.selectAll("path.circle")
+      .data(d3.range(δ, angle, δ))
+    .enter().append("path")
+      .datum(function(d) { return circle.angle(d)(); })
+      .attr("class", function(_, i) { return (i + 1) % 5 ? "circle" : "major circle"; });
+  g.selectAll("text")
+      .data(projection.clipAngle() > 90 ? [5000, 10000] : [5000])
+    .enter().append("text")
+      .attr("dy", "-.35em")
+    .append("textPath")
+      .attr("xlink:href", function(_, i) { return "#text-" + angle + "-" + i; })
+      .text(function(d) { return format(d) + "km"; });
+});
+
+svg.append("path")
+    .datum({type: "Sphere"})
+    .attr("class", "outline");
+
+svg.append("path")
+    .datum({type: "Point", coordinates: origin});
+
+svg.each(redraw);
+
+d3.json("../world-50m.json", function(error, world) {
+  var land = topojson.feature(world, world.objects.land);
+  g.append("path")
+      .datum(land)
+      .attr("class", "land-glow");
+  g.append("path")
+      .datum(land)
+      .attr("class", "land");
+  g.append("path")
+      .datum(topojson.mesh(world, world.objects.countries))
+      .attr("class", "border");
+  g.each(redraw);
+});
+
+function redraw(projection) {
+  d3.select(this).selectAll("path").attr("d", path.projection(projection));
+}
+
+</script>

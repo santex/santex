@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.6"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", 960)
+    .attr("height", 500);
+
+var text = svg.append("svg:text")
+    .attr("x", 480)
+    .attr("y", 250)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "middle")
+    .style("font", "300 128px Helvetica Neue")
+    .text("Hello, getBBox!");
+
+var bbox = text.node().getBBox();
+
+var rect = svg.append("svg:rect")
+    .attr("x", bbox.x)
+    .attr("y", bbox.y)
+    .attr("width", bbox.width)
+    .attr("height", bbox.height)
+    .style("fill", "#ccc")
+    .style("fill-opacity", ".3")
+    .style("stroke", "#666")
+    .style("stroke-width", "1.5px");
+
+    </script>
+  </body>
+</html>

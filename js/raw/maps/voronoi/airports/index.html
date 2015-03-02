@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>World Airports Voronoi</title>
+<style>
+
+@import url(../../maps.css);
+
+path {
+  stroke-linejoin: round;
+}
+
+.land {
+  fill: #ccc;
+}
+
+.countries {
+  fill: none;
+  stroke: #fff;
+}
+
+.voronoi {
+  fill-opacity: .5;
+  stroke: #000;
+  stroke-width: .5px;
+  pointer-events: all;
+}
+
+.voronoi:hover {
+  fill: #ff0 !important;
+}
+
+.points {
+  pointer-events: none;
+}
+
+.remote-radius {
+  stroke: #f00;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+.graticule {
+  stroke: #999;
+  stroke-width: .5px;
+  fill: none;
+}
+
+.outline {
+  stroke: #000;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+#remote-point-coordinates, #remote-point-distance, #remote-airport-coordinates, #remote-airport-distance {
+  font-weight: bold;
+}
+
+.remote .voronoi {
+  stroke: none;
+  fill: none !important;
+}
+
+.remote .voronoi:hover {
+  stroke: #000;
+  fill: #ff0 !important;
+}
+
+p.cite {
+  text-align: center;
+}
+
+</style>
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Spherical Voronoi Diagrams</a>
+
+<h1>World Airports Voronoi</h1>
+
+<div id="map"></div>
+<p class="cite">2,980 large and medium airports with scheduled services from <a href="http://ourairports.com/data/">OurAirports</a>.
+
+<div class="wrapper">
+  <p>Each region is closer to a particular airport than any other.
+  This partitioning of the sphere is called a spherical <a href="http://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</a>, and was calculated by <code>d3.geo.voronoi</code>, which is currently under <a href="../">development</a>.
+
+  <h2>Most Remote Point</h2>
+  <p>The point at <span id="remote-point-coordinates">…</span> is furthest away from any airport in the above dataset; <span id="remote-point-distance">…</span> from the nearest three airports.
+</div>
+
+<div id="remote-point"></div>
+
+<div class="wrapper">
+  <p>This is the <a href="http://mathworld.wolfram.com/Circumcenter.html">circumcentre</a> of the <a href="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay triangle</a> with the largest <a href="http://mathworld.wolfram.com/Circumcircle.html">circumcircle</a> radius.
+  <p>There <i>are</i> in fact airports on Antarctica, but they are not classed as medium or large, and do not have scheduled services according to this dataset.
+</div>
+
+<div class="wrapper">
+  <h2>Most Remote Airport</h2>
+  <p><span id="remote-airport-name">…</span> at <span id="remote-airport-coordinates">…</span> is the most remote; <span id="remote-airport-distance"></span> from the nearest airport, <span id="remote-airport-neighbour"></span>.
+</div>
+
+<div id="remote-airport"></div>
+
+<div class="wrapper">
+  <p>Related: Mike Bostock’s <a href="http://bl.ocks.org/mbostock/4360892">U.S. Airports Voronoi</a>.
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../../queue.min.js"></script>
+<script src="../../topojson.min.js"></script>
+<script src="../../rotate/d3.geo.zoom.js"></script>
+<script src="../d3.geo.voronoi.js?1"></script>
+<script>
+
+var degrees = 180 / Math.PI,
+    format = d3.format(",f");
+
+var radius = 960 / 2,
+    smallRadius = 500 / 2;
+
+var projection = d3.geo.orthographic()
+    .clipAngle(90)
+    .precision(.1)
+    .translate([radius, radius])
+    .scale(radius - 1)
+    .rotate([85, -15]);
+
+var path = d3.geo.path()
+    .projection(projection)
+    .pointRadius(1);
+
+var orthographicSvg = d3.selectAll("#map").append("svg")
+    .attr("width", radius * 2)
+    .attr("height", radius * 2);
+
+var remoteSvg = d3.selectAll("#remote-point, #remote-airport").append("svg")
+    .attr("class", "remote")
+    .attr("width", smallRadius * 2)
+    .attr("height", smallRadius * 2);
+
+var svg = d3.selectAll("svg").data([path, null, null]);
+
+var fill = d3.scale.category20b();
+
+queue()
+    .defer(d3.json, "../../world-110m.json")
+    .defer(d3.csv, "airports.csv")
+    .await(ready);
+
+function ready(error, world, airports) {
+  svg.append("path")
+      .datum(topojson.feature(world, world.objects.land))
+      .attr("class", "land");
+
+  svg.append("path")
+      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+      .attr("class", "countries");
+
+  remoteSvg.append("path")
+      .datum(d3.geo.graticule())
+      .attr("class", "graticule");
+
+  var names = airports.map(function(d) { return d.name; });
+  airports = airports.map(function(d) { return [+d.longitude, +d.latitude]; });
+
+  var multiPoint = {type: "MultiPoint", coordinates: airports};
+
+  svg.append("path")
+      .datum(multiPoint)
+      .attr("class", "points");
+
+  svg.each(redraw);
+
+  var delaunay = d3.geo.delaunay(airports),
+      voronoi = d3.geo.voronoi(airports, delaunay).geometries;
+
+  var remotePoint,
+      remoteRadius = -Infinity;
+  delaunay.forEach(function(d) {
+    if (d.centre.radius > remoteRadius) {
+      remoteRadius = (remotePoint = d.centre).radius;
+    }
+  });
+  remotePoint = spherical(remotePoint);
+  d3.select("#remote-point-coordinates").text(formatPoint(remotePoint));
+  d3.select("#remote-point-distance").text(format(remoteRadius * 6378.1) + "km");
+
+  var remoteAirport,
+      remoteDistance = -Infinity,
+      remoteNeighbour;
+  voronoi.forEach(function(d, i) {
+    if (!d) return;
+    var point = airports[i],
+        neighbors = d.neighbors,
+        minDistance = Infinity,
+        minNeighbour;
+    for (var j = 0, n = neighbors.length; j < n; ++j) {
+      var distance = d3.geo.distance(point, airports[neighbors[j]]);
+      if (distance < minDistance) minDistance = distance, minNeighbour = neighbors[j];
+    }
+    if (minDistance > remoteDistance) remoteAirport = i, remoteDistance = minDistance, remoteNeighbour = minNeighbour;
+  });
+
+  d3.select("#remote-airport-name").text(names[remoteAirport]);
+  d3.select("#remote-airport-coordinates").text(formatPoint(airports[remoteAirport]));
+  d3.select("#remote-airport-distance").text(format(remoteDistance * 6378.1) + "km");
+  d3.select("#remote-airport-neighbour").text(names[remoteNeighbour]);
+
+  remoteSvg.data([
+        {origin: remotePoint, radius: remoteRadius},
+        {origin: airports[remoteAirport], radius: remoteDistance}
+      ].map(function(d, i) {
+        return d3.geo.path()
+            .projection(d3.geo.azimuthalEquidistant()
+              .clipAngle(90)
+              .translate([smallRadius, smallRadius])
+              .scale(smallRadius * 2 / Math.PI - 1)
+              .precision(.1)
+              .rotate([-d.origin[0], -d.origin[1]]))
+            .pointRadius(1.5);
+      }));
+
+  var circle = d3.geo.circle();
+
+  var g = remoteSvg.append("g")
+      .data([
+        {origin: remotePoint, radius: remoteRadius},
+        {origin: airports[remoteAirport], radius: remoteDistance}
+      ]);
+
+  g.append("path")
+      .datum(function(d) {
+        return circle.angle(d.radius * degrees).origin(d.origin)();
+      })
+      .attr("class", "remote-radius");
+
+  g.append("path")
+      .datum(function(d) {
+        return {type: "Point", coordinates: d.origin};
+      })
+      .attr("class", "remote-radius");
+
+  remoteSvg.append("path")
+      .datum({type: "Sphere"})
+      .attr("class", "outline");
+
+  svg.selectAll(".voronoi")
+      .data(voronoi)
+    .enter().insert("path", ".points")
+      .attr("class", "voronoi")
+      .style("fill", function(d) { return d ? fill(d.color = d3.max(d.neighbors, function(n) { return voronoi[n].color; }) + 1 | 0) : null; })
+    .append("title")
+      .text(function(_, i) { return names[i]; });
+
+  svg.each(redraw);
+
+  orthographicSvg.call(d3.geo.zoom()
+      .projection(projection)
+      .scaleExtent([projection.scale(), projection.scale() * 8])
+      .on("zoom.redraw", function() {
+        d3.event.sourceEvent.preventDefault();
+        orthographicSvg.each(redraw);
+      }));
+}
+
+function redraw(path) {
+  if (path) d3.select(this).selectAll("path").attr("d", path);
+}
+
+function spherical(cartesian) {
+  return [
+    Math.atan2(cartesian[1], cartesian[0]) * degrees,
+    Math.asin(cartesian[2]) * degrees
+  ];
+}
+
+function formatPoint(o) {
+  return format(Math.abs(o[1])) + "°" + (o[1] > 0 ? "N" : "S") + ", " + format(Math.abs(o[0])) + "°" + (o[0] > 0 ? "E" : "W");
+}
+
+</script>

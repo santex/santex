@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- saved from url=(0085)http://bl.ocks.org/larskotthoff/raw/7830074/dcd9ffc3d3236f58c5f5db844ded4816c5fa90f6/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="utf-8">
+<script src="d3.v3.js"></script>
+<style>
+
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+</style>
+</head><body marginwidth="0" marginheight="0">
+<script>
+
+// get the data
+d3.csv("force.csv", function(error, links) {
+
+var nodes = {};
+
+// Compute the distinct nodes from the links.
+links.forEach(function(link) {
+    link.source = nodes[link.source] || 
+        (nodes[link.source] = {name: link.source});
+    link.target = nodes[link.target] || 
+        (nodes[link.target] = {name: link.target});
+    link.value = +link.value;
+});
+
+var width = 960,
+    height = 500;
+
+var force = d3.layout.force()
+    .nodes(d3.values(nodes))
+    .links(links)
+    .size([width, height])
+    .linkDistance(60)
+    .charge(-300)
+    .on("tick", tick)
+    .start();
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// build the arrow.
+svg.append("svg:defs").selectAll("marker")
+    .data(["end"])      // Different link/path types can be defined here
+  .enter().append("svg:marker")    // This section adds in the arrows
+    .attr("id", String)
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+// add the links and the arrows
+var path = svg.append("svg:g").selectAll("path")
+    .data(force.links())
+  .enter().append("svg:path")
+//    .attr("class", function(d) { return "link " + d.type; })
+    .attr("class", "link")
+    .attr("marker-start", "url(#end)")
+    .attr("marker-end", "url(#end)");
+
+// define the nodes
+var node = svg.selectAll(".node")
+    .data(force.nodes())
+  .enter().append("g")
+    .attr("class", "node")
+    .call(force.drag);
+
+// add the nodes
+node.append("circle")
+    .attr("r", 5);
+
+// add the text 
+node.append("text")
+    .attr("x", 12)
+    .attr("dy", ".35em")
+    .text(function(d) { return d.name; });
+
+// add the curvy lines
+function tick() {
+    path.attr("d", function(d) {
+        var dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = Math.sqrt(dx * dx + dy * dy);
+        return "M" + 
+            d.source.x + "," + 
+            d.source.y + "A" + 
+            dr + "," + dr + " 0 0,1 " + 
+            d.target.x + "," + 
+            d.target.y;
+    });
+
+    node
+        .attr("transform", function(d) { 
+  	    return "translate(" + d.x + "," + d.y + ")"; });
+}
+
+});
+
+</script>
+
+
+<svg width="960" height="500"><defs><marker id="end" viewBox="0 -5 10 10" refX="15" refY="-1.5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,-5L10,0L0,5"></path></marker></defs><g><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M403.02691797371205,277.6304047244275A71.56384077252612,71.56384077252612 0 0,1 350.1973359674052,325.90481379542877"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M403.02691797371205,277.6304047244275A70.13944606862515,70.13944606862515 0 0,1 471.6783662673322,292.00122731751435"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M520.5454596210657,184.40497032071875A64.38547483169297,64.38547483169297 0 0,1 521.6052158825436,248.78172300341336"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M455.5582798341345,238.25928857511317A66.87988776665608,66.87988776665608 0 0,1 521.6052158825436,248.78172300341336"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M557.442881103635,304.08185862139413A65.89721729986854,65.89721729986854 0 0,1 521.6052158825436,248.78172300341336"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M471.6783662673322,292.00122731751435A66.03495942042008,66.03495942042008 0 0,1 521.6052158825436,248.78172300341336"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M578.6082987281636,208.8301889219274A69.60945718340832,69.60945718340832 0 0,1 521.6052158825436,248.78172300341336"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M403.02691797371205,277.6304047244275A71.5439761932052,71.5439761932052 0 0,1 331.7429525098159,271.53640790165406"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M403.02691797371205,277.6304047244275A69.91663472236787,69.91663472236787 0 0,1 360.726843875526,221.96138693006552"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M487.56885125147505,443.8195334323246A65.34694692696429,65.34694692696429 0 0,1 552.3151960695878,434.9801722919747"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M521.6052158825436,248.78172300341336A66.03495942042008,66.03495942042008 0 0,1 471.6783662673322,292.00122731751435"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M403.02691797371205,277.6304047244275A70.80204085245923,70.80204085245923 0 0,1 401.89496412067945,348.4233963927269"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M520.5454596210657,184.40497032071875A62.99114690885991,62.99114690885991 0 0,1 578.6082987281636,208.8301889219274"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M587.0484644971584,144.59024478956223A64.79202744425821,64.79202744425821 0 0,1 578.6082987281636,208.8301889219274"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M638.3351211256214,234.5042451592525A65.01115656081498,65.01115656081498 0 0,1 578.6082987281636,208.8301889219274"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M647.5446752740249,124.60936176590148A63.71049524814789,63.71049524814789 0 0,1 587.0484644971584,144.59024478956223"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M578.6082987281636,208.8301889219274A64.79202744425821,64.79202744425821 0 0,1 587.0484644971584,144.59024478956223"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M521.6052158825436,248.78172300341336A65.89721729986854,65.89721729986854 0 0,1 557.442881103635,304.08185862139413"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M604.4066598824173,347.3893977776968A63.88379657594787,63.88379657594787 0 0,1 557.442881103635,304.08185862139413"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M521.6052158825436,248.78172300341336A66.87988776665608,66.87988776665608 0 0,1 455.5582798341345,238.25928857511317"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M403.02691797371205,277.6304047244275A65.64776283890751,65.64776283890751 0 0,1 455.5582798341345,238.25928857511317"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M455.5582798341345,238.25928857511317A65.64776283890751,65.64776283890751 0 0,1 403.02691797371205,277.6304047244275"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M353.5309927000946,105.88960063414677A64.95908769719831,64.95908769719831 0 0,1 411.1449796787819,75.8844081023207"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M474.16723229233173,59.54650418048223A65.10554069390187,65.10554069390187 0 0,1 411.1449796787819,75.8844081023207"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M578.6082987281636,208.8301889219274A62.99114690885991,62.99114690885991 0 0,1 520.5454596210657,184.40497032071875"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M521.6052158825436,248.78172300341336A64.38547483169297,64.38547483169297 0 0,1 520.5454596210657,184.40497032071875"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M578.6082987281636,208.8301889219274A65.01115656081498,65.01115656081498 0 0,1 638.3351211256214,234.5042451592525"></path><path class="link" marker-start="url(#end)" marker-end="url(#end)" d="M557.442881103635,304.08185862139413A63.88379657594787,63.88379657594787 0 0,1 604.4066598824173,347.3893977776968"></path></g><g class="node" transform="translate(403.02691797371205,277.6304047244275)"><circle r="5"></circle><text x="12" dy=".35em">Harry</text></g><g class="node" transform="translate(350.1973359674052,325.90481379542877)"><circle r="5"></circle><text x="12" dy=".35em">Sally</text></g><g class="node" transform="translate(471.6783662673322,292.00122731751435)"><circle r="5"></circle><text x="12" dy=".35em">Mario</text></g><g class="node" transform="translate(520.5454596210657,184.40497032071875)"><circle r="5"></circle><text x="12" dy=".35em">Sarah</text></g><g class="node" transform="translate(521.6052158825436,248.78172300341336)"><circle r="5"></circle><text x="12" dy=".35em">Alice</text></g><g class="node" transform="translate(455.5582798341345,238.25928857511317)"><circle r="5"></circle><text x="12" dy=".35em">Eveie</text></g><g class="node" transform="translate(557.442881103635,304.08185862139413)"><circle r="5"></circle><text x="12" dy=".35em">Peter</text></g><g class="node" transform="translate(578.6082987281636,208.8301889219274)"><circle r="5"></circle><text x="12" dy=".35em">James</text></g><g class="node" transform="translate(331.7429525098159,271.53640790165406)"><circle r="5"></circle><text x="12" dy=".35em">Carol</text></g><g class="node" transform="translate(360.726843875526,221.96138693006552)"><circle r="5"></circle><text x="12" dy=".35em">Nicky</text></g><g class="node" transform="translate(487.56885125147505,443.8195334323246)"><circle r="5"></circle><text x="12" dy=".35em">Bobby</text></g><g class="node" transform="translate(552.3151960695878,434.9801722919747)"><circle r="5"></circle><text x="12" dy=".35em">Frank</text></g><g class="node" transform="translate(401.89496412067945,348.4233963927269)"><circle r="5"></circle><text x="12" dy=".35em">Lynne</text></g><g class="node" transform="translate(587.0484644971584,144.59024478956223)"><circle r="5"></circle><text x="12" dy=".35em">Roger</text></g><g class="node" transform="translate(638.3351211256214,234.5042451592525)"><circle r="5"></circle><text x="12" dy=".35em">Maddy</text></g><g class="node" transform="translate(647.5446752740249,124.60936176590148)"><circle r="5"></circle><text x="12" dy=".35em">Sonny</text></g><g class="node" transform="translate(604.4066598824173,347.3893977776968)"><circle r="5"></circle><text x="12" dy=".35em">Johan</text></g><g class="node" transform="translate(353.5309927000946,105.88960063414677)"><circle r="5"></circle><text x="12" dy=".35em">Henry</text></g><g class="node" transform="translate(411.1449796787819,75.8844081023207)"><circle r="5"></circle><text x="12" dy=".35em">Mikey</text></g><g class="node" transform="translate(474.16723229233173,59.54650418048223)"><circle r="5"></circle><text x="12" dy=".35em">Elric</text></g></svg></body></html>

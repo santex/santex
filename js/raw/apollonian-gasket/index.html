@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Apollonian Gasket</title>
+<style>
+@import url(../media/style.css);
+.circle {
+  fill: none;
+  stroke-width: 1px;
+  stroke: black;
+}
+.draggable {
+  fill: red;
+}
+</style>
+
+<h1>Apollonian Gasket</h1>
+<p>Click and drag the red point to adjust the Apollonian Gasket.
+
+<div id="vis"></div>
+
+<p>This pleasant fractal is formed recursively as follows:
+<ol>
+  <li>Take three mutually tangent circles and form their <a href="http://mathworld.wolfram.com/InnerSoddyCircle.html">inner Soddy circle</a>.
+  <li>Repeat the previous step for the inner Soddy circle paired with each of the original three.
+</ol>
+
+<p>Written using the <a href="http://d3js.org/">D3 visualisation library</a>.
+Inspired by <a href="http://jsxgraph.uni-bayreuth.de/wiki/index.php/Apollonian_circle_packing">a demo of JSXGraph</a>.
+
+<h2>See Also</h2>
+<ul>
+  <li><a href="http://www.cut-the-knot.org/Curriculum/Geometry/ApollonianGasket.shtml">Apollonian Gasket</a> on cut-the-knot.org.</li>
+  <li><a href="http://mathworld.wolfram.com/ApollonianGasket.html">Apollonian Gasket</a> on Wolfram Mathworld.</li>
+  <li><a href="http://en.wikipedia.org/wiki/Apollonian_gasket">Apollonian Gasket</a> on Wikipedia.</li>
+</ul>
+
+<script src="../d3.min.js"></script>
+<script>
+
+var solveQ2 = function(x1,x2,x3,off) {
+    var a = 0.5,
+        b = -(x1+x2+x3),
+        c = x1*x1+x2*x2+x3*x3-0.5*(x1+x2+x3)*(x1+x2+x3)-off,
+        d = b*b-4*a*c;
+    if (Math.abs(d)<1e-7) d = 0;
+    return [(-b+Math.sqrt(d))/(2*a),(-b-Math.sqrt(d))/(2*a)];
+}
+
+var otherCirc = function(circs,level) {
+    if (level<=0) return;
+    var fx = function() {
+        var b = [], x = [];
+        for (var i=0;i<4;i++) {
+            b[i] = circs[i].curvature();
+            x[i] = circs[i].x();
+        }
+        b[4] = 2*(b[0]+b[1]+b[2])-b[3];
+        x[4] = (2*(b[0]*x[0]+b[1]*x[1]+b[2]*x[2])-b[3]*x[3])/b[4];
+        return x[4];
+    };
+    var fy = function() {
+        var b = [], y = [];
+        for (var i=0;i<4;i++) {
+            b[i] = circs[i].curvature();
+            y[i] = circs[i].y();
+        }
+        b[4] = 2*(b[0]+b[1]+b[2])-b[3];
+        y[4] = (2*(b[0]*y[0]+b[1]*y[1]+b[2]*y[2])-b[3]*y[3])/b[4];
+        return y[4];
+    };
+    var fr = function() {
+        var b = [];
+        for (var i=0;i<4;i++) {
+            b[i] = circs[i].curvature();
+        }
+        b[4] = 2*(b[0]+b[1]+b[2])-b[3];
+        if (isNaN(b[4])) {
+            return 1000;
+        } else {
+            return 1/b[4];
+        }
+    };
+    var c = {
+      x: fx, y: fy, r: fr,
+      curvature: function() { return 1/this.r() },
+      level: level
+    };
+ 
+    // Recursion
+    var data = [c];
+    data.push.apply(data, otherCirc([circs[0],circs[1],c,circs[2]],level-1));
+    data.push.apply(data, otherCirc([circs[0],circs[2],c,circs[1]],level-1));
+    data.push.apply(data, otherCirc([circs[1],circs[2],c,circs[0]],level-1));
+    return data;
+};
+var x = d3.scale.linear().domain([-2.1, 2.1]).range([0, 500]);
+
+var level = 4;
+var p1 = {x: 1.31, y: 0};
+var b0 = -1/2;
+ 
+var c0 = {
+  x: function() { return 0},
+  y: function() { return 0},
+  r: function() { return Math.abs(1/b0)},
+  curvature: function() { return b0 }
+}, c1 = {
+  x: function() { return p1.x },
+  y: function() { return p1.y },
+  r: function() { return 2-Math.sqrt(p1.x*p1.x+p1.y*p1.y) },
+  curvature: function() { return 1/this.r() }
+}, c2 = {
+  x: function() { return Math.sqrt(p1.y*p1.y+p1.x*p1.x)-2 },
+  y: function() { return p1.y },
+  r: function() { return p1.x },
+  curvature: function() { return 1/this.r() }
+};
+
+var thirdCircleX = function() {
+    var b0 = c0.curvature();
+    var b1 = c1.curvature();
+    var b2 = c2.curvature();
+    var x0 = c0.x();
+    var x1 = c1.x();
+    var x2 = c2.x();
+ 
+    b3 = solveQ2(b0,b1,b2,0);
+    bx3 = solveQ2(b0*x0,b1*x1,b2*x2,2);
+    return bx3[0]/b3[0];
+}, thirdCircleY = function() {
+    var b0 = c0.curvature();
+    var b1 = c1.curvature();
+    var b2 = c2.curvature();
+    var y0 = c0.y();
+    var y1 = c1.y();
+    var y2 = c2.y();
+ 
+    var b3 = solveQ2(b0,b1,b2,0);
+    var by3 = solveQ2(b0*y0,b1*y1,b2*y2,2);
+    return by3[0]/b3[0];
+}, thirdCircleRadius = function() {
+    var b0 = c0.curvature();
+    var b1 = c1.curvature();
+    var b2 = c2.curvature();
+    var b3 = solveQ2(b0,b1,b2,0);
+    return 1/b3[0];
+};
+
+var c3 = {
+  x: thirdCircleX,
+  y: thirdCircleY,
+  r: thirdCircleRadius,
+  curvature: function() { return 1/this.r() }
+};
+
+var data = [c0, c1, c2, c3];
+data.push.apply(data, otherCirc([c0,c1,c2,c3],level));
+data.push.apply(data, otherCirc([c3,c1,c2,c0],level));
+data.push.apply(data, otherCirc([c0,c2,c3,c1],level));
+data.push.apply(data, otherCirc([c0,c1,c3,c2],level));
+
+var vis = d3.select("#vis").append("svg")
+  .attr("width", 500)
+  .attr("height", 500)
+  .attr("style", "margin: 20px")
+
+var circles = vis.append("g")
+    .attr("class", "circles")
+  .selectAll("g")
+    .data(data)
+  .enter().append("g")
+
+var colours = d3.scale.linear().domain([0, level]).range(["#fcc", "#ccf", "#cfc"]);
+
+circles.append("circle")
+    .attr("class", "circle")
+    .attr("style", function(d) { return d.level ? "fill:" + colours(d.level) : null; })
+
+vis.append("circle")
+    .data([p1])
+    .attr("class", "circle draggable")
+    .attr("r", 7)
+    .call(d3.behavior.drag()
+      .on("dragstart", function(d) {
+        d.origin = x(d.x);
+      })
+      .on("drag", function(d) {
+        d.x = Math.max(.01, Math.min(x.invert(d.origin += d3.event.dx), 2-.01));
+        refreshPositions();
+      })
+      .on("dragend", function(d) {
+        delete d.origin;
+      }));
+
+refreshPositions();
+
+function refreshPositions() {
+  vis.selectAll("circle.draggable")
+      .attr("cx", function(d) { return x(d.x) })
+      .attr("cy", function(d) { return x(d.y) })
+  vis.selectAll("g.circles circle")
+      .attr("cx", function(d) { return x(d.x()) })
+      .attr("cy", function(d) { return x(d.y()) })
+      .attr("r", function(d) { return x(d.r()) - x(0) })
+}
+</script>

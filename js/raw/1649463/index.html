@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  padding: 40px;
+}
+
+h1, h2 {
+  font-family: "Helvetica Neue";
+  padding-bottom: 120px;
+}
+
+h2 {
+  padding-bottom: 240px;
+}
+
+</style>
+
+<h1>Smooth scrolling!</h1>
+
+<h2>Get ready to scroll, in 3, 2, 1…</h2>
+
+<h1>Whee!</h1>
+<h1>Whee!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!!!!!!!!!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!!!!!!!!!!!!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!!!!</h1>
+<h1>Whee!!!</h1>
+<h1>Whee!!</h1>
+
+<h2>All done!</h2>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+d3.transition()
+    .delay(1500)
+    .duration(7500)
+    .tween("scroll", scrollTween(document.body.getBoundingClientRect().height - window.innerHeight));
+
+function scrollTween(offset) {
+  return function() {
+    var i = d3.interpolateNumber(window.pageYOffset || document.documentElement.scrollTop, offset);
+    return function(t) { scrollTo(0, i(t)); };
+  };
+}
+
+</script>

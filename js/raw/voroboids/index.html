@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>Voronoi Boids: Voroboids - Jason Davies</title>
+    <link rel="stylesheet" href="../media/style.css">
+    <link rel="stylesheet" href="colorbrewer.css">
+    <link rel="stylesheet" href="voroboids.css">
+    <link rel="image_src" href="http://www.jasondavies.com/voroboids/voroboids-full.png">
+    <script src="../media/js/d3.min.js"></script>
+    <script src="../media/js/d3.geom.min.js"></script>
+  </head>
+  <body>
+    <h1>Voronoi Boids: Voroboids</h1>
+    <p>I hereby coin the term "voroboid"!  The small dots are "boids" that fly
+      in flocks, and they are overlaid with a <a
+      href="http://en.wikipedia.org/wiki/Voronoi_diagram">voronoi diagram</a>
+      with cells coloured by area size.
+    <div id="vis"></div>
+    <script src="boid.js"></script>
+    <script src="voroboids.js"></script>
+    <p>I took <a href="http://bost.ocks.org/mike">Mike Bostock</a>'s <a
+      href="http://mbostock.github.com/d3/ex/voronoi.html">Voronoi Diagram</a>
+    example and combined it with a great <a
+      href="http://harry.me/2011/02/17/neat-algorithms---flocking">boids
+      flocking tutorial</a> by <a href="http://harry.me/">Harry Brundage</a>.
+      Thanks to Mike for colouring the voronoi cells by area.
+    <p>Move the mouse and you can affect the boids' movement.
+    <p>You can read more about boids on the <a
+      href="http://en.wikipedia.org/wiki/Boids">Wikipedia page</a>.
+    <p><i>This demo requires a modern browser with SVG capabilities.</i>
+    <p>See also:
+    <a href="http://www.snibbe.com/projects/interactive/bubbleharp">Bubble Harp</a>
+    by Scott Snibbe.
+  </body>
+</html>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

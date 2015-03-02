@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>American Forces in Afghanistan and Iraq</title>
+<style>
+@import url(../style.css);
+@import url(button.css);
+
+em {
+  font-style: italic;
+  font-weight: normal;
+}
+
+line.tick {
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+line.ytick {
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+line.rule {
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+text {
+  font-size: 10px;
+  font-family: sans-serif;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a>
+<h1>American Forces in Afghanistan and Iraq</h1>
+
+<p>An improvement on a recent New York Times interactive graphic showing the
+number of American troops in Afghanistan and Iraq.
+
+<h2>The Original</h2>
+
+<p><a href="http://www.nytimes.com/interactive/2011/06/22/world/asia/american-forces-in-afghanistan-and-iraq.html">
+  <img src="original.750.png" style="width: 750px; height: 435px"></a>
+
+<h2>Critique</h2>
+
+<p>My immediate frustration with the original graphic was the inability to
+compare the number of troops in the two countries at a glance.  In addition,
+there was no way to see how the combined number of troops deployed in both
+countries had changed over time.
+
+<p>Clicking on "Afghanistan" and "Iraq" at the top left switches between the
+two charts in an animated fashion.  As only one chart is ever shown at a
+time, this prevents the charts from being compared visually.  Clicking the
+buttons repeatedly and seeing how quickly the chart animates is a tedious
+and inaccurate way to draw comparisons between the two countries.
+
+<p>Likewise, the <em>combined</em> number of troops deployed in both
+countries is difficult to ascertain by switching between the two charts
+rapidly.  It looks like the sharp drop-off in Iraq in 2010 is accompanied by
+an increase in Afghanistan during the same period, but it's difficult to
+tell if the increase and decrease were equivalent in magnitude.
+
+<h2>Improved Version</h2>
+
+<div id="vis"></div>
+
+<p style="text-align: center">
+  <button onclick="transitionGroup()" id="button-group" class="first last" style="display: none">Group</button>
+  <button onclick="transitionStack()" id="button-stack" class="first last">Stack</button>
+
+<p>While it was clear from the original chart that the number of troops
+deployed in Iraq was much larger than Afghanistan for the majority of the
+decade, we can now see exactly <em>how much larger</em>, without having to
+click anything.
+
+<p>We can also see exactly where the number of troops in Afghanistan started
+to exceed the number in Iraq.
+
+<p>Clicking "stack" shows us that the combined number of troops deployed in
+both countries dropped markedly in 2010.  This was impossible to tell from
+the original graphic!
+
+<h2>Summary</h2>
+
+<p>Don't hide your charts if you can help it!  Combining charts or
+displaying them side-by-side allows more questions to be answered at a
+glance.
+
+<p>Thus saith <a href="http://worrydream.com">Bret Victor</a>:
+
+<blockquote>
+  <p>The essence of data graphics is visual comparisons. This is still true for
+  interactive graphics. Design a graphic that informs even when completely
+  static. Then use interactivity — judiciously, powerfully, consistently —
+  to subset the data space according to the reader's interests.
+
+  <p>Don't make interactivity a barrier to information.
+</blockquote>
+
+<h2>Further Reading</h2>
+
+<p><a href="http://worrydream.com/HowManyHouseholds/">How Many Households</a>:
+a similar critique and redesign of another New York Times graphic by
+<a href="http://worrydream.com">Bret Victor</a>.
+
+<p>This visualisation was written using <a href="http://d3js.org">D3</a> and is based on Mike Bostock’s <a href="http://bl.ocks.org/mbostock/3943967">Stacked-to-Grouped Bars</a> example.
+
+<script src="../d3.min.js"></script>
+<script>
+d3.json("data.json", function(json) {
+  var n = 2, // number of layers
+      m = json.length, // number of samples per layer
+      data = d3.layout.stack()([
+        json.map(function(d, i) { return {x: i, y: parseInt(d.afghan), date: d.date}; }),
+        json.map(function(d, i) { return {x: i, y: parseInt(d.iraq), date: d.date}; })
+      ]),
+      color = d3.interpolateRgb("#aad", "#556");
+
+  var p = 20,
+      w = 750 - 2.5 * p,
+      h = 400 - .5 - p,
+      mx = m,
+      my = d3.max(data, function(d) {
+        return d3.max(d, function(d) {
+          return d.y0 + d.y;
+        });
+      }),
+      x = function(d) { return d.x * w / mx; },
+      y0 = function(d) { return h - d.y0 * h / my; },
+      y1 = function(d) { return h - (d.y + d.y0) * h / my; },
+      y2 = function(d) { return d.y * h / my; },
+      format = d3.format(",");
+
+  var vis = d3.select("#vis")
+    .append("svg")
+      .attr("width", w + 2.5 * p)
+      .attr("height", h + p);
+
+  var layers = vis.selectAll("g.layer")
+      .data(data)
+    .enter().append("g")
+      .style("fill", function(d, i) { return color(i / (n - 1)); })
+      .attr("class", "layer");
+
+  var bars = layers.selectAll("g.bar")
+      .data(function(d) { return d; })
+    .enter().append("g")
+      .attr("class", "bar")
+      .attr("transform", function(d) { return "translate(" + x(d) + ")"; });
+
+  vis.selectAll("g.bar").append("rect")
+      .attr("x", function(d, i) { return x({x: .9 * ~~(i / m) / n}); })
+      .attr("width", x({x: .9 / n}))
+      .attr("y", h)
+      .attr("height", 0)
+    .transition()
+      .delay(function(d, i) { return i * 10; })
+      .attr("y", function(d) { return h - y2(d); })
+      .attr("height", y2);
+
+  vis.selectAll("text.label")
+      .data(data[0])
+    .enter().append("text")
+      .attr("class", "label")
+      .attr("x", x)
+      .attr("y", h + 6)
+      .attr("dx", x({x: 1}))
+      .attr("dy", ".71em")
+      .text(function(d, i) { return (i - 2) % 12 === 0 ? d.date.split(' ')[1] : null; });
+
+  vis.selectAll("line.tick")
+      .data(data[0])
+    .enter().append("line")
+      .style("display", function(d, i) { return (i - 2) % 12 === 0 ? null : "none"; })
+      .attr("class", "tick")
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", h)
+      .attr("y2", h + 15);
+
+  vis.selectAll("line.rule")
+      .data(d3.range(0, 200000, 40000))
+    .enter().append("line")
+      .attr("class", "rule")
+      .attr("x1", 0)
+      .attr("x2", w)
+      .attr("y1", function(d) { return y1({y: d, y0: 0}); })
+      .attr("y2", function(d) { return y1({y: d, y0: 0}); })
+
+  vis.selectAll("line.ytick")
+      .data(d3.range(40000, 200000, 40000))
+    .enter().append("line")
+      .attr("class", "ytick")
+      .attr("x1", w)
+      .attr("x2", w + 5)
+      .attr("y1", function(d) { return y1({y: d, y0: 0}); })
+      .attr("y2", function(d) { return y1({y: d, y0: 0}); })
+
+  vis.selectAll("text.ylabel")
+      .data(d3.range(40000, 200000, 40000))
+    .enter().append("text")
+      .attr("class", "ylabel")
+      .attr("x", w + x({x: 8}))
+      .attr("y", function(d) { return y1({y: d, y0: 0}); })
+      .attr("text-anchor", "end")
+      .attr("dy", ".3em")
+      .text(format);
+
+  vis.append("rect")
+      .attr("fill", color(0))
+      .attr("width", 10)
+      .attr("height", 10)
+
+  vis.append("text")
+      .attr("x", 20)
+      .attr("dy", ".9em")
+      .text("No. of U.S. troops in Afghanistan since late 2001.")
+
+  vis.append("rect")
+      .attr("fill", color(1))
+      .attr("y", 20)
+      .attr("width", 10)
+      .attr("height", 10)
+
+  vis.append("text")
+      .attr("x", 20)
+      .attr("y", 20)
+      .attr("dy", ".9em")
+      .text("No. of U.S. troops in Iraq since spring 2003.")
+
+  vis.append("line")
+      .attr("x1", 0)
+      .attr("x2", w - x({x: .1}))
+      .attr("y1", h)
+      .attr("y2", h);
+
+  window.transitionGroup = function() {
+    d3.select("#button-group").style("display", "none");
+    d3.select("#button-stack").style("display", null);
+
+    var group = d3.selectAll("#vis");
+
+    group.selectAll("g.layer rect")
+      .transition()
+        .duration(500)
+        .delay(function(d, i) { return (i % m) * 10; })
+        .attr("x", function(d, i) { return x({x: .9 * ~~(i / m) / n}); })
+        .attr("width", x({x: .9 / n}))
+        .each("end", transitionEnd);
+
+    function transitionEnd() {
+      d3.select(this)
+        .transition()
+          .duration(500)
+          .attr("y", function(d) { return h - y2(d); })
+          .attr("height", y2);
+    }
+  }
+
+  window.transitionStack = function() {
+    d3.select("#button-stack").style("display", "none");
+    d3.select("#button-group").style("display", null);
+
+    var stack = d3.select("#vis");
+
+    stack.selectAll("g.layer rect")
+      .transition()
+        .duration(500)
+        .delay(function(d, i) { return (i % m) * 10; })
+        .attr("y", y1)
+        .attr("height", function(d) { return y0(d) - y1(d); })
+        .each("end", transitionEnd);
+
+    function transitionEnd() {
+      d3.select(this)
+        .transition()
+          .duration(500)
+          .attr("x", 0)
+          .attr("width", x({x: .9}));
+    }
+  }
+});
+</script>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/simplegeo/polymaps/raw/v2.3.0/polymaps.min.js"></script>
+    <script type="text/javascript" src="canvas.js"></script>
+    <style type="text/css">
+
+@import url("http://github.com/simplegeo/polymaps/raw/v2.3.0/examples/example.css");
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .tileSize({x: 149, y: 149})
+    .add(po.interact());
+
+map.add(po.canvas()
+    .url("http://bl.ocks.org/forkme.png"));
+
+map.add(po.compass()
+    .pan("none"));
+
+    </script>
+  </body>
+</html>

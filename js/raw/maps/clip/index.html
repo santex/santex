@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Geographic Clipping</title>
+<style>
+
+@import url(../maps.css);
+
+.row h2 {
+  font-size: 12px;
+  font-weight: normal;
+  text-align: center;
+  color: #666;
+}
+
+canvas {
+  cursor: move;
+}
+
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Geographic Clipping</h1>
+
+<div class="wrapper">
+  <p><a href="http://d3js.org/">D3</a> version 3 includes much better support for clipping geographic features.
+  <p>Here are a few test cases that I’ve been using to test polygon clipping.
+  Line clipping is much simpler since you don’t need to rejoin the ends to make polygons.
+</div>
+
+<div class="row">
+  <h2>Orthographic (90°)</h2>
+</div>
+<div class="row">
+  <h2>Stereographic (170°)</h2>
+</div>
+<div class="row">
+  <h2>Equirectangular (antemeridian)</h2>
+</div>
+<div class="row">
+  <h2>Albers Equal-Area Conic (antemeridian)</h2>
+</div>
+<div class="row"></div>
+
+<script src="../../d3.min.js?3.0.0"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var ratio = window.devicePixelRatio || 1,
+    width = 200 * ratio,
+    height = 200 * ratio;
+
+var projections = [
+  d3.geo.orthographic().scale(95 * ratio).clipAngle(90),
+  d3.geo.stereographic().scale(8 * ratio).clipAngle(170),
+  d3.geo.equirectangular().scale(30 * ratio),
+  d3.geo.albers().scale(35 * ratio),
+];
+
+projections.forEach(function(projection) {
+  projection.translate([width / 2, height / 2]);
+});
+
+var n = 1e3, dy = 5;
+
+var spiral = d3.range(0, 1 + 1 / n, 1 / n).map(function(t) {
+  return [(360 * 10 * t) % 360 - 180, -90 + dy + (90 - dy) * 2 * t];
+}).concat(d3.range(1, 0, -1 / n).map(function(t) {
+  return [(360 * 10 * t) % 360 - 180, -90 + (90 - dy) * 2 * t];
+}));
+spiral.push(spiral[0]);
+
+var pentagram = [0, -2, 1, -1, 2, 0].map(function(d, i) {
+  return [d * 72, 10 + i];
+});
+
+var intersect = [
+  [0, 0],
+  [0, 45],
+  [45, 45],
+  [45, 0],
+  [0, 0],
+  [-10, 0],
+  [-10, -10],
+  [0, -10],
+  [0, 0]
+];
+
+var intersect2 = [
+  [0, 0],
+  [-30, 30],
+  [0, 60],
+  [30, 30],
+  [0, 0],
+  [-10, -10],
+  [0, -20],
+  [10, -10],
+  [0, 0]
+];
+
+var origin = {x: 0, y: 0},
+    circle = d3.geo.circle().angle(120)(),
+    graticule = d3.geo.graticule();
+
+var pole = d3.range(-180, 180, 10).map(function(x) { return [x, -70]; });
+pole.push(pole[0]);
+
+var stripes = [10, -10].map(function(d, i) {
+  var stripe = d3.range(-180, 180, 1).map(function(x) { return [x, d]; });
+  stripe.push(stripe[0]);
+  return i ? stripe.reverse() : stripe;
+});
+
+var stripes2 = [80, 100].map(function(d, i) {
+  d = d3.geo.circle().angle(d)().coordinates[0];
+  return i ? d : d.reverse();
+});
+
+d3.json("../world-110m.json", function(error, world) {
+  var div = d3.selectAll(".row")
+      .data(projections);
+  var canvas = div.selectAll("canvas")
+      .data(function(projection) {
+        return [
+          topojson.feature(world, world.objects.land),
+          {type: "Polygon", coordinates: stripes},
+          {type: "Polygon", coordinates: [pole]},
+          circle,
+          {type: "Polygon", coordinates: [spiral]},
+        ].map(function(o) {
+          return [projection, o];
+        });
+      })
+    .enter().append("canvas")
+      .attr("width", width)
+      .attr("height", height)
+      .style("width", width / ratio + "px")
+      .style("height", height / ratio + "px")
+      .call(d3.behavior.drag()
+        .origin(function() { return origin; })
+        .on("drag", function() {
+          origin.x = d3.event.x;
+          origin.y = d3.event.y;
+          update();
+        }))
+      .datum(function(d) {
+        var canvas = this,
+            context = canvas.getContext("2d"),
+            path = d3.geo.path()
+              .context(context)
+              .projection(d[0]);
+        return function() {
+          context.clearRect(0, 0, width, height);
+          context.fillStyle = "#eef";
+          context.beginPath(), path({type: "Sphere"}), context.fill();
+          context.fillStyle = "#3c3";
+          context.lineWidth = .5 * ratio;
+          context.beginPath(), path(d[1]), context.fill(), context.stroke();
+        };
+      })
+  update();
+  function update() {
+    projections.forEach(function(projection) {
+      projection.rotate([origin.x, -origin.y]);
+    });
+    div.selectAll("canvas").each(function(d) {
+      d();
+    });
+  }
+});
+
+</script>
+
+<div class="wrapper">
+  <h2 id="regions">Supported Clipping Regions</h2>
+  <p>Currently, d3.geo supports two types of clipping region:
+  <ul>
+    <li><b>antimeridian</b>: the default is to cut all features that cross the <a href="http://en.wikipedia.org/wiki/180th_meridian">antimeridian</a>.
+    The <i>clipping region</i> is therefore a spherical polygon with an edge along 180°W, and another along 180°E, making it a <a href="http://en.wikipedia.org/wiki/Lune_(mathematics)#Spherical_geometry">lune</a> covering the whole globe.
+    <li><b>small circle</b>: a <a href="http://en.wikipedia.org/wiki/Circle_of_a_sphere">small circle</a> centred at the origin with a given angular radius.
+    Specified by setting <code>projection.clipAngle(<i>angle</i>°)</code>.
+  </ul>
+  <h2>Spherical Polygon Challenges</h2>
+  <p>Clipping polygons on a sphere is more difficult than on a 2D plane.
+  One challenge is how to determine which side of a boundary should be the polygon’s inside.
+  On an infinite 2D plane, we can assume that the side with a finite area is the inside.
+  In the case of <a href="http://en.wikipedia.org/wiki/Complex_polygon">complex polygons</a>, we can use the <a href="http://en.wikipedia.org/wiki/Point_in_polygon#Winding_number_algorithm">winding number</a> to handle self-intersections and holes.
+  This involves firing a ray from the query point to a point outside the polygon.
+  We can always pick a point outside the polygon at ∞, e.g. by taking the maximum x- and y-coordinates and going a little further.
+  <p>However, on a sphere, there is no analagous way to find a point outside the polygon, since a ray on the sphere will eventually arrive where it started.
+  In other words, either side of the boundary has a finite area on a sphere, so you can no longer pick a side based on having a finite area.
+
+  <p>Another way to resolve the ambiguity is to pick the side around which the boundary goes clockwise.
+  The exterior polygon boundary should be specified in a clockwise order relative to a point on its inside.
+  Similarly, holes should be anticlockwise.
+
+  <h2>Clipping Self-Intersections</h2>
+  <p>Another difficulty is that we want to handle polygons that self-intersect.
+  This can occur when using line simplification algorithms, such as <a href="http://bost.ocks.org/mike/simplify/">Visvalingam–Whyatt</a>.
+  <p>Thankfully, there is a general clipping algorithm by Günther Greiner and Kai Hormann that handles self-intersecting polygons.
+  The clipping algorithm in D3 is a modified form of this.
+
+  <h2>Inside-Out</h2>
+  <p>There are a few cases where we need to insert an additional, exterior boundary all the way around the clip boundary.
+  These occur when the polygon doesn’t intersect with the clip edge at all:
+  <ol>
+    <li>The polygon’s visible rings are anticlockwise.
+    The visible rings denote holes, and we need another boundary to ensure they do <i>not</i> get filled.
+    This case is detected by checking the polygon area sign.
+    <li>Similarly, the invisible rings are anticlockwise.
+    Again, we check the sign of the polygon area.
+    However, since the antipodal point at (±180°, 0°) is projected to ∞, this could cause rings that contain the antipodal point to be inverted.
+    So we rotate longitudinally by 180° so that the antipodal point is the visible region.
+  </ol>
+</div>

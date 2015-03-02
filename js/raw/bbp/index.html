@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Bailey–Borwein–Plouffe Formula</title>
+<style>
+@import url(../style.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com">Jason Davies</a>
+
+<h1>Bailey–Borwein–Plouffe Formula</h1>
+
+<div id="chart"></div>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Bailey%E2%80%93Borwein%E2%80%93Plouffe_formula">BBP Formula</a> is a <a href="https://en.wikipedia.org/wiki/Spigot_algorithm">spigot algorithm</a> for π, allowing the <i>n<sup>th</sup></i> hexadecimal digit to be computed without knowing the preceding digits.
+
+<script src="../d3.min.js"></script>
+<script>
+
+var ratio = window.devicePixelRatio || 1,
+    width = 960 * ratio,
+    height = 512 * ratio;
+
+var canvas = d3.select("#chart").append("canvas")
+    .attr("width", width)
+    .attr("height", height)
+    .style("width", width / ratio + "px")
+    .style("height", height / ratio + "px");
+
+var context = canvas.node().getContext("2d");
+context.strokeStyle = "#000";
+
+var n = 0,
+    x = 0,
+    y = 0,
+    dx = 4 * ratio,
+    dy = dx;
+
+d3.timer(function() {
+  var start = Date.now();
+  do {
+    var d = π(n++);
+    for (var i = 0; i < 4; ++i) {
+      context.fillStyle = (d & 0x8) ? "#000" : "#fff";
+      context.fillRect(x, y, dx, dy);
+      context.strokeRect(x, y, dx, dy);
+      d <<= 1;
+      if ((y += dy) >= height) {
+        y = 0, x += dx;
+        if (x >= width) return true;
+      }
+    }
+  } while (Date.now() - start < 15);
+});
+
+// http://en.wikipedia.org/wiki/Bailey%E2%80%93Borwein%E2%80%93Plouffe_formula#BBP_digit-extraction_algorithm_for_.CF.80
+function π(n) {
+  --n;
+  var x = (4 * S(1, n) - 2 * S(4, n) - S(5, n) - S(6, n)) % 1;
+  if (x < 0) ++x;
+  return x * 16 | 0;
+}
+
+function S(j, n) {
+  // Left sum.
+  var s = 0;
+  for (var k = 0; k <= n; ++k) {
+    var r = 8 * k + j;
+    s = (s + modpow(16, n - k, r) / r) % 1;
+  }
+
+  // Right sum.
+  var k = n + 1,
+      t = k,
+      t0 = 0;
+  do {
+    t = (t0 = t) + Math.pow(16, n - k) / (8 * k++ + j);
+  } while (t !== t0);
+
+  return s + t;
+}
+
+// http://en.wikipedia.org/wiki/Modular_exponentiation#Right-to-left_binary_method
+function modpow(base, exponent, modulus) {
+  var result = 1;
+  base %= modulus;
+  while (exponent > 0) {
+    if (exponent & 1) result = (result * base) % modulus;
+    exponent >>= 1;
+    base = (base * base) % modulus;
+  }
+  return result;
+}
+
+</script>

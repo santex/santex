@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Spilhaus Shoreline Map XXI</title>
+<style>
+@import url(../../maps.css);
+@import url(../spilhaus.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../../">Maps</a> → <a href="../">Spilhaus</a>
+
+<h1>Spilhaus Shoreline Map XXI</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>This shoreline map by <a href="http://en.wikipedia.org/wiki/Athelstan_Spilhaus">Athelstan Spilhaus</a> shows the Pacific Ocean on the left, with all six continents surrounding the Atlantic and Indian Oceans on the right.
+  <p>The <a href="http://en.wikipedia.org/wiki/Azimuthal_equidistant_projection">azimuthal equidistant projection</a> is used here, centred at the Equator, 10°E and 170°W.
+
+  <p class="cite">Data: <a href="http://www.naturalearthdata.com/downloads/50m-physical-vectors/">Natural Earth, 1:50m Physical Vectors</a>.
+</div>
+
+<script src="../../../d3.min.js"></script>
+<script src="../../topojson.min.js?1.0.0pre"></script>
+<script src="../../d3.geo.projection.min.js"></script>
+<script>
+
+var ε = 1e-6,
+    width = 960,
+    height = 450;
+
+var path = d3.geo.path(),
+    graticule = d3.geo.graticule().minorExtent([[-180, -75], [180, 75 + ε]]).minorStep([15, 15]);
+
+var svg = d3.select("#map").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var defs = svg.append("defs");
+
+d3.json("../spilhaus-50m.json?2014", function(error, world) {
+  var land = topojson.feature(world, world.objects.land),
+      outline = topojson.feature(world, world.objects["21"]).geometry.coordinates[0];
+
+  d3.range(2).forEach(function(i) {
+    outline.reverse();
+    path.projection(d3.geo.azimuthalEquidistant()
+        .translate([width / 2, height / 2])
+        .rotate([i ? 170 : -10, 0])
+        .center([i ? 90 : -90, 0])
+        .clipAngle(149)
+        .scale(100));
+    defs.append("clipPath")
+        .attr("id", "clip-" + i)
+      .append("use")
+        .attr("xlink:href", "#boundary-" + i);
+    svg.append("path")
+        .datum({type: "Polygon", coordinates: [outline]})
+        .attr("class", "sea")
+        .attr("id", "boundary-" + i)
+        .attr("d", path);
+    svg.append("path")
+        .datum(land)
+        .attr("class", "land")
+        .attr("clip-path", "url(#clip-" + i + ")")
+        .attr("d", path);
+    svg.append("path")
+        .datum(graticule)
+        .attr("clip-path", "url(#clip-" + i + ")")
+        .attr("d", path);
+  });
+});
+</script>

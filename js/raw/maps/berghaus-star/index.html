@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Berghaus’ Star Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Berghaus’ Star Projection</h1>
+
+<div id="map"></div>
+
+<p><input id="lobes" type="range" min="3" max="100" value="17">
+<p><i>n = <span id="lobes-output">17</span></i>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.berghaus</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection D3 plugin</a>.
+  <p>This is a modified azimuthal equidistant projection.
+  The lobes are adjusted so that meridians are straight in the polar aspect, with parallels maintaining their distance from the centre.
+</div>
+
+<script src="../../d3.min.js?3.0.1+geo-circle"></script>
+<script src="../d3.geo.projection.min.js?5caed3ec"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+var ε = 1e-6;
+
+var projection = d3.geo.berghaus()
+    .clipAngle(179.7)
+    .scale(95)
+    .precision(.1)
+    .rotate([0, -90])
+    .lobes(17);
+
+var map = canvasMap()
+      .projection(projection)
+      .graticule(d3.geo.graticule().minorExtent([[-180 + ε, -67.5], [180 + ε, 67.5 + ε]]).minorStep([22.5, 22.5])());
+
+d3.select("#lobes")
+    .on("change", function() {
+      projection.lobes(+this.value);
+      d3.select("#map").call(map);
+      d3.select("#lobes-output").text(this.value);
+    });
+
+d3.select("#map").call(map);
+
+</script>

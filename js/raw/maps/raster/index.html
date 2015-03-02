@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Reprojected Raster Tiles</title>
+<style>
+@import url(../maps.css);
+
+#map {
+  position: relative;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.tile {
+  position: absolute;
+}
+
+.tile.loading {
+  display: none;
+}
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+<h1>Reprojected Raster Tiles</h1>
+<div id="map"></div>
+<p class="caption">Zoomable raster world map on an Albers equal-area projection.
+
+<div class="wrapper">
+  <p>A combination of <a href="http://bl.ocks.org/mbostock/4329423">Mike Bostock’s raster reprojection</a>, <a href="../tile/">automatic projection tiles</a> and a <a href="http://a.tiles.mapbox.com/v3/mapbox.natural-earth-2/page.html">MapBox terrain example</a>.
+  <h2>Any Tiles, Any Projection</h2>
+  <p>This approach will work for <i>any</i> multi-resolution Mercator-based tileset that is subdivided recursively in the form of a quadtree, combined with <i>any</i> inverse projection, i.e. a mapping from 2D to spherical coordinates.
+  <p>This means that you can take beautiful raster tiles, say from <a href="http://www.mapbox.com">MapBox</a> or <a href="http://maps.stamen.com/">Stamen</a>, and reproject using your <a href="https://github.com/mbostock/d3/wiki/Geo-Projections">projection of choice</a>:
+  <div class="thumb">
+    <a href="satellite/"><img src="satellite/thumb.png"></a>
+    <a href="satellite/">Satellite Raster</a>
+  </div>
+  <div class="thumb">
+    <a href="mollweide/"><img src="mollweide/thumb.png"></a>
+    <a href="mollweide/">Mollweide Watercolour</a>
+  </div>
+  <div class="thumb">
+    <a href="goode/"><img src="goode/thumb.png"></a>
+    <a href="goode/">Interrupted Goode Raster</a>
+  </div>
+  <div class="clear"></div>
+  <p>Thanks to <a href="http://bost.ocks.org/mike">Mike Bostock</a> and <a href="http://somebits.com">Nelson Minar</a> for their comments and encouragement!
+</div>
+
+<script src="../../d3.min.js"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../topojson.min.js"></script>
+<script src="../d3.quadtiles.js"></script>
+<script src="d3.geo.raster.js"></script>
+<script>
+
+var ratio = window.devicePixelRatio || 1,
+    width = 960 * ratio,
+    height = 600 * ratio,
+    p = .5 * ratio;
+
+var projection = d3.geo.albers()
+    .rotate([0, 0])
+    .center([0, 52])
+    .scale(150 * ratio)
+    .translate([width / 2, height / 2])
+    .clipExtent([[p, p], [width - p, height - p]]);
+
+var raster = d3.geo.raster(projection)
+    .scaleExtent([0, 6])
+    .url("//{subdomain}.tiles.mapbox.com/v3/mapbox.natural-earth-2/{z}/{x}/{y}.png");
+
+var layer = d3.select("#map")
+    .style("width", width / ratio + "px")
+    .style("height", height / ratio + "px")
+    .call(d3.behavior.zoom()
+      .translate([.5 * width / ratio, .5 * height / ratio])
+      .scale(projection.scale() / ratio)
+      .scaleExtent([1e2, 5e3])
+      .on("zoom", function() {
+        var t = d3.event.translate,
+            s = d3.event.scale;
+        projection.translate([t[0] * ratio, t[1] * ratio]).scale(s * ratio);
+        layer.call(raster);
+      }))
+  .append("div")
+    .style(prefix + "transform", "scale(" + 1 / ratio + ")")
+    .style(prefix + "transform-origin", "0 0 0")
+  .append("div")
+    .style(prefix + "transform-origin", "0 0 0")
+    .call(raster);
+
+</script>

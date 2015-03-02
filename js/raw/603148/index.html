@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+#copy {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  padding-left: 5px;
+  font: 9px sans-serif;
+  color: #fff;
+  cursor: default;
+}
+
+#copy a {
+  color: #fff;
+}
+
+.compass .back {
+  fill: #eee;
+  fill-opacity: .8;
+}
+
+.compass .fore {
+  stroke: #999;
+  stroke-width: 1.5px;
+}
+
+.compass rect.back.fore {
+  fill: #999;
+  fill-opacity: .3;
+  stroke: #eee;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.compass .direction {
+  fill: none;
+}
+
+.compass .chevron {
+  fill: none;
+  stroke: #999;
+  stroke-width: 5px;
+}
+
+.compass .zoom .chevron {
+  stroke-width: 4px;
+}
+
+.compass .active .chevron,
+.compass .chevron.active {
+  stroke: #fff;
+}
+
+.compass.active .active .direction {
+  fill: #999;
+}
+
+</style>
+<body>
+<script src="http://polymaps.org/polymaps.min.js"></script>
+<script>
+
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.body.appendChild(po.svg("svg")))
+    .center({lat: 0, lon: 0})
+    .size({x: 960, y: 500})
+    .zoom(3)
+    .zoomRange([1, 7])
+    .add(po.interact());
+
+map.add(po.image()
+    .zoom(function(z) { return Math.max(3, z); })
+    .url(hd("http://www.haltadefinizione.com"
+    + "/immagini/opere/14/imgfull/bacco_krpano"
+    + "/l{Z}_{Y}_{X}.jpg")));
+
+map.add(po.compass()
+    .pan("none"));
+
+function hd(template) {
+  return function(c) {
+    var x = c.column + 1,
+        y = c.row + 1,
+        z = c.zoom - 2;
+    if (x <= 0) return "about:blank";
+    return template.replace(/{(.)}/g, function(s, v) {
+      switch (v) {
+        case "Z": return z;
+        case "X": return x < 10 ? "0" + x : x;
+        case "Y": return y < 10 ? "0" + y : y;
+      }
+      return v;
+    });
+  };
+}
+
+</script>
+<span id="copy">
+  &copy; 2010
+  <a href="http://www.haltadefinizione.com/">Haltadefinizione</a>.
+</span>

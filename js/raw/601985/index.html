@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://github.com/mbostock/protovis/raw/v3.3.1/protovis.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript+protovis">
+
+var capacityLines = ['min', 'max', 'cap'];
+var capacityData = [
+  {min: 100, max: 600, cap: 210},
+  {min: 100, max: 600, cap: 300},
+  {min: 100, max: 600, cap: 550}
+];
+
+var w = 150,
+    h = 100,
+    x = pv.Scale.linear(0, capacityData.length - 1).range(0, w),
+    y = pv.Scale.linear(0, 1000).range(0, h),
+    color = pv.colors("red", "green", "black");
+
+var vis = new pv.Panel()
+    .width(w)
+    .height(h)
+    .margin(30);
+
+vis.anchor("top").add(pv.Label)
+    .text("hostGraph.hostName");
+
+vis.add(pv.Rule)
+    .data(y.ticks())
+    .bottom(y)
+    .strokeStyle(function(d) d ? "#ccc" : "black")
+  .anchor("right").add(pv.Label)
+    .visible(function() !(this.index & 1))
+    .textMargin(6);
+
+vis.add(pv.Panel)
+    .data(capacityLines)
+  .add(pv.Line)
+    .data(capacityData)
+    .left(function() x(this.index))
+    .bottom(function(d, p) y(d[p]))
+    .strokeStyle(color)
+  .add(pv.Dot)
+    .fillStyle("white")
+    .title(function(d) 'index[' + this.index + '] d[' + d + ']');
+
+vis.render();
+
+    </script>
+  </body>
+</html>

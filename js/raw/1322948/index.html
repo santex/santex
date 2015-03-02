@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.4.6"></script>
+    <style type="text/css">
+
+line {
+  stroke: #000;
+  stroke-width: .5px;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+
+var svg = d3.select("body").append("svg:svg")
+    .attr("width", 960)
+    .attr("height", 500);
+
+svg.selectAll("line")
+    .data(d3.range(400))
+  .enter().append("svg:line")
+    .attr("x2", 480)
+    .attr("y2", 500);
+
+svg.append("svg:line")
+    .attr("transform", "translate(480)")
+    .attr("x2", 480)
+    .attr("y2", 500);
+
+    </script>
+  </body>
+</html>

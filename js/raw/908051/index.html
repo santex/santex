@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><script type="text/javascript" src="https://github.com/mbostock/d3/raw/master/d3.js"></script></head><body>
+
+<script lang="text/javascript">
+window.onload = function() {
+    // Create a red rectangle
+    d3.select("body")
+      .append("svg:svg")
+        .attr("width", "100")
+        .attr("height", "100")
+      .append("svg:rect")
+        .attr("id", "myRectangle")
+        .style("fill", "red")
+        .attr("width", "100")
+        .attr("height", "100");
+
+    // Now turn the rectangle blue, via an ID selector
+    setTimeout(function() {
+      d3.selectAll("#myRectangle").style("fill", "blue"); 
+    }, 2000);
+}
+</script></body></html>

@@ -1,0 +1,51 @@
+<style>
+@import url(/assets/css/style.css);
+path {
+  stroke: #000;
+  fill: none;
+}
+</style>
+
+
+
+<div id="vis"></div>
+
+<p>coordinates:
+<blockquote>
+  <em>r = c√n</em><br><em>θ = n × 137.5°</em>
+</blockquote>
+
+
+<script src="/assets/js/d3.min.js"></script>
+<script>
+
+var radius = 300,
+    padding = 5,
+    scale = 5,
+    n = radius * radius / (scale * scale),
+    α = Math.PI * (3 - Math.sqrt(5));
+
+var colour = d3.scale.linear()
+    .domain([0, n / 2, n])
+    .range(["#fff", "#f90", "#000"]);
+
+d3.select("#vis").append("svg")
+    .attr("width", 3 * (radius + padding))
+    .attr("height", 2 * (radius + padding))
+  .append("g")
+    .attr("transform", "translate(" + (radius + padding) + "," + (radius + padding) + ")")
+  .selectAll("circle")
+    .data(d3.range(1, n).map(place))
+  .enter().append("circle")
+    .style("fill", function(d, i) { return colour(i); })
+    .attr("cx", function(d) { return d[0]; })
+    .attr("cy", function(d) { return d[1]; })
+    .attr("r", 2.5);
+
+function place(n) {
+  var r = Math.sqrt(n),
+      a = n * α;
+  return [scale * r * Math.cos(a), scale * r * Math.sin(a)];
+}
+
+</script>

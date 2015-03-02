@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Interrupted Bonne Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Interrupted Bonne Projection</h1>
+<div id="map"></div>
+
+<p><label for="parallel" style="font-style: italic">Standard parallel: <span id="parallel-value">20</span>°</label>
+
+<div class="wrapper">
+  <p>The <a href="http://en.wikipedia.org/wiki/Bonne_projection">Bonne projection</a> can be interrupted with breaks going to its standard parallel, since the scale is preserved along this curve, with rotated “lobes”.
+  <p>This interrupted map was generated using the <a href="http://github.com/d3/d3-plugins/tree/master/geo/polyhedron">geo.polyhedron D3 plugin</a>.
+  The globe is divided into spherical polygons, and the projected polygons are automatically rotated by the appropriate angles.
+</div>
+
+<script src="../../d3.min.js?20130517"></script>
+<script src="../d3.geo.projection.min.js?20130518"></script>
+<script src="../d3.geo.polyhedron.js?20130517"></script>
+<script src="../topojson.min.js?1.1.1"></script>
+<script src="../maps.js?20130108"></script>
+<script>
+
+var π = Math.PI,
+    degrees = 180 / π;
+
+var map = canvasMap().height(550);
+
+var canvas = d3.select("#map")
+    .call(map.projection(interruptedBonne(20)))
+  .select("canvas").node();
+
+d3.select(window).on("mousemove", function() {
+  var φ = Math.max(0, Math.min(89, d3.mouse(canvas)[0] * 90 / 960));
+  d3.select("#map").call(map.projection(interruptedBonne(φ).scale(100 - φ / 5)));
+  d3.select("#parallel-value").text(φ.toFixed(2));
+});
+
+d3.select("#parallel").on("change", function() {
+  d3.select("#map").call(map.projection(interruptedBonne(+this.value)));
+});
+
+function interruptedBonne(φ0) {
+
+  // First, define the shared vertices.
+  var vertices = [
+    [-180, φ0],
+    [-100, φ0],
+    [ -40, φ0],
+    [ -20, φ0],
+    [  80, φ0],
+    [ 180 - 1e-3, φ0],
+
+    [-100, 90-1e-3],
+    [30, 90-1e-3],
+    [-160, 1e-3-90],
+    [-60, 1e-3-90],
+    [20, 1e-3-90],
+    [140, 1e-3-90]
+  ];
+
+  var faces = [
+    [6, 2, 1, 0],
+    [7, 5, 4, 3, 2],
+
+    [8, 0, 1],
+    [9, 1, 2, 3],
+    [10, 3, 4],
+    [11, 4, 5]
+  ].map(function(face, i) {
+    face = face.map(function(i) { return vertices[i]; });
+    return {face: face, project: d3.geo.bonne().parallel(φ0).scale(1).translate([0, 0]).rotate([-face[0][0], 0])};
+  });
+
+  faces[0].children = [faces[2]];
+  faces[1].children = faces.slice(3);
+  faces[3].children = [faces[0]];
+
+  function face(λ, φ) {
+    λ *= degrees;
+    φ *= degrees;
+    return faces[
+      φ > φ0 ? λ < -40 ? 0 : 1
+      : λ <= -100 ? 2 : λ < -20 ? 3 : λ < 80 ? 4 : 5
+    ];
+  }
+
+  return d3.geo.polyhedron(faces[1], face, φ0 / degrees)
+      .center([-φ0, φ0 + 10])
+      .scale(100)
+      .precision(.1);
+}
+
+</script>

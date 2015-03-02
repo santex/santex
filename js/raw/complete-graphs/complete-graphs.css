@@ -1,0 +1,10 @@
+path {
+  stroke-width: 1.5px;
+  stroke: #000;
+}
+
+circle {
+  fill: blue;
+  stroke: #000;
+  stroke-width: 1.5px;
+}

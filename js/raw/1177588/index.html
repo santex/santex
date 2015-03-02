@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <pre><script type="text/javascript">
+
+try {
+  document.createElement("div").style.setProperty("opacity", 0, "");
+  document.write("CSSStyleDeclaration's setProperty coerces strings. Hooray!\n");
+} catch (error) {
+  document.write("CSSStyleDeclaration's setProperty requires strings. Patching…\n");
+  var d3_style_prototype = CSSStyleDeclaration.prototype,
+      d3_style_setProperty = d3_style_prototype.setProperty;
+  d3_style_prototype.setProperty = function(name, value, priority) {
+    d3_style_setProperty.call(this, name, value + "", priority);
+  };
+
+  try {
+    document.createElement("div").style.setProperty("opacity", 0, "");
+    document.write("CSSStyleDeclaration's setProperty now coerces strings. Hooray!\n");
+  } catch (error2) {
+    document.write("CSSStyleDeclaration's setProperty still requires strings. I give up. :(\n");
+  }
+}
+
+    </script></pre>
+  </body>
+</html>

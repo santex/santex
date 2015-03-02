@@ -1,0 +1,32 @@
+.hint, .credits {
+  font-style: italic;
+}
+.credits {
+  font-size: smaller;
+}
+#preview {
+  display: none;
+}
+.ui-slider {
+  font-size: 10px;
+  width: 300px;
+  margin-top: 5px;
+}
+.ui-state-focus {
+  outline: none;
+}
+#iterations {
+  margin: 0 10px;
+  width: 300px;
+  display: inline-block;
+}
+span.error {
+  background: #f00;
+  display: inline-block;
+  padding: 3px;
+}
+.error .reason {
+  font-size: smaller;
+  color: #ff0;
+  padding: 0 5px;
+}

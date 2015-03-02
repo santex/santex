@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+
+svg {
+  position: absolute;
+}
+
+body {
+  white-space: pre;
+  font: 12px Courier;
+}
+
+    </style>
+  </head>
+  <body><script type="text/javascript">
+
+var ns = "http://www.w3.org/2000/svg",
+    svg = document.body.appendChild(document.createElementNS(ns, "svg")),
+    text = svg.appendChild(document.createElementNS(ns, "textPath"));
+
+write(document, "querySelector", "textPath"); // fail
+write(document, "querySelector", "textpath"); // fail
+writeAll(document, "querySelectorAll", "textPath"); // fail
+writeAll(document, "querySelectorAll", "textpath"); // fail
+writeAll(document, "getElementsByTagName", "textPath"); // fail
+writeAll(document, "getElementsByTagName", "textpath"); // fail
+
+write(svg, "querySelector", "textPath"); // fail
+write(svg, "querySelector", "textpath"); // fail
+writeAll(svg, "querySelectorAll", "textPath"); // fail
+writeAll(svg, "querySelectorAll", "textpath"); // fail
+writeAll(svg, "getElementsByTagName", "textPath"); // fail
+writeAll(svg, "getElementsByTagName", "textpath"); // fail
+
+write(svg, "querySelector", "*"); // success!
+
+function write(element, method, selector) {
+  var result = element[method](selector);
+  document.write(element + " " + method + "(" + selector + "): ");
+  if (result) document.write(result);
+  document.writeln("");
+}
+
+function writeAll(element, method, selector) {
+  var results = element[method](selector),
+      i = -1,
+      n = results.length;
+  document.write(element + " " + method + "(" + selector + "): ");
+  while (++i < n) {
+    document.write(results[i]);
+    if (i < n - 1) document.write(", ");
+  }
+  document.writeln("");
+}
+
+  </script></body>
+</html>

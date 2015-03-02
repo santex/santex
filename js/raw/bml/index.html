@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Biham-Middleton-Levine Traffic Model - Jason Davies</title>
+
+<link href="../media/style.css" rel="stylesheet">
+<link href="../media/css/button.css" rel="stylesheet">
+<style>
+
+body { font-family: "Helvetica Neue", sans-serif; position: relative; margin: 0; }
+p { text-align: left; }
+h1, h2, #example, .figures { text-align: center; }
+#options { width: 960px; margin: 0 auto; text-align: center; }
+#options p { text-align: center !important; }
+.small { font-size: small; }
+#breadcrumbs { display: none; }
+#wrap { margin: 0 auto; width: 960px; }
+#vis { padding-top: 1em; text-align: center; }
+#c { vertical-align: middle; background: #fff; }
+#c.fullscreen { position: absolute; top: 0; overflow: hidden; }
+#w, #h { width: 40px; }
+#example svg { border: solid #ccc 1px; cursor: pointer; }
+rect.car-0 { fill: #00f; }
+rect.car-1 { fill: #f00; }
+.play rect { fill: #fff; fill-opacity: .5; }
+
+</style>
+
+<body>
+<div id="vis" style="line-height: 512px"><canvas id="c" width="1024" height="512" onclick="main()"></canvas></div>
+
+<div id="wrap">
+
+<div id="options">
+  <p><label for="density">Density:</label>
+    <input id="density" type="range" value="0.33" min="0" max="1" step="0.01" onchange="updateHash(+this.value)">
+    <input id="density-value" type="number" value="0.33" min="0" max="1" step="0.01" onchange="updateHash(+this.value)">
+  <label for="delay">Speed:</label>
+    <input id="delay" type="range" value="500" min="0" max="500" onchange="delay=500-+this.value">
+  <label for="w">Size:</label>
+    <input type="number" value="769" id="w" onchange="updateHash()"> x
+    <input type="number" value="512" id="h" onchange="updateHash()">
+    (<span id="coprime">coprime</span>)
+    <button class="first last" onclick="updateHash(); main()">Reset</button>
+  <p class="small">
+    Frame rate: <span id="framerate">0</span>/s
+    Iterations: <span id="iterations">0</span>
+</div>
+
+<h1>Biham-Middleton-Levine Traffic Model</h1>
+
+<p>This is a cellular automaton which exhibits phase transitions and
+self-organisation. It consists of some cars that can only move downwards
+(blue), and others that can only move rightwards (red).
+
+<div id="example"></div>
+<script src="../media/js/d3.min.js"></script>
+<script src="bml.js"></script>
+
+<p>The two types of cars take turns to move.  Each type of car can only move
+forwards if there is a space in front of it, otherwise it stays put.  The cars
+are placed in random starting positions with a given density <em>ρ</em>.  They
+are placed on a toroidal 2D lattice, such that the right edge is connected to
+the left and the bottom is connected to the top.
+
+<h2>Phase Transitions</h2>
+
+<p>The BML model has two primary phases: a <em>free-flowing phase</em>, where a
+low density of cars will self-organise and produce a smooth flow of traffic;
+and a <em>jammed phase</em> where no cars can move.
+
+<div class="figures">
+  <a href="#0.20/144/89" onclick="window.scrollTo(0, 0)"><img src="freeflowing.png"></a>
+  <a href="#0.60/144/89" onclick="window.scrollTo(0, 0)"><img src="jammed.png"></a>
+</div>
+
+<p>There are also <em>intermediate phases</em> that combine jammed and free-flowing
+phases, in either a periodic or disordered manner.
+
+<div class="figures">
+  <a href="#0.38/144/89" onclick="window.scrollTo(0, 0)"><img src="int-periodic.png"></a>
+  <a href="#0.40/144/89" onclick="window.scrollTo(0, 0)"><img src="int-disordered.png"></a>
+</div>
+
+<h2>Lattice Dimensions</h2>
+
+<p>The behaviour of the model depends on the exact dimensions of the lattice as
+well as the initial density of the cars.
+
+<p>Dimensions that are coprime tend to produce periodic intermediate phases
+near the transition density, and disordered phases for non-coprime dimensions.
+However, this is not always the case e.g. periodic phases have also been found
+for square lattices such as <a href="#0.36/128/128" onclick="window.scrollTo(0, 0)"><em>128x128</em> at <em>ρ=0.36</em></a>.
+
+<p>Feeling adventurous? Try <a href="#0.38/full">full screen</a>!
+
+<ul>
+  <li><a href="http://mae.ucdavis.edu/dsouza/bml.html">Raissa D'Souza's page</a> is highly informative and includes videos and recent papers.
+  <li><a href="http://en.wikipedia.org/wiki/Biham-Middleton-Levine_traffic_model">Biham-Middleton-Levine traffic model</a> on Wikipedia.
+  <li><a href="http://openprocessing.org/visuals/?visualID=27491">Processing implementation</a> by Daniel Lu.
+  <li>The BML model is the 2D analogue of the <a href="http://en.wikipedia.org/wiki/Rule_184">Rule 184</a> automaton.
+</ul>
+
+</div>
+
+<script id="shader-vs" type="x-shader/x-vertex"> 
+
+attribute vec3 aPos;
+attribute vec2 aTexCoord;
+varying vec2 position;
+
+void main(void) {
+  gl_Position = vec4(aPos, 1.);
+  position = aTexCoord;
+}
+
+</script> 
+
+<script id="shader-fs" type="x-shader/x-fragment"> 
+
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform int turn;
+uniform sampler2D uTexSamp;
+varying vec2 position;
+uniform float w;
+uniform float h;
+uniform float dx;
+uniform float dy;
+
+void main(void) {
+  if (position.x < w && position.y < h) {
+    vec4 a = texture2D(uTexSamp, turn == 1 ? vec2(mod(position.x - dx, w), position.y) : vec2(position.x, mod(position.y + dy, h)));
+    vec4 b = texture2D(uTexSamp, position);
+    vec4 c = texture2D(uTexSamp, turn == 1 ? vec2(mod(position.x + dx, w), position.y) : vec2(position.x, mod(position.y - dy, h)));
+
+    int s = 9 * (int(a.r) + 2 * int(a.b)) + 3 * (int(b.r) + 2 * int(b.b)) + (int(c.r) + 2 * int(c.b));
+    if (turn == 1) {
+      gl_FragColor = s <= 3 || s == 12 || s >= 18 && s <= 21 ? vec4(0., 0., 0., 0.)
+          : s == 4 || s == 5 || s >= 9 && s <= 11 || s == 13 || s == 14 || s == 22 || s == 23 ? vec4(1., 0., 0., 1.)
+          : vec4(0., 0., 1., 1.);
+    } else {
+      gl_FragColor = s <= 2 || s == 6 || s >= 9 && s <= 11 || s == 15 || s == 24 ? vec4(0., 0., 0., 0.)
+          : s >= 3 && s <= 5 || s >= 12 && s <= 14 || s >= 21 && s <= 23 ? vec4(1., 0., 0., 1.)
+          : vec4(0., 0., 1., 1.);
+    }
+  }
+}
+
+</script> 
+<script id="shader-fs-show" type="x-shader/x-fragment"> 
+
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform sampler2D uTexSamp;
+varying vec2 position;
+
+void main(void) {
+  gl_FragColor = texture2D(uTexSamp, position);
+}
+
+</script> 
+<script>
+
+var gl, prog, prog_show, FBO, FBO2, texture, texture2,
+    delay = 0,
+    c = document.getElementById("c"),
+    w = 769,
+    h = 512,
+    r,
+    tw = pot(w),
+    th = pot(h),
+    density = .33,
+    frames = 0,
+    iterations = 0,
+    turnLocation,
+    wLocation, hLocation, dxLocation, dyLocation,
+    requestAnimFrame = window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function(callback, element) { setTimeout(callback, 1000 / 60); };
+
+resizeCanvas();
+init();
+main();
+draw();
+framerate();
+
+window.onresize = resizeCanvas;
+window.onhashchange = function() {
+  var n = location.hash.substr(1).split("/");
+  if (n[1] === "full") return fullscreen();
+  if (window.onresize === resizeFullscreen) {
+    window.onresize = resizeCanvas;
+    if (n.length < 3) {
+      w = 1024;
+      h = 512;
+    }
+    resizeCanvas();
+    d3.select("#c").classed("fullscreen", false);
+    d3.select("#wrap").style("display", null);
+  }
+  setParameters.apply(this, [density, w, h].map(function(p, i) {
+    return p !== (i = +n[i]) && isFinite(i) && i > 0 ? i : p;
+  }));
+};
+window.onhashchange();
+
+function fullscreen() {
+  window.onresize = resizeFullscreen;
+  resizeFullscreen();
+  d3.select("#c").classed("fullscreen", true);
+  d3.select("#wrap").style("display", "none");
+}
+
+function resizeFullscreen() {
+  tw = pot(c.width = w = window.innerWidth);
+  th = pot(c.height = h = window.innerHeight);
+  r = 1;
+  main();
+}
+
+function updateHash(d) {
+  location.hash = [
+    (d == null ? density : d).toFixed(2),
+    document.getElementById("w").value,
+    document.getElementById("h").value].join("/");
+}
+
+function setParameters(d, x, y) {
+  if (density === d && w === x && h === y) return;
+  density = d;
+  tw = pot(w = x);
+  th = pot(h = y);
+  coprime(w, h);
+  window.onresize();
+  main();
+  document.getElementById("density").value =
+  document.getElementById("density-value").value = density;
+  document.getElementById("w").value = w;
+  document.getElementById("h").value = h;
+}
+
+// Next highest power of two (for integers).
+function pot(v) {
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  return ++v;
+}
+
+// Next lowest power of two (for integers >= 1).
+function lpot(x) {
+  return Math.pow(2, ~~(Math.log(x) / Math.LN2));
+}
+
+function draw(){
+  gl.viewport(0, 0, tw, th);
+  for (var i=0; i<2; i++) {
+    gl.useProgram(prog);
+    gl.uniform1i(turnLocation, i);
+    gl.uniform1f(wLocation, w / tw);
+    gl.uniform1f(hLocation, h / th);
+    gl.uniform1f(dxLocation, 1 / tw);
+    gl.uniform1f(dyLocation, 1 / th);
+    gl.bindTexture(gl.TEXTURE_2D, i ? texture2 : texture);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, i ? FBO : FBO2);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.flush();
+  }
+  gl.viewport(0, 0, r * tw, r * th);
+  gl.useProgram(prog_show);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.flush();
+  frames++;
+  iterations++;
+  delay ? setTimeout(anim, delay) : anim();
+}
+
+function anim() {
+  requestAnimFrame(draw);
+}
+
+function resizeCanvas() {
+  var ww = window.innerWidth - 100,
+      wh = 512,
+      a = wh / ww > h / w ? ww / w : wh / h;
+  r = a > 1 ? lpot(Math.floor(a)) : 1 / pot(Math.ceil(1 / a));
+  c.width = r * w;
+  c.height = r * h;
+}
+
+function init() {
+  try {
+    gl = c.getContext("webgl", {depth: false}) ||
+         c.getContext("experimental-webgl", {depth: false});
+  } catch(e) {}
+  if (!gl) return alert("Your browser does not support WebGL");
+
+  prog = gl.createProgram();
+  gl.attachShader(prog, getShader(gl, "shader-vs"));
+  gl.attachShader(prog, getShader(gl, "shader-fs"));
+  gl.linkProgram(prog);
+  prog_show = gl.createProgram();
+  gl.attachShader(prog_show, getShader(gl, "shader-vs"));
+  gl.attachShader(prog_show, getShader(gl, "shader-fs-show"));
+  gl.linkProgram(prog_show);
+
+  var posBuffer = gl.createBuffer(),
+      vertices = new Float32Array([-1,-1,0, 1,-1,0, -1,1,0, 1,1,0]),
+      aPosLoc = gl.getAttribLocation(prog, "aPos"),
+      aTexLoc = gl.getAttribLocation(prog, "aTexCoord");
+  gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+  gl.enableVertexAttribArray(aPosLoc);
+  gl.enableVertexAttribArray(aTexLoc);
+  var texCoords = new Float32Array([0,0, 1,0, 0,1, 1,1]);
+  var texCoordOffset = vertices.byteLength;
+  gl.bufferData(gl.ARRAY_BUFFER, texCoordOffset + texCoords.byteLength, gl.STATIC_DRAW);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, vertices);
+  gl.bufferSubData(gl.ARRAY_BUFFER, texCoordOffset, texCoords);
+  gl.vertexAttribPointer(aPosLoc, 3, gl.FLOAT, gl.FALSE, 0, 0);
+  gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, texCoordOffset);
+}
+
+function main() {
+
+  var pixels = new Uint8Array(tw * th * 4);
+  for (var i = 0; i < tw * th * 4; i += 4) {
+    if (Math.random() < density) {
+      pixels[i + (Math.random() < .5 ? 0 : 2)] = 0xff;
+    }
+  }
+  texture = gl.createTexture();
+  texture2 = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, tw, th, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.bindTexture(gl.TEXTURE_2D, texture2);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, tw, th, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(pixels));
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  FBO = gl.createFramebuffer();
+  FBO2 = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, FBO);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, FBO2);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture2, 0);
+
+  turnLocation = gl.getUniformLocation(prog, "turn");
+  wLocation = gl.getUniformLocation(prog, "w");
+  hLocation = gl.getUniformLocation(prog, "h");
+  dxLocation = gl.getUniformLocation(prog, "dx");
+  dyLocation = gl.getUniformLocation(prog, "dy");
+  iterations = 0;
+}
+
+function framerate(){
+  var time = +new Date;
+  setInterval(function() {
+    document.getElementById("framerate").innerText = Math.round(1e3 * frames / (-time + (time = +new Date)));
+    frames = 0;
+    document.getElementById("iterations").innerText = iterations;
+  }, 500);
+}
+
+function getShader(gl, id) {
+  var shaderScript = document.getElementById(id),
+      str = [],
+      k = shaderScript.firstChild;
+  while (k) {
+    if (k.nodeType === 3) str.push(k.textContent);
+    k = k.nextSibling;
+  }
+  var shader = shaderScript.type == "x-shader/x-fragment" ? gl.createShader(gl.FRAGMENT_SHADER)
+      : shaderScript.type === "x-shader/x-vertex" ? gl.createShader(gl.VERTEX_SHADER)
+      : null;
+  gl.shaderSource(shader, str.join(""));
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.log(gl.getShaderInfoLog(shader));
+  }
+  return shader;
+}
+
+function coprime(a, b) {
+  // Euclid's GCD algorithm
+  var c;
+  while (b) {
+    c = a % b;
+    a = b;
+    b = c;
+  }
+  document.getElementById("coprime").innerText = a === 1 ? "coprime" : "not coprime";
+}
+
+</script>
+<p class="copyright">&copy; <a href="http://www.jasondavies.com/">Jason Davies</a> 2012.

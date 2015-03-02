@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Quartic Authalic Projection</title>
+<style>
+@import url(../maps.css);
+</style>
+
+<p class="breadcrumbs"><a href="http://www.jasondavies.com/">Jason Davies</a> → <a href="../">Maps</a>
+
+<h1>Quartic Authalic Projection</h1>
+<div id="map"></div>
+
+<div class="wrapper">
+  <p>Available as <code>d3.geo.hammer</code> in the <a href="http://github.com/d3/d3-plugins/tree/master/geo/projection">geo.projection D3 plugin</a>, with coefficient set to ∞.
+  <p>The quartic authalic is an equal-area projection.
+  Its meridians are 4<sup>th</sup>-order curves and <i>authalic</i> comes from Greek <i>autos ailos</i> meaning “same area”.
+  <p>Siemon (1937) and independently Adams (1944).
+</div>
+
+<script src="../../d3.min.js?3.0.2"></script>
+<script src="../d3.geo.projection.min.js"></script>
+<script src="../maps.js"></script>
+<script src="../topojson.min.js?1.0.0pre"></script>
+<script>
+
+d3.select("#map").call(canvasMap().projection(d3.geo.hammer()
+    .coefficient(Infinity)
+    .scale(150)));
+
+</script>
