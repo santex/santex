@@ -437,10 +437,10 @@ function showMenu(x){
    }
   function cleanAnimation(h, v, f, o) {
     
-    v= v == 0 ? 1 : v;
+    //v= v == 0 ? 1 : v;
     
-    if(h && v) {
-    document.location.href="#"+h+"/"+v;
+    if(h==1 && v) {
+    document.location.href="#/"+h+"/"+v;
     }
 
 
