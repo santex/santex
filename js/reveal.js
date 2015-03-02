@@ -464,9 +464,9 @@ function showMenu(x){
     
     
     if(!v){
-    statusHead.innerHTML="<small> animations </small>";
+    statusHead.innerHTML="<address> animations </address>";
     }else{
-    statusHead.innerHTML="<small><a href='#' onclick='encode_as_img_and_link(); return false;'>export</a> animation "+v+"</small>";
+    statusHead.innerHTML="<address><a href='#' onclick='encode_as_img_and_link(); return false;'>export</a> animation "+v+"</address>";
     }
   
     
