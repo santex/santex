@@ -439,8 +439,8 @@ function showMenu(x){
     
     v= v == 0 ? 1 : v;
     
-    if(h>=1 && v>=0) {
-    document.location.href="#"+h+"/"+v;
+    if(h && v) {
+   // document.location.href="#"+h+"/"+v;
     }
 
 
