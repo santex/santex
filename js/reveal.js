@@ -202,8 +202,8 @@ function encode_as_img_and_link(){
 
 			// The "normal" size of the presentation, aspect ratio will be preserved
 			// when the presentation is scaled to fit different resolutions
-			width: 960,
-			height: 700,
+			width: window.innerWidth*0.85,
+			height: window.innerHeight*0.8,
 
 			// Factor of the display size that should remain empty around the content
 			margin: 0.1,
@@ -416,7 +416,7 @@ function showMenu(x){
       
       if(next){
         
-        next.innerHTML+=' <a href="#/'+x+'/'+i+'"><img width="50px" height="50px" src="js/vis/svg/'+i+'.svg"></a>';
+        next.innerHTML+=' <a href="#/'+x+'/'+i+'"><img src="js/vis/svg/'+i+'.svg"></a>';
     
     
       }
