@@ -439,7 +439,7 @@ function showMenu(x){
     
     //v= v == 0 ? 1 : v;
     
-    if(h==1 && v) {
+    if(h==1 && v) {                                           
     document.location.href="#/"+h+"/"+v;
     }
 
