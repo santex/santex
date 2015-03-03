@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/component.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/theme/sky.css">
     
     
     
@@ -76,27 +77,31 @@
         );
     }
 
-    var thumbSize = 250;
+    var thumbSize = 150;
     var menu3Width = parseInt(d3.select('#list').style('width'));
     var numInOneScreen = Math.ceil(menu3Width / thumbSize) * Math.ceil(getDocHeight() / thumbSize);
     var numInView = numInOneScreen;
 
 
-  //d3.csv('https://docs.google.com/spreadsheet/pub?key=0AqMEGBUNwXeHdEZOdTRXZFNFSGJDaW1aRFBnLUpCbHc&single=true&gid=0&output=csv', function(error, _json){
-//    d3.csv('d3gallery_feb282013.csv', function(error, _json){
-    
-//     d3.csv('https://docs.google.com/spreadsheet/pub?key=0AqMEGBUNwXeHdHpQNlVuY29SUE5BSXVtS3JueGlNYVE&single=true&gid=0&output=csv', function(error, _json){
-    d3.csv('data.csv', function(error, _json){
-          json = _json;
-    //d3.csv('data.csv', function(error, _json).d3.csv('d3gallery_feb282013.csv', function(error, _json){
-        
+
+
+    var thumbSize = 150;
+    var menu3Width = parseInt(d3.select('#list').style('width'));
+    var numInOneScreen = Math.ceil(menu3Width / thumbSize) * Math.ceil(getDocHeight() / thumbSize);
+    var numInView = numInOneScreen;
+
+    // d3.csv('https://docs.google.com/spreadsheet/pub?key=0AqMEGBUNwXeHdHpQNlVuY29SUE5BSXVtS3JueGlNYVE&single=true&gid=0&output=csv', function(error, _json){
+    //d3.csv('https://docs.google.com/spreadsheet/pub?key=0AqMEGBUNwXeHdEZOdTRXZFNFSGJDaW1aRFBnLUpCbHc&single=true&gid=0&output=csv', function(error, _json){
+d3.csv('data.csv', function(error, _json){
+        json = _json;
         d3.select('.example-count').text('(' + json.length + 'examples!)');
         buildList(dataTransformMenu1(), '.menu1-container', data1);
         buildList(dataTransformMenu2('visualizationType'), '.menu2-container', data2);
 //        buildList(dataView(dataTransformMenu3('title', 'all'), numInView), '.menu3-container', data3);
         processLocationHash();
     });
-
+    
+    
     function dataTransformMenu1(){
         //TODO: change in spreadsheet
         var dimensionsMap = {author: 'Author', visualizationType: 'Chart type', title: 'Title'};
