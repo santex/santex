@@ -3098,7 +3098,7 @@ d3.selectAll("input[name=size]").on("change", function() {
 
 function updateExample(x) {
   exampleX = x == null ? ~~(1 + Math.random() * (1 << 14 - 1)) : x;
-  var example = d3.select("#example").selectAll("svg")
+  var example = d3.select("#vis").selectAll("svg")
       .data([0]);
   var exampleEnter = example.enter().append("svg")
       .attr("width", 101)
