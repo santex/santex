@@ -428,8 +428,18 @@ function showMenu(x){
 	 * Starts up the presentation if the client is capable.
 	 */
    
+
    
-   
+   function cleanElems() {
+      var clean = ["canvas","vis","primitives","binary","head"];
+     	for( var i = 0, len = clean.length; i < len; i++ ) {
+          var statusCanvas = document.getElementById(clean[i]);
+          if(statusCanvas){
+          statusCanvas.innerHTML="";
+        }
+      }
+     
+   }
    function getColor() {
      
       return "#"+((1<<24)*Math.random()|0).toString(16);
@@ -445,10 +455,7 @@ function showMenu(x){
 
 
   
-     
-    var statusVis = document.getElementById( 'vis' );
-    
-    statusVis.innerHTML="";
+     cleanElems();
     
     var statusCanvas = document.getElementById( 'canvas' );
     
@@ -459,10 +466,9 @@ function showMenu(x){
     
  var   d3="";
     
-    var statusHead = document.getElementById( 'head' );
-    statusHead.innerHTML="";
+
     
-    
+      var statusHead = document.getElementById("head");
     if(!v){
     statusHead.innerHTML="<address> animations </address>";
     }else{
@@ -478,7 +484,7 @@ function showMenu(x){
       
     }else{
       
-        console.log(h, v, f, o);
+//        console.log(h, v, f, o);
       
         hideMenu(h);      
        
