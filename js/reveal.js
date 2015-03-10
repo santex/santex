@@ -409,8 +409,10 @@ function showMenu(x){
     
       var next = document.getElementById("menue");
       next.innerHTML="";
+      var nexte = document.getElementById("example");
+      nexte.innerHTML="";
     
-    for( var i = 1, len = 52; i < len; i++ ) {
+    for( var i = 1, len = 60; i < len; i++ ) {
 
       
       
@@ -431,7 +433,7 @@ function showMenu(x){
 
    
    function cleanElems() {
-      var clean = ["canvas","vis","primitives","binary","head"];
+      var clean = ["canvas","vis","primitives","binary","head","example"];
      	for( var i = 0, len = clean.length; i < len; i++ ) {
           var statusCanvas = document.getElementById(clean[i]);
           if(statusCanvas){

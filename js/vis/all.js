@@ -2931,125 +2931,51 @@ function drawPoint(p) {
  function graph54(color)
  {
 
-      Array.prototype.each = function(fn) {
-        for (var i = 0, len = this.length; i < len; i++)
-          fn(this[i], i);
-      };
+   
+    var width = 500,
+    height = 500,
+    n = 10;
 
-      var dimension = 500,
-          radius = dimension / 2,
-          twopi  = Math.PI * 2,
-          halfpi = Math.PI / 2,
-          n = 5; // default
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color);
 
-      // canvas
-      var svg = d3.select('svg')
-        .attr({
-          width: dimension,
-          height: dimension
-        });
+var data = d3.range(0, n * n)
+    .map(function(d, i) {
+        var x = d % n,
+            y = ~~(d / n);
+        return { x: x, y: y, i: i };
+    });
 
-      // container element
-      var container = svg
-        .append('svg:g')
-        .attr('id', 'container')
-        .attr('transform', 'rotate(-90 ' + radius + ' ' + radius + ')'); // origin is set at 3'oclock
+var g = svg.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d) {
+        return "translate(" + [d.x * width / n, d.y * height / n] + ")";
+    });
 
-      // create an array of data points
-      function createPoints(n) {
-        // generate an array of 13 point coordinates along a circle
-        for (var i = 0; i < n; i++) {
-          // convert negative coordintes to positive by adding the radius
-          var x = radius + (radius * Math.cos((i * twopi) / n)),
-              y = radius + (radius * Math.sin((i * twopi) / n));
+g.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width / n)
+    .attr("height", height / n / 2)
+    .attr("fill-opacity", 0.9)
+    .attr("fill", "#d1d1d1");
 
-          data.push([x, y]);
-        }
-      }
+g.append("rect")
+    .attr("x", 0)
+    .attr("y", height / n / 2)
+    .attr("width", width / n)
+    .attr("height", height / n / 2)
+    .attr("fill-opacity", 0.9)
+    .attr("fill", "#111");
 
-      // connect a point to all other points
-      function drawLine(index) {
-        data.each(function(datum, i) {
-          if (index === i) return;
-          var line = container
-            .append('svg:line')
-            .attr('class', 'line');
-
-          line.attr({
-            x1: data[index][0],
-            y1: data[index][1],
-            x2: datum[0],
-            y2: datum[1]
-          });
-        });
-      };
-
-      // draws all lines in the dataset. O(n^2)
-      function drawLines() {
-        // connect all points to other points
-        data.each(function(datum, index) {
-          drawLine(index);
-        });
-      }
-
-      // draws the star
-      function drawStar(starN) {
-        // clear any existing star
-        container.selectAll('*').remove();
-
-        // reset the data
-        data = [];
-        createPoints(starN);
-
-        // draw that shit
-        drawLines();
-      }
-
-
-      function rotateString(angle) {
-        return 'rotate(' + angle + ' ' + radius + ' ' + radius + ')';
-      };
-
-      // continuously animate the container *unused because its weird looking*
-      function rotateStar() {
-        container
-          .transition()
-          .duration(1000)
-          .attrTween('transform', function() {
-            return d3.interpolateString(rotateString(0), rotateString(360));
-          });
-      }
-
-      // animate between 5-34 points *unused*
-      var interval = undefined;
-      function animatePoints() {
-        interval = setInterval(function() {
-          if (n == 34) n = 5;
-          drawStar(n++);
-        }, 300);
-      }
-
-      // mousemove in the adjust area redraws the star
-      var adjuster = document.getElementById('adjuster');
-      var x = d3.scale.linear()
-        .domain([0, 300]) // the x coordinate of the adjuster
-        .rangeRound([4, 34]) // the desired output
-        .clamp(true);
-
-      // redraw the star with the x offset
-      adjuster.addEventListener('mousemove', function(e) {
-        var xCoord = e.pageX - adjuster.offsetLeft;
-        drawStar(x(xCoord));
-      });
-
-      // mobile-ness
-      adjuster.addEventListener('touchmove', function(e) {
-        var xCoord = e.targetTouches[0].pageX - adjuster.offsetLeft;
-        drawStar(x(xCoord));
-      });
-
-      // kick it
-      drawStar(25);
+d3.timer(function(t) {
+    g.attr("transform", function(d) {
+        return "translate(" + [d.x * width / n, d.y * height / n] + ")skewX(" + 20 * Math.cos(d.x + d.y + t / 200) + ")skewY(" + 20 * Math.sin(d.x + d.y + t / 200) + ")";
+    });
+});
 }
 
 
@@ -3283,4 +3209,179 @@ function rotate(b, a) {
 
 }
 
+function graph56(color){
 
+
+var width = 500,
+    height = 500;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color);
+
+var gradients = svg.append("linearGradient")
+    .attr("id", "gradient");
+
+gradients.append("stop")
+    .attr("offset", 0)
+    .attr("stop-color", "rgba(0,0,0,0)");
+
+gradients.append("stop")
+    .attr("offset", 1)
+    .attr("stop-color", "rgba(0,0,0,1)");
+
+var rect = svg.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width * 2)
+    .attr("height", height)
+    .attr("fill", "url(#gradient)");
+
+svg.append("path")
+    .attr("fill", "none")
+    .attr("stroke-width", 100)
+    .attr("stroke", "#888")
+    .attr("d", "M" + [0, height / 2] + "L" + [width, height / 2]);
+
+d3.timer(function(t) {
+    rect.attr("transform", "translate(" + (0.5 * width * Math.cos(t / 2000) - width * 0.5) + ",0)");
+});
+}
+
+
+function graph57(color){
+
+
+// Math from https://github.com/d3/d3-plugins/tree/master/hexbin
+var width = 500,
+    height = 500,
+    n = 4,
+    r = width / n / 2,
+    dx = r * 2 * Math.sin(Math.PI / 3),
+    dy = r * 1.5;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color);
+
+var hexes = svg.append("g")
+    .attr("transform", "translate(" + [-20, -15] + ")")
+    .append("path")
+    .attr("fill", "#fff")
+    .attr("fill-opacity", 0.8)
+    .attr("fill-rule", "evenodd");
+
+d3.timer(function(t) {
+    hexes.attr("d", function() {
+        var d = "";
+        for (var y = -r, odd = false; y < height + 2 * r; y += dy, odd = !odd) {
+            for (var x = odd ? -dx / 2 : 0; x < width + dx; x += dx) {
+                d += "M" + [x, y];
+                d += "m" + dodecagon(200 + 100 * Math.sin(t / 4000), t / 3000).join("l") + "z";
+            }
+        }
+        return d;
+    });
+});
+
+function dodecagon(radius, r) {
+    var x0 = 0, y0 = 0;
+    return d3.range(0 + r, 2 * Math.PI + r, Math.PI / 6).map(function(angle) {
+        var x1 = Math.sin(angle) * radius,
+            y1 = -Math.cos(angle) * radius,
+            dx = x1 - x0,
+            dy = y1 - y0;
+        x0 = x1;
+        y0 = y1;
+        return [dx, dy];
+    });
+}
+
+}
+
+function graph58(color){
+
+var width = 500,
+    height = 500,
+    n = 32;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color);
+
+var circles = svg.selectAll("circle")
+    .data(d3.range(n))
+    .enter().append("circle")
+    .attr("fill", "#fff");
+
+d3.timer(function(t) {
+    circles.attr("fill-opacity", 0.04)
+
+    circles.attr("cx", function(d) {
+        return width / 2 + width / 2 * Math.cos(2 * Math.PI * d / n + (d % 8) * t / 200000);
+    })
+
+    circles.attr("cy", function(d) {
+        return width / 2 + width / 2 * Math.sin(2 * Math.PI * d / n + (d % 8) * t / 200000);
+    })
+
+    circles.attr("r", function(d) {
+        return 250 + 150 * Math.sin(3 * Math.PI / 2 + t / 10000)
+    });
+});
+
+}
+
+
+
+function graph59(color){
+
+
+var width = 500,
+    height = 500,
+    n = 50,
+    data = d3.range(1, n + 1);
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background", "#fff");
+
+var gradients = svg.selectAll("linearGradient")
+    .data(data)
+    .enter().append("linearGradient")
+    .attr("id", function(d) { return "gradient" + d; });
+
+gradients.append("stop")
+    .attr("offset", 0)
+    .attr("stop-color", "rgba(0,0,0,0)");
+var stops = gradients.append("stop")
+    .attr("stop-color", "rgba(0,0,0,0.05)");
+gradients.append("stop")
+    .attr("offset", 1)
+    .attr("stop-color", "rgba(0,0,0,0)");
+
+var rects = svg.selectAll("rect")
+    .data(data)
+    .enter().append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width)
+    .attr("height", height)
+    .attr("fill", function(d) { return "url(#gradient" + d + ")"; });
+
+function ease(t) {
+    return t < 0.5 ? 2 * t : 1 - (2 * t - 1);
+}
+
+d3.timer(function(t) {
+    stops.attr("offset", function(d) {
+        return ease(t * d % 100000 / 100000);
+    });
+});
+
+
+}
