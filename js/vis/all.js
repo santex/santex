@@ -1,8 +1,8 @@
 
 function graph1(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 10;
 
 var svg = d3.select("#vis").append("svg")
@@ -76,8 +76,8 @@ d3.timer(function() {
 }
 function graph2(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5;
 
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
@@ -169,8 +169,8 @@ function transform(origin, target) {
 }
 function graph3(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10,
     a = width / n,
     h = a * Math.sqrt(3) / 2;
@@ -222,8 +222,8 @@ cols.append("path")
 function graph4(color){
 var data = d3.range(0, 45).map(function () { return 1; });
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     τ = 2 * Math.PI;
 
 var svg = d3.select("#vis").append("svg")
@@ -263,8 +263,8 @@ d3.timer(function(elapsed) {
 function graph5(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -316,8 +316,8 @@ function hexagon(radius) {
 
 function graph6(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 35,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -386,8 +386,8 @@ function hexagon(radius) {
 }
 }
 function graph7(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 30,
     r = width / 14;
 
@@ -446,8 +446,8 @@ d3.timer(function() {
 }
 function graph8(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50;
 
 var scale = d3.scale.ordinal()
@@ -479,8 +479,8 @@ d3.timer(function(t) {
 
 function graph9(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     mx = 320,
     my = 90,
     n = 8,
@@ -614,8 +614,8 @@ d3.timer(function(t1) {
 }
 function graph10(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 8,
     rows = 50,
     duration = 2000;
@@ -687,8 +687,8 @@ columns.transition()
 }
 function graph11(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 16,
     r = 25,
     π = Math.PI,
@@ -729,8 +729,8 @@ function moon(θ) {
 }
 function graph12(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 10,
     cols = 10;
 
@@ -777,8 +777,8 @@ d3.timer(function(elapsed) {
 }
 function graph13(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5;
 
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
@@ -816,8 +816,8 @@ function boxMuller(variance) {
 }
 }
 function graph14(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 100,
     w = 20;
 
@@ -871,8 +871,8 @@ d3.timer(function(t) {
 }
 function graph15(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 100,
     w = 20;
 
@@ -925,8 +925,8 @@ d3.timer(function(t) {
 });
 }
 function graph16(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 32,
     r = 0.45 * width,
     π = Math.PI;
@@ -969,8 +969,8 @@ function moon(θ) {
 }
 function graph17(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10;
 
 var svg = d3.select("#vis").append("svg")
@@ -1031,8 +1031,8 @@ function gcd(a, b) {
 }
 function graph18(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50;
 
 var scale = d3.scale.ordinal()
@@ -1082,8 +1082,8 @@ d3.timer(function(elapsed) {
 function graph19(color){
 
 // Math from https://github.com/d3/d3-plugins/tree/master/hexbin
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -1163,8 +1163,8 @@ function rectangle(dx, dy) {
 function graph20(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 16,
     cols = 3;
 
@@ -1197,8 +1197,8 @@ d3.timer(function(t) {
 }
 function graph21(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5;
 
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
@@ -1228,8 +1228,8 @@ d3.timer(function(t) {
 }
 function graph22(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 50,
     period = 4000;
 
@@ -1271,8 +1271,8 @@ function twinkle() {
 }
 function graph23(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50,
     mid = cols / 2,
     duration = 5000,
@@ -1311,8 +1311,8 @@ d3.timer(function(elapsed) {
 }
 function graph24(color){
 
-var width =window.innerHeight*0.65,
-    height = window.innerHeight*0.65,
+var width =window.innerHeight*0.55,
+    height = window.innerHeight*0.55,
     cols = 100,
     a = 1,
     b = 0.3;
@@ -1350,8 +1350,8 @@ d3.timer(function(t) {
 
 function graph25(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50,
     theta = -25 * Math.PI / 180,
     length = 8.5,
@@ -1432,8 +1432,8 @@ function tweenDash() {
 }
 function graph26(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 100;
 
 var svg = d3.select("#vis").append("svg")
@@ -1463,8 +1463,8 @@ d3.timer(function(t) {
 }
 function graph27(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 100,
     period = 2000;
 
@@ -1522,8 +1522,8 @@ function fall() {
 }
 function graph28(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 10;
 
 var svg = d3.select("#vis").append("svg")
@@ -1599,8 +1599,8 @@ d3.timer(function() {
 function graph29(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 100;
 
 var scale = d3.scale.ordinal()
@@ -1637,8 +1637,8 @@ d3.timer(function(t) {
 }
 function graph30(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 2000,
     π = Math.PI;
 
@@ -1694,8 +1694,8 @@ d3.timer(function (t) {
 }
 function graph31(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 100;
 
 var svg = d3.select("#vis").append("svg")
@@ -1729,8 +1729,8 @@ d3.timer(function(t) {
 }
 function graph32(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     r = 0.3 * width,
     n = 16,
     π = Math.PI;
@@ -1764,8 +1764,8 @@ d3.timer(function(t) {
 }
 function graph33(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     depth = 500,
     n = 30,
     c = 30;
@@ -1952,8 +1952,8 @@ function Boid() {
 }
 function graph34(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 100;
 
 var svg = d3.select("#vis").append("svg")
@@ -1983,8 +1983,8 @@ d3.timer(function(t) {
 }
 function graph35(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10;
 
 var svg = d3.select("#vis").append("svg")
@@ -2030,8 +2030,8 @@ d3.timer(function(t) {
 }
 function graph36(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 40,
     cols = 40,
     r = 5,
@@ -2133,8 +2133,8 @@ var circles = g.selectAll("circle")
 })();
 }
 function graph38(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 30,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -2185,8 +2185,8 @@ function hexagon(radius) {
 }
 function graph39(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50;
 
 var scale = d3.scale.ordinal()
@@ -2231,8 +2231,8 @@ setTimeout(repeat, 1000);
 function graph40(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 32,
     cols = 5;
 
@@ -2265,8 +2265,8 @@ d3.timer(function(t) {
 }
 function graph41(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 50,
     cols = 30;
 
@@ -2320,8 +2320,8 @@ d3.timer(function(t) {
 }
 function graph42(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 4,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -2369,8 +2369,8 @@ function hexagon(radius) {
 function graph43(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 1000;
 
 var data = d3.range(0, n).map(function() {
@@ -2415,8 +2415,8 @@ function pathTween(d) {
 function graph44(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     rows = 20,
     cols = 20,
     r = 10,
@@ -2478,8 +2478,8 @@ function moon(θ) {
 function graph45(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     τ = 2 * Math.PI,
     n = 10;
 
@@ -2546,8 +2546,8 @@ function tweenArc(b) {
 }
 }
 function graph46(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50;
 
 var scale = d3.scale.ordinal()
@@ -2583,8 +2583,8 @@ d3.timer(function(t) {
 }
 function graph47(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10,
     c = width / n;
 
@@ -2635,8 +2635,8 @@ var rects = g.selectAll("rect")
 })();
 }
 function graph48(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 50,
     theta = 25 * Math.PI / 180,
     length = 2.5,
@@ -2729,8 +2729,8 @@ function tweenDash() {
 }
 }
 function graph49(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 5;
 
 var svg = d3.select("#vis").append("svg")
@@ -2770,8 +2770,8 @@ d3.timer(function(t) {
 }
 function graph50(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     cols = 100;
 
 var scale = d3.scale.ordinal()
@@ -2819,8 +2819,8 @@ d3.timer(function(elapsed) {
 });
 }
 function graph51(color){
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5;
 
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
@@ -2857,8 +2857,8 @@ d3.timer(function(t) {
 })
 }
 function graph52(color){
-  var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+  var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 200;
 
 var svg = d3.select("#vis").append("svg")
@@ -2897,8 +2897,8 @@ function graph53(color){
 var num = 20000;
 
 var canvas = document.getElementById("canvas");
-var width = canvas.width = window.innerHeight*0.6;
-var height = canvas.height = window.innerHeight*0.6;
+var width = canvas.width = window.innerHeight*0.5;
+var height = canvas.height = window.innerHeight*0.5;
 var ctx = canvas.getContext("2d");
 
 var particles = d3.range(num).map(function(i) {
@@ -2932,8 +2932,8 @@ function drawPoint(p) {
  {
 
 
-    var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+    var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 10;
 
 var svg = d3.select("#vis").append("svg")
@@ -2981,8 +2981,8 @@ d3.timer(function(t) {
     
 
 function graph55(color){
-var w = window.innerHeight*0.6,
-    h = window.innerHeight*0.6,
+var w = window.innerHeight*0.5,
+    h = window.innerHeight*0.5,
     p = 10,
     scale = 2,
     fill = d3.scale.category20b(),
@@ -3213,8 +3213,8 @@ function rotate(b, a) {
 function graph56(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5;
 
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
@@ -3254,8 +3254,8 @@ d3.timer(function(t) {
 function graph57(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5;
     n = 8,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -3315,8 +3315,8 @@ function dodecagon(radius, r) {
 
 function graph58(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 32;
 
 var svg = d3.select("#vis").append("svg")
@@ -3352,8 +3352,8 @@ d3.timer(function(t) {
 function graph59(color){
 
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 50,
     data = d3.range(1, n + 1);
 
@@ -3404,8 +3404,8 @@ d3.timer(function(t) {
 
 function graph60(color){
 
-var width = window.innerHeight*0.6,
-    height = window.innerHeight*0.6,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 20;
 
 var svg = d3.select("#vis").append("svg")
@@ -3435,6 +3435,55 @@ g.selectAll("ellipse")
 d3.timer(function(t) {
     g.attr("transform", function(d) {
         return "translate(" + [width / 2, (d + 1) * height / (n + 1)] + ")scale(" + (Math.sin(d / 2 - t / 1000) + 1) / 2 + ",1)";
+    });
+});
+
+}
+
+function graph61(color){
+
+    var width = 500,
+    height = 500,
+    n = 10;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color);
+
+var data = d3.range(0, n * n)
+    .map(function(d, i) {
+        var x = d % n,
+            y = ~~(d / n);
+        return { x: x, y: y, i: i };
+    });
+
+var g = svg.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d) {
+        return "translate(" + [d.x * width / n, d.y * height / n] + ")";
+    });
+
+g.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", width / n)
+    .attr("height", height / n / 2)
+    .attr("fill-opacity", 0.9)
+    .attr("fill", "#d1d1d1");
+
+g.append("rect")
+    .attr("x", 0)
+    .attr("y", height / n / 2)
+    .attr("width", width / n)
+    .attr("height", height / n / 2)
+    .attr("fill-opacity", 0.9)
+    .attr("fill", "#111");
+
+d3.timer(function(t) {
+    g.attr("transform", function(d) {
+        return "translate(" + [d.x * width / n, d.y * height / n] + ")skewX(" + 20 * Math.cos(d.x + d.y + t / 200) + ")skewY(" + 20 * Math.sin(d.x + d.y + t / 200) + ")";
     });
 });
 
