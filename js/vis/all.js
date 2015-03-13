@@ -3442,49 +3442,39 @@ d3.timer(function(t) {
 
 function graph61(color){
 
-    var width = 500,
-    height = 500,
-    n = 10;
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
+    n = 22,
+    m = 30,
+    r = 3,
+    dr = 20,
+    g = 137.5 * Math.PI / 180;
 
 var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background",color);
+    .style("background",color)
+    .append("g")
+    .attr("transform", "translate(" + [width / 2, height / 2] + ")");
 
-var data = d3.range(0, n * n)
-    .map(function(d, i) {
-        var x = d % n,
-            y = ~~(d / n);
-        return { x: x, y: y, i: i };
-    });
+var data = [];
 
-var g = svg.selectAll("g")
+for (var r = 1; r <= n; r++) {
+    for (var ø = 0; ø < Math.PI * 2; ø += 2 * Math.PI / m) {
+        data.push({r: r, ø: ø});
+    }
+}
+
+var seeds = svg.selectAll("circle")
     .data(data)
-    .enter().append("g")
-    .attr("transform", function(d) {
-        return "translate(" + [d.x * width / n, d.y * height / n] + ")";
-    });
-
-g.append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", width / n)
-    .attr("height", height / n / 2)
-    .attr("fill-opacity", 0.9)
-    .attr("fill", "#d1d1d1");
-
-g.append("rect")
-    .attr("x", 0)
-    .attr("y", height / n / 2)
-    .attr("width", width / n)
-    .attr("height", height / n / 2)
-    .attr("fill-opacity", 0.9)
-    .attr("fill", "#111");
+    .enter().append("circle")
+    .attr("cx", function(d) { return d.r * d.r * Math.cos(d.ø + g * d.r); })
+    .attr("cy", function(d) { return d.r * d.r * Math.sin(d.ø + g * d.r); })
+    .attr("fill", "#"+((1<<24)*Math.random()|0).toString(16))
+    .attr("fill-opacity", 0.3);
 
 d3.timer(function(t) {
-    g.attr("transform", function(d) {
-        return "translate(" + [d.x * width / n, d.y * height / n] + ")skewX(" + 20 * Math.cos(d.x + d.y + t / 200) + ")skewY(" + 20 * Math.sin(d.x + d.y + t / 200) + ")";
-    });
+    seeds.attr("r", function(d) { return 0.3 * (Math.sin(t / 2000) + 1) * Math.pow(d.r, 2); });
 });
 
 }
