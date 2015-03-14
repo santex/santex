@@ -3276,7 +3276,7 @@ var hexes = svg.append("g")
 setInterval(function(){
        hexes.attr("fill", "#"+((1<<24)*Math.random()|0).toString(16));
        svg.attr("background", "#"+((1<<24)*Math.random()|0).toString(16));
-           }, 4000);
+           }, 1000);
 
 
 d3.timer(function(t) {
