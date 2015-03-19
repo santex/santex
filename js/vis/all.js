@@ -3255,7 +3255,7 @@ function graph57(color){
 
 
 var width = window.innerWidth*0.6,
-    height = window.innerHeight*0.5;
+    height = window.innerHeight*0.8;
     n = 8,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
