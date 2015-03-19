@@ -3254,7 +3254,7 @@ d3.timer(function(t) {
 function graph57(color){
 
 
-var width = window.innerWidth*0.9,
+var width = window.innerWidth*0.6,
     height = window.innerHeight*0.5;
     n = 8,
     r = width / n / 2,
