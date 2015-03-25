@@ -3478,3 +3478,152 @@ d3.timer(function(t) {
 });
 
 }
+
+
+function graph62(color){
+
+
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
+    n = 22,
+    m = 30,
+    r = 3,
+    dr = 20,
+    cols = 100,
+    a = 1,
+    b = 0.3,
+    g = 137.5 * Math.PI / 180;
+
+var svg = d3.select("#vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color)
+    .append("g")
+    .attr("transform", "translate(" + [width / 2, height / 2] + ")");
+
+var spiral = svg.selectAll("g")
+    .data(d3.range(20))
+    .enter().append("g");
+
+var r1 = d3.range(0, 7 * Math.PI, 0.1),
+    r2 = r1.slice().reverse();
+
+spiral.append("path")
+    .attr("fill", "#fff")
+    .attr("fill-opacity", 0.1)
+    .attr("d", function(d, i) {
+        return "M" +
+            r1.map(function(θ) {
+                var r = a * Math.exp(b * θ);
+                return [
+                    r * Math.cos(θ),
+                    r * Math.sin(θ)
+                ];
+            }).join("L")
+            + "L" +
+            r2.map(function(θ) {
+                var r = a * Math.exp(b * θ);
+                return [
+                    r * Math.cos(θ + 2),
+                    r * Math.sin(θ + 2)
+                ];
+            }).join("L") + "Z";
+    });
+
+d3.timer(function(t) {
+    spiral.attr("transform", function(d, i) {
+        return "rotate(" + [(d * t / 200) % 360] + ")"
+    });
+});
+}
+function graph63(color){
+
+
+var width = 500,
+    height = 500,
+    cols = 100,
+    a = 1,
+    b = 0.3;
+
+var svg = d3.select("vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color)
+    .append("g")
+    .attr("transform", "translate(" + [width / 2, height / 2] + ")");
+
+var spiral = svg.selectAll("g")
+    .data(d3.range(20))
+    .enter().append("g");
+
+var r1 = d3.range(0, 7 * Math.PI, 0.1),
+    r2 = r1.slice().reverse();
+
+spiral.append("path")
+    .attr("fill", "#fff")
+    .attr("fill-opacity", 0.1)
+    .attr("d", function(d, i) {
+        return "M" +
+            r1.map(function(θ) {
+                var r = a * Math.exp(b * θ);
+                return [
+                    r * Math.cos(θ),
+                    r * Math.sin(θ)
+                ];
+            }).join("L")
+            + "L" +
+            r2.map(function(θ) {
+                var r = a * Math.exp(b * θ);
+                return [
+                    r * Math.cos(θ + 3),
+                    r * Math.sin(θ + 3)
+                ];
+            }).join("L") + "Z";
+    });
+
+d3.timer(function(t) {
+    spiral.attr("transform", function(d, i) {
+        return "rotate(" + [(d * t / 200) % 360] + ")"
+    });
+});
+
+}
+function graph64(color){
+
+
+var width = 500,
+    height = 500,
+    n = 25;
+
+noise.seed(Math.random());
+
+var svg = d3.select("vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background",color);
+
+var scale = d3.scale.ordinal()
+    .domain(d3.range(-n / 2, n / 2 + 1))
+    .rangePoints([0, width], 1.3);
+
+var data = [];
+for (var x = -n / 2; x <= n / 2; x++) {
+    for (var y = -n / 2; y <= n / 2; y++) {
+        data.push({x: x, y: y});
+    }
+}
+
+var lines = svg.selectAll("path")
+    .data(data)
+    .enter().append("path")
+    .attr("fill", "#111")
+    .attr("d", "M-6,2,L12,0L-6,-2Z");
+
+d3.timer(function(t) {
+    lines.attr("transform", function(d) {
+        var r = 360 * noise.simplex3(d.x / 60, d.y / 60, t / 7000);
+        return "translate(" + [scale(d.x), scale(d.y)] + ")rotate(" + r + ")";
+    });
+});
+
+}
