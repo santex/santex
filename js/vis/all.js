@@ -3539,13 +3539,18 @@ d3.timer(function(t) {
 function graph63(color){
 
 
-var width = 500,
-    height = 500,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
+    n = 22,
+    m = 30,
+    r = 3,
+    dr = 20,
     cols = 100,
     a = 1,
-    b = 0.3;
+    b = 0.3,
+    g = 137.5 * Math.PI / 180;
 
-var svg = d3.select("vis").append("svg")
+var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
     .style("background",color)
@@ -3597,10 +3602,14 @@ var width = 500,
 
 noise.seed(Math.random());
 
-var svg = d3.select("vis").append("svg")
+
+
+var svg = d3.select("#vis").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background",color);
+    .style("background",color)
+    .append("g")
+
 
 var scale = d3.scale.ordinal()
     .domain(d3.range(-n / 2, n / 2 + 1))
@@ -3625,5 +3634,65 @@ d3.timer(function(t) {
         return "translate(" + [scale(d.x), scale(d.y)] + ")rotate(" + r + ")";
     });
 });
+
+
+}
+
+
+function graph65(color){
+
+
+var width = 500,
+    height = 500,
+    n = 30,
+    r = width / n / 2,
+    dx = r * 2 * Math.sin(Math.PI / 3),
+    dy = r * 1.5;
+
+noise.seed(Math.random());
+
+var svg = d3.select("vis").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .style("background", "#d1d1d1");
+
+var data = [];
+
+for (var y = -r, odd = false; y < height + 2 * r; y += dy, odd = !odd) {
+    for (var x = odd ? -dx / 2 : 0; x < width + dx; x += dx) {
+        data.push([x, y]);
+    }
+}
+
+var hexes = svg.selectAll("g")
+    .data(data)
+    .enter().append("g")
+    .attr("transform", function(d) {
+        return "translate(" + d + ")";
+    })
+    .append("path")
+    .attr("stroke", "#111")
+    .attr("stroke-width", 0.5)
+    .attr("fill", "none")
+    .attr("d", "M" + hexagon(r).join("l") + "Z");
+
+d3.timer(function(t) {
+    hexes.attr("transform", function(d, i) {
+        return "scale(" + (1 + 1 * noise.simplex3(d[0] / 100, d[1] / 100, t / 4000)) + ")";
+    });
+});
+
+function hexagon(radius) {
+    var x0 = 0, y0 = 0;
+    return d3.range(0, 2 * Math.PI, Math.PI / 3).map(function(angle) {
+        var x1 = Math.sin(angle) * radius,
+            y1 = -Math.cos(angle) * radius,
+            dx = x1 - x0,
+            dy = y1 - y0;
+        x0 = x1;
+        y0 = y1;
+        return [dx, dy];
+    });
+}
 
 }
