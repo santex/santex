@@ -3651,7 +3651,7 @@ var width = 500,
 
 noise.seed(Math.random());
 
-var svg = d3.select("vis").append("svg")
+var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
     .style("background", "#d1d1d1");
@@ -3694,5 +3694,6 @@ function hexagon(radius) {
         return [dx, dy];
     });
 }
+
 
 }
