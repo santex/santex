@@ -1,4 +1,4 @@
-function graph37(color){
+
 
 var w = 500,
     h = 500,
@@ -43,4 +43,3 @@ var circles = g.selectAll("circle")
             }
         });
 })();
-}

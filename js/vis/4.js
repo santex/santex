@@ -1,4 +1,3 @@
-function graph4(color){
 var data = d3.range(0, 45).map(function () { return 1; });
 
 var width = 500,
@@ -38,4 +37,3 @@ d3.timer(function(elapsed) {
         .attr("d", arc);
 });
 
-}

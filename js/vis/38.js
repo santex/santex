@@ -1,4 +1,4 @@
-function graph38(color){
+
 var width = 500,
     height = 500,
     n = 30,
@@ -47,5 +47,4 @@ function hexagon(radius) {
         y0 = y1;
         return [dx, dy];
     });
-}
 }

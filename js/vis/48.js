@@ -1,4 +1,4 @@
-function graph48(color){
+
 var width = 500,
     height = 500,
     cols = 50,
@@ -90,5 +90,4 @@ function tweenDash() {
   var l = this.getTotalLength(),
       i = d3.interpolateString("0," + l, l + "," + l);
   return function(t) { return i(t); };
-}
 }

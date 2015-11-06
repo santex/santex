@@ -1,4 +1,4 @@
-function graph46(color){
+
 var width = 500,
     height = 500,
     cols = 50;
@@ -33,4 +33,3 @@ d3.timer(function(t) {
                         Math.sin(d.x * d.y + t / 2000)) + 1;
     });
 });
-}

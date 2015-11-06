@@ -1,4 +1,4 @@
-function graph1(color){
+
 
 var width = 500,
     height = 500,
@@ -72,4 +72,3 @@ d3.timer(function() {
     });
     circles.attr("cx", function(d) { return d.x; })
 });
-}

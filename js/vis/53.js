@@ -1,5 +1,5 @@
-function graph53(color){
-  
+
+
 var num = 20000;
 
 var canvas = document.getElementById("canvas");
@@ -9,7 +9,7 @@ var ctx = canvas.getContext("2d");
 
 var particles = d3.range(num).map(function(i) {
   return [Math.round(width*Math.random()), Math.round(height*Math.random())];
-}); 
+});
 
 d3.timer(step);
 
@@ -32,4 +32,3 @@ function drawPoint(p) {
   ctx.fillRect(p[0],p[1],1,1);
 };
 
-}

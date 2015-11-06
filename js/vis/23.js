@@ -1,4 +1,4 @@
-function graph23(color){
+
 
 var width = 500,
     height = 500,
@@ -20,7 +20,7 @@ var data = d3.range(0, cols * cols)
     .map(function(d) {
         return { x: d % cols, y: ~~(d / cols) };
     });
-    
+
 var dots = svg.selectAll("circle")
     .data(data)
     .enter().append("circle")
@@ -37,4 +37,3 @@ d3.timer(function(elapsed) {
     dots.attr("cy", function(d) { return scale(d.y) + 4 * (mid - d.y) * (1 + f(d)); })
         .attr("r", function(d) { return 1.5 - 1.4 * f(d); });
 });
-}

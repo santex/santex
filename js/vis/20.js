@@ -1,4 +1,4 @@
-function graph20(color){
+
 
 
 var width = 500,
@@ -32,4 +32,4 @@ d3.timer(function(t) {
             (d3.range(-3, cols + 2));
     });
 });
-}
+

@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title></title>
+<body>
+<script src="js/d3.v3.min.js"></script>
+<script src="js/uri.js"></script>
+<script src="js/jquery-2.0.3.min.js"></script>
+<style>
+html, body {
+    height: 100%;
+    background:#333;
+    margin: 0;
+}
+
+body, #prev, #next {
+    height: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-justify-content: center;
+}
+
+#prev, #next {
+    position: absolute;
+    top: 0;
+    color: #d1d1d1;
+    font-size: 70px;
+    text-decoration: none;
+    padding: 20px;
+}
+
+#prev {
+    left: 0;
+}
+
+#next {
+    right: 0;
+}
+
+svg {
+    margin: auto;
+}
+
+@font-face {
+    font-family: 'FontAwesome';
+
+    font-weight: normal;
+    font-style: normal;
+}
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.fa-twitter:before {
+    content: "\f099";
+}
+.fa-github:before {
+    content: "\f09b";
+}
+.fa-th:before {
+    content: "\f00a";
+}
+
+footer {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+a {
+    color: #d1d1d1;
+    text-decoration: none;
+    padding: 20px;
+}
+
+svg {
+  border: 10px solid hsl(45, 27%, 74%);
+  padding:10px;
+
+  }
+
+</style>
+
+<a id="prev" href="#">‹</a>
+
+
+<center><div id="vis"></div></center>
+
+<a id="next" href="#">›</a>
+<script>
+var prev="";
+var next="";
+var d3x="";
+var color = "";
+if(URLParser(url).hasParam('d3') ||  (URLParser(url).hasParam('d3') && URLParser(url).getParam('d3') != ""))
+ {
+   d3x = URLParser(url).getParam('d3');
+   prev=parseInt(d3x) -1;
+   next=parseInt(d3x) +1;
+   if(next>64) next=1;
+   if(prev<1) prev=64;
+
+   $("#prev").attr("href","http://santex.github.io/santex.github.io/santex/show.html?d3="+prev);
+   $("#next").attr("href","http://santex.github.io/santex/show.html?d3="+next);
+   color="#"+((1<<24)*Math.random()|0).toString(16);
+   $.getScript('http://santex.github.io/santex/js/vis/'+d3x+'.js');
+
+
+
+
+ }
+</script>
+
+<footer>
+    <a href="santex.github.io/santex/wall.html"><i class="fa fa-th"></i></a>
+
+    <a href="https://github.com/santex/santex"><i class="fa fa-github"></i></a>
+</footer>

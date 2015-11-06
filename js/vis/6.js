@@ -1,6 +1,4 @@
 
-function graph6(color){
-
 var width = 500,
     height = 500,
     n = 35,
@@ -68,5 +66,4 @@ function hexagon(radius) {
             y1 = -Math.cos(angle) * radius;
         return [x1, y1];
     });
-}
 }

@@ -1,4 +1,3 @@
-function graph2(color){
 
 var width = 500,
     height = 500;
@@ -89,5 +88,4 @@ function transform(origin, target) {
     var θ = Math.atan2(target[1] - origin[1], target[0] - origin[0]) * (180 / Math.PI) - 90,
         k = 1 + (5 * target[0] / width);
     return "translate(" + origin + ")rotate(" + θ + ")scale(1," + k + ")";
-}
 }

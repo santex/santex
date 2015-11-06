@@ -1,4 +1,4 @@
-function graph10(color){
+
 
 var width = 500,
     height = 500,
@@ -69,5 +69,3 @@ columns.transition()
 
         down();
     });
-
-}

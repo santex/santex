@@ -1,4 +1,4 @@
-function graph39(color){
+
 
 var width = 500,
     height = 500,
@@ -17,7 +17,7 @@ var data = d3.range(0, cols * cols)
     .map(function(d) {
         return { x: d % cols, y: ~~(d / cols) };
     });
-    
+
 var dots = svg.selectAll("circle")
     .data(data)
     .enter().append("circle")
@@ -42,4 +42,3 @@ function repeat() {
 }
 
 setTimeout(repeat, 1000);
-}

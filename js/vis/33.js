@@ -1,4 +1,4 @@
-function graph33(color){
+
 
 var width = 500,
     height = 500,
@@ -175,14 +175,13 @@ function Boid() {
             l.x -= width;
         while (l.y < 0)
             l.y += height;
-        while (l.y > height) 
+        while (l.y > height)
             l.y -= height;
         while (l.z < 0)
             l.z += depth;
-        while (l.z > depth) 
+        while (l.z > depth)
             l.z -= depth;
     }
 
     return { v: v, l: l, step: step };
-}
 }

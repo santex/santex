@@ -1,4 +1,4 @@
-function graph45(color){
+
 
 
 var width = 500,
@@ -66,5 +66,4 @@ function tweenArc(b) {
     for (var k in d) a[k] = d[k]; // update data
     return function(t) { return arc(i(t)); };
   };
-}
 }

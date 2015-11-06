@@ -1,4 +1,4 @@
-function graph22(color){
+
 
 var width = 500,
     height = 500,
@@ -39,5 +39,4 @@ function twinkle() {
             .attr("transform", translate + "scale(0)")
             .each("end", repeat);
     })();
-}
 }

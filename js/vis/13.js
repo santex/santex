@@ -1,4 +1,4 @@
-function graph13(color){
+
 
 var width = 500,
     height = 500;
@@ -36,5 +36,4 @@ function boxMuller(variance) {
     var u1 = Math.random(),
         u2 = Math.random();
     return Math.sqrt(variance * -2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-}
 }

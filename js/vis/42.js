@@ -1,4 +1,4 @@
-function graph42(color){
+
 
 var width = 500,
     height = 500,
@@ -31,7 +31,7 @@ d3.timer(function(t) {
         return d;
     });
 });
-}
+
 function hexagon(radius) {
     var x0 = 0, y0 = 0;
     return d3.range(0, 2 * Math.PI, Math.PI / 3).map(function(angle) {

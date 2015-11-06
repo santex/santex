@@ -1,4 +1,4 @@
-function graph43(color){
+
 
 
 var width = 500,
@@ -42,5 +42,4 @@ function pathTween(d) {
     return function(t) {
         return "M" + p(0) + " A" + d.r + "," + d.r + " 0 " + (t < 0.5 ? 0 : 1) + " 1 " + p(t * Math.PI * 2);
     }
-}
 }

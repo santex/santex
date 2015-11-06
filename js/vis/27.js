@@ -1,4 +1,4 @@
-function graph27(color){
+
 
 var width = 500,
     height = 500,
@@ -55,5 +55,4 @@ function fall() {
                 repeat();
             });
     })();
-}
 }

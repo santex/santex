@@ -1,4 +1,4 @@
-function graph17(color){
+
 
 var width = 500,
     height = 500,
@@ -59,4 +59,3 @@ function gcd(a, b) {
     return gcd(b, a % b);
 }
 
-}

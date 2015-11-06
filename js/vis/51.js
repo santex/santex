@@ -1,4 +1,4 @@
-function graph51(color){
+
 var width = 500,
     height = 500;
 
@@ -35,4 +35,3 @@ d3.timer(function(t) {
 
     svg.attr("transform", "translate(250,250)rotate(" + 360 * (t % 100000 / 100000) + ")")
 })
-}

@@ -1,7 +1,5 @@
 
 
-function graph9(color){
-  
 var width = 500,
     height = 500,
     mx = 320,
@@ -134,4 +132,3 @@ d3.timer(function(t1) {
 
     g.each(tree);
 });
-}

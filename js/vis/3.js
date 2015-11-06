@@ -1,4 +1,3 @@
-function graph3(color){
 
 var width = 500,
     height = 500,
@@ -49,4 +48,3 @@ cols.append("path")
 
     setTimeout(loop, 6000);
 })();
-}

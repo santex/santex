@@ -1,4 +1,4 @@
-function graph30(color){
+
 
 var width = 500,
     height = 500,
@@ -54,4 +54,3 @@ d3.timer(function (t) {
 
     return data.length === 0;
 });
-}

@@ -1,4 +1,4 @@
-function graph14(color){
+
 var width = 500,
     height = 500,
     cols = 100,
@@ -51,4 +51,3 @@ d3.timer(function(t) {
         return "translate(" + [200 * Math.sin(t / 2000 + 0.6 * d), (d - 4) * w - 3] + ")";
     })
 });
-}

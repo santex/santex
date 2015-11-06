@@ -1,4 +1,3 @@
-function graph19(color){
 
 // Math from https://github.com/d3/d3-plugins/tree/master/hexbin
 var width = 500,
@@ -58,7 +57,6 @@ var transition = hexes.transition()
             if (i === 0) loop();
         });
 })();
-}
 
 function hexagon(radius) {
     var x0 = 0, y0 = 0;

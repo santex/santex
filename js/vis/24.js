@@ -1,4 +1,4 @@
-function graph24(color){
+
 
 var width =window.innerHeight*0.65,
     height = window.innerHeight*0.65,
@@ -35,5 +35,3 @@ d3.timer(function(t) {
             }).join("L");
     });
 })
-}
-  

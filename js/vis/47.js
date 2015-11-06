@@ -1,4 +1,4 @@
-function graph47(color){
+
 
 var width = 500,
     height = 500,
@@ -50,4 +50,3 @@ var rects = g.selectAll("rect")
             }
         });
 })();
-}

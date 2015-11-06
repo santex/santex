@@ -1,4 +1,4 @@
-function graph29(color){
+
 
 
 var width = 500,
@@ -36,4 +36,3 @@ d3.timer(function(t) {
             (Math.sin((t + 100000) * d.d / 10000) + 1) / 2;
     });
 });
-}

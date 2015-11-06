@@ -1,4 +1,4 @@
-function graph8(color){
+
 
 var width = 500,
     height = 500,
@@ -28,4 +28,3 @@ var dots = svg.selectAll("circle")
 d3.timer(function(t) {
     dots.attr("r", function(d) { return (((Math.cos(t / 10000) + 1) * d.x * d.y) % 10) / 5; });
 });
-}

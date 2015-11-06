@@ -1,6 +1,6 @@
-function graph5(color){
 
- 
+
+
 var width = 500,
     height = 500,
     n = 10,
@@ -49,5 +49,4 @@ function hexagon(radius) {
         y0 = y1;
         return [dx, dy];
     });
-}
 }

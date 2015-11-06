@@ -1,4 +1,4 @@
-function graph26(color){
+
 
 var width = 500,
     height = 500,
@@ -28,4 +28,3 @@ d3.timer(function(t) {
                "L" + [r1 * Math.cos(a), r1 * Math.sin(a)];
     });
 });
-}

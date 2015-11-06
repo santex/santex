@@ -1,4 +1,4 @@
-function graph52(color){
+
   var width = 500,
     height = 500,
     n = 200;
@@ -33,4 +33,3 @@ d3.timer(function(t) {
         return 200 * Math.sin(2 * d * t);
     });
 });
-}

@@ -1,0 +1,180 @@
+ <!DOCTYPE html>
+  <html lang="en" class="no-js">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>d3 animation's</title>
+      <meta name="description" content="News Gallery" />
+      <meta name="keywords" content="news, alien, ufos , truth" />
+      <meta name="author" content="santex" />
+      <link rel="shortcut icon" href="favicon.ico">
+      <script src="http://santex.github.io/dogs/assets/js/jquery.min.js"></script>
+
+
+      <link rel="stylesheet" type="text/css" href="http://santex.github.io/dogs/assets/css/bootstrap.css" />
+      <link href="http://santex.github.io/dogs/assets/css/font-awesome.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="http://santex.github.io/dogs/assets/css/news.css" />
+      <link rel="stylesheet" type="text/css" href="http://santex.github.io/dogs/assets/css/newscomponent.css" />
+      <script src="http://santex.github.io/dogs/assets/js/modernizr.custom.js"></script>
+      <style>
+        .red{color:#ff0000;}
+        .yellow{color:#fff000;}
+      small{
+        color:#000;
+
+      }
+      a{
+        color:#000;
+      }
+
+#global-tax-box {
+background: hsl(0, 100%, 100%);
+border-radius: 5px 5px 0 0;
+border: 1px solid hsl(345, 27%, 74%);
+bottom: -3px;
+color: hsl(0, 0%, 0%);
+font-size: 0.85em;
+opacity: 1;
+max-height:15%;
+min-height:32px;
+  padding: 4px 4px 1px;
+x-overflow: hidden;
+position: fixed;
+width:90%;
+left: 5%;
+bottom:5px;
+text-align: left;
+y-overflow:scrolling;
+z-index: 9999;
+zoom:110%;
+}
+
+      </style>
+    </head>
+    <body>
+      <div class="container">
+
+      <header class="clearfix">
+
+          <nav>
+
+
+          </nav>
+        </header>
+      </div>
+
+      <div>
+
+
+        <div id="grid-gallery" class="grid-gallery">
+
+
+          <section class="grid-wrap">
+            <ul class="grid">
+              <li class="grid-sizer"></li><!-- for Masonry column width -->
+
+            </ul>
+
+          </section><!-- // grid-wrap -->
+          <section class="slideshow">
+            <ul id="slide">
+           </ul>
+            <nav>
+              <span class="icon nav-prev"></span>
+              <span class="icon nav-next"></span>
+              <span class="icon nav-close"></span>
+            </nav>
+            <div class="info-keys icon">Navigate<br>with arrow keys</div>
+
+          </section><!-- // slideshow -->
+        </div><!-- // grid-gallery -->
+      </div>
+      <script>
+
+    var photos = [
+{'id':'1','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/1.svg'},
+{'id':'2','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/2.svg'},
+{'id':'3','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/3.svg'},
+{'id':'4','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/4.svg'},
+{'id':'5','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/5.svg'},
+{'id':'6','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/6.svg'},
+{'id':'7','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/7.svg'},
+{'id':'8','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/8.svg'},
+{'id':'9','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/9.svg'},
+{'id':'10','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/10.svg'},
+{'id':'11','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/11.svg'},
+{'id':'12','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/12.svg'},
+{'id':'13','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/13.svg'},
+{'id':'14','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/14.svg'},
+{'id':'16','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/16.svg'},
+{'id':'17','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/17.svg'},
+{'id':'18','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/18.svg'},
+{'id':'19','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/19.svg'},
+{'id':'20','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/20.svg'},
+{'id':'21','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/21.svg'},
+{'id':'22','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/22.svg'},
+{'id':'23','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/23.svg'},
+{'id':'24','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/24.svg'},
+{'id':'25','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/25.svg'},
+{'id':'26','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/26.svg'},
+{'id':'27','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/27.svg'},
+{'id':'28','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/28.svg'},
+{'id':'29','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/29.svg'},
+{'id':'30','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/30.svg'},
+{'id':'31','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/31.svg'},
+{'id':'32','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/32.svg'},
+{'id':'33','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/33.svg'},
+{'id':'34','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/34.svg'},
+{'id':'35','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/35.svg'},
+{'id':'36','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/36.svg'},
+{'id':'37','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/37.svg'},
+{'id':'38','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/38.svg'},
+{'id':'39','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/39.svg'},
+{'id':'40','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/40.svg'},
+{'id':'41','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/41.svg'},
+{'id':'42','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/42.svg'},
+{'id':'43','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/43.svg'},
+{'id':'44','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/44.svg'},
+{'id':'45','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/45.svg'},
+{'id':'46','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/46.svg'},
+{'id':'47','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/47.svg'},
+{'id':'48','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/48.svg'},
+{'id':'49','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/49.svg'},
+{'id':'50','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/50.svg'},
+{'id':'51','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/51.svg'},
+{'id':'52','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/52.svg'},
+{'id':'54','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/54.svg'},
+{'id':'56','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/56.svg'},
+{'id':'57','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/57.svg'},
+{'id':'58','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/58.svg'},
+{'id':'59','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/59.svg'},
+{'id':'60','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/60.svg'},
+{'id':'61','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/61.svg'},
+{'id':'62','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/62.svg'},
+{'id':'63','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/63.svg'},
+{'id':'64','name':'start animation','url':'http://santex.github.io/santex/js/vis/svg/64.svg'}
+];
+
+
+$(document).ready(function() {
+
+
+
+$.each( photos, function( value ){
+$(".grid").append("<li><figure><a href='show.html?d3="+photos[value].id+"' target='_new'> <img src='"+photos[value].url+"' alt='"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"' style='width:100%;overflow-y:scroll;max-height:80%;'/>  <figcaption> <center>  <p>"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"</p></center>  </figcaption></a></figure> </li> ");
+//("#slide").append("<li><figure><img src='"+photos[value].url+"' alt='"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"' style='width:100%;overflow-y:scroll;max-height:94%;'/>  <figcaption> <center><p>"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"</p> </center>  </figcaption></figure> </li> ");
+
+
+});
+
+//new CBPGridGallery( document.getElementById( 'grid-gallery' ) );
+
+
+
+    });
+
+</script>
+      </center>
+    </body>
+  </html>

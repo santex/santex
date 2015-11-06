@@ -1,4 +1,4 @@
-function graph49(color){
+
 var width = 500,
     height = 500,
     n = 5;
@@ -37,4 +37,3 @@ d3.timer(function(t) {
     });
 });
 
-}

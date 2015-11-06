@@ -1,4 +1,4 @@
-function graph7(color){
+
 var width = 500,
     height = 500,
     n = 30,
@@ -13,7 +13,7 @@ var ms = 1000,
     s  = ms * 60,
     m  = s  * 60,
     h  = m  * 24;
-    
+
 var data = [
     function(t) {
         var b = +new Date(t.getFullYear(), 0, 1),
@@ -56,4 +56,3 @@ d3.timer(function() {
         return "translate(" + [x, y] + ")";
     });
 });
-}

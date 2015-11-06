@@ -1,4 +1,4 @@
-function graph32(color){
+
 
 var width = 500,
     height = 500,
@@ -32,4 +32,3 @@ d3.timer(function(t) {
         return circle(d3.range(0, 2 * π + u, u));
     });
 });
-}

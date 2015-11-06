@@ -1,4 +1,4 @@
-function graph41(color){
+
 
 var width = 500,
     height = 500,
@@ -21,7 +21,7 @@ var data = d3.range(0, rows)
             return [x, y];
         });
     });
-    
+
 var g = svg.selectAll("g")
     .data(data)
     .enter().append("g")
@@ -52,4 +52,3 @@ d3.timer(function(t) {
         }));
     });
 });
-}

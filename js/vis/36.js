@@ -1,4 +1,4 @@
-function graph36(color){
+
 
 var width = 500,
     height = 500,
@@ -54,5 +54,4 @@ function moon(θ) {
     return "M" + [                  0,  r] +
            "A" + [rx0, r, 0, 0, s0, 0, -r] +
            "A" + [rx1, r, 0, 0, s1, 0,  r];
-}
 }
