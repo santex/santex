@@ -106,7 +106,7 @@ if(URLParser(url).hasParam('d3') ||  (URLParser(url).hasParam('d3') && URLParser
    d3x = URLParser(url).getParam('d3');
    prev=parseInt(d3x) -1;
    next=parseInt(d3x) +1;
-   if(next>64) next=1;
+   if(next>55) next=1;
    if(prev<1) prev=55;
 
    $("#prev").attr("href","http://santex.github.io/santex/show.html?d3="+prev);
