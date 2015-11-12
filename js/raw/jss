@@ -20,8 +20,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="msapplication-tap-highlight" content="no" />
 
-      <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,600,700&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic" rel="stylesheet" type="text/css">
-
     <link href="//assets.slid.es/assets/slides/slides-0c1388bc8e6e9cabec475ce55e102391.css" media="all" rel="stylesheet" />
     <link href="//assets.slid.es/assets/application-2a7020aed6e57185d8b910ed864b5ca7.css" media="all" rel="stylesheet" />
     <meta content="authenticity_token" name="csrf-param" />
@@ -39,13 +37,13 @@
     <!--[if lt IE 9]>
     <script src="//assets.slid.es/assets/html5shiv-b51d49ab0e89834a02ffce4a59905afb.js"></script>
 <![endif]-->
-    	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:site" content="@SlidesApp">
-	<meta name="twitter:title" content="JSS">
-	<meta name="twitter:description" content="Dynamic stylesheets for web components. ">
-	<meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg">
+      <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@SlidesApp">
+  <meta name="twitter:title" content="JSS">
+  <meta name="twitter:description" content="Dynamic stylesheets for web components. ">
+  <meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg">
 
-	<link href="//assets.slid.es/assets/deck-v2-9270c79ee334f030dea4764040c2623f.css" media="all" rel="stylesheet" />
+  <link href="//assets.slid.es/assets/deck-v2-9270c79ee334f030dea4764040c2623f.css" media="all" rel="stylesheet" />
 
 
 <style id="user-css-output" type="text/css"></style>
@@ -79,19 +77,19 @@
     </ul>
   </div>
 </header>
-      
+
       <div id="main" class="main" role="main">
-        
+
 
 
 
 <div class="marquee loading">
 
-	<div class="reveal-frame">
-		<div class="reveal-viewport theme-font-montserrat theme-color-white-blue">
-			<div class="reveal">
-				<div class="slides">
-					<section data-id="8f9b1eb0ef13a3204e75f19fc00dfd8c"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 97px; height: auto;" data-block-id="b002a7edb4c76a6d73d171daea0174fb"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10;">
+  <div class="reveal-frame">
+    <div class="reveal-viewport theme-font-montserrat theme-color-white-blue">
+      <div class="reveal">
+        <div class="slides">
+          <section data-id="8f9b1eb0ef13a3204e75f19fc00dfd8c"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 97px; height: auto;" data-block-id="b002a7edb4c76a6d73d171daea0174fb"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text" style="z-index: 10;">
 <h1>Fix CSS</h1>
 
 <h1>by writing</h1>
@@ -110,14 +108,14 @@
 </div></div>
 <div class="sl-block" data-block-type="text" style="width: 800px; left: 111px; top: 224px; height: auto;" data-block-id="21bc7c8949bd943e72db599f12d712a5"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
 <ol>
-	<li>History</li>
-	<li>Composition</li>
-	<li>Code reuse</li>
-	<li>Vendor prefixing</li>
-	<li>CSS globals</li>
-	<li>Sharing values</li>
-	<li>Overhead</li>
-	<li>More optimizations</li>
+  <li>History</li>
+  <li>Composition</li>
+  <li>Code reuse</li>
+  <li>Vendor prefixing</li>
+  <li>CSS globals</li>
+  <li>Sharing values</li>
+  <li>Overhead</li>
+  <li>More optimizations</li>
 </ol>
 </div></div></section><section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/851102/netscape_navigator__wallpaper__request__by_hardii-d5v6v0p.png" data-id="b4668eb354a7acbdafcf618ec34c08a0"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 141px; height: auto;" data-block-id="37622b6426fb25a0d3c291e5c84141d2"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 13;">
 <h2><span style="color:#FFFFFF">Javascript Style Sheets</span></h2>
@@ -197,14 +195,14 @@
             background: 'red'
         }
     }
-    
+
     // component-b.js
     module.exports = {
         button: {
             color: 'green'
         }
     }
-    
+
     // app.js
     var a = require('./component-a')
     var b = require('./component-b')
@@ -217,8 +215,8 @@
 </div></div>
 <div class="sl-block" data-block-type="text" data-block-id="0f502f25849db8f1af57ee3555509af6" style="height: auto; min-width: 30px; min-height: 30px; width: 600px; left: 180px; top: 272px;"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text" style="z-index: 11;">
 <ul>
-	<li>We don't rely on cascading</li>
-	<li>Selectors are generated and are unique</li>
+  <li>We don't rely on cascading</li>
+  <li>Selectors are generated and are unique</li>
 </ul>
 </div></div>
 <div class="sl-block" data-block-type="code" style="min-width: 30px; min-height: 30px; width: 318px; height: 268px; left: 322px; top: 369px;" data-block-id="507c81571a05372b5120cf646b6b5d49"><div class="sl-block-content" style="z-index: 13;"><pre class="css"><code>
@@ -227,7 +225,7 @@
             background: red;
         }
     &lt;/style&gt;
-    
+
     &lt;style&gt;
         .jss-1 {
             color: green;
@@ -237,8 +235,8 @@
 </div></div>
 <div class="sl-block" data-block-type="text" style="width: 800px; left: 73px; top: 319px; height: auto;" data-block-id="6756c940d7aa02df28a1326d335b0f52"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
 <ul>
-	<li>Multiple classes on one element</li>
-	<li>Global selectors</li>
+  <li>Multiple classes on one element</li>
+  <li>Global selectors</li>
 </ul>
 </div></div></section><section data-id="3b30823f3e587f5eecd959649f59aca9"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 152px; height: auto;" data-block-id="6105c4c5f9acff4986a9b9f028393186"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
 <h2>Code reuse in JSS</h2>
@@ -249,8 +247,8 @@
 <p> </p>
 
 <ul>
-	<li>Truly reusable css components</li>
-	<li>Save up to 30% in size</li>
+  <li>Truly reusable css components</li>
+  <li>Save up to 30% in size</li>
 </ul>
 </div></div></section><section data-id="309fdbc7b92d8228f4f6b95cc10fe907"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 85px; height: auto;" data-block-id="5735ba3294249e371511107d27f08eca"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 11;">
 <h2>Inheritance</h2>
@@ -262,7 +260,7 @@
     module.exports = {
         color: 'red'
     }
-    
+
     // styles.js
     var baseButton = require('./base-button')
     module.exports = {
@@ -271,7 +269,7 @@
             float: 'left'
         }
     }
-    
+
     // app.js
     var styles = require('./styles')
     jss.createStyleSheet(styles).attach()      </code></pre></div></div>
@@ -299,7 +297,7 @@
             }
         }
     }
-    
+
     // app.js
     var styles = require('./styles')
     jss.createStyleSheet(styles).attach()  </code></pre></div></div>
@@ -330,7 +328,7 @@
             transform: 'translateX(100px)'
         }
     }
-    
+
     // app.js
     var styles = require('./styles')
     jss.createStyleSheet(styles).attach()  </code></pre></div></div>
@@ -351,8 +349,8 @@
         color: '#fff',
         height: 20
     }
-    
-    
+
+
     // styles.js
     var vars = require('./vars')
     module.exports = {
@@ -365,7 +363,7 @@
     // app.js
     var vars = require('./vars')
 
-    // Do something usefull    
+    // Do something usefull
     $('something').height(vars.height)
 </code></pre></div></div></section><section data-id="59d2582f424fea3648fea9450ba00eab"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 103px; height: auto;" data-block-id="7fc5624842ce01db3aaac145921763c3"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text" style="z-index: 10;">
 <h2>Direct injection</h2>
@@ -378,22 +376,22 @@
             background: 'blue'
         }
     }
-    
+
     // app.js
     var styles = require('./styles')
     var sheet = jss.createStyleSheet(styles, true)
 
     sheet.rules.button.applyTo($('button')[0])
-    
+
 </code></pre></div></div></section><section data-id="08849862f598d8ef1df8eae2c807400f"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 127px; height: auto;" data-block-id="601dae60c4d3a4d937996952571a138f"><div class="sl-block-content" data-placeholder-tag="h2" data-placeholder-text="Title Text">
 <h2>Why share values?</h2>
 </div></div>
 <div class="sl-block" data-block-type="text" style="width: 730px; left: 134px; top: 272px; height: auto;" data-block-id="0444beca592beae5b8ad1aba40b3994f"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
 <ul>
-	<li>DOM round trip is expensive</li>
-	<li>get initial value directly</li>
-	<li>calculate relative values</li>
-	<li>use values in different places e.g. inline</li>
+  <li>DOM round trip is expensive</li>
+  <li>get initial value directly</li>
+  <li>calculate relative values</li>
+  <li>use values in different places e.g. inline</li>
 </ul>
 
 <p> </p>
@@ -433,8 +431,8 @@
         }
     })
     console.log(ss.toString())
-    
-    
+
+
     // Output
     a {
         color: red;
@@ -447,12 +445,12 @@
 </div></div>
 <div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 324px; height: auto;" data-block-id="8b0a186871a27f2e96723974ca3b91e9"><div class="sl-block-content" data-placeholder-tag="p" data-placeholder-text="Text">
 <ul>
-	<li>
-	<p>Render jss styles only for components which are in the render tree.</p>
-	</li>
-	<li>
-	<p>Remove jss styles when components are detached.</p>
-	</li>
+  <li>
+  <p>Render jss styles only for components which are in the render tree.</p>
+  </li>
+  <li>
+  <p>Remove jss styles when components are detached.</p>
+  </li>
 </ul>
 </div></div></section><section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/kof/images/850665/2014-11-18_20.21.50.jpg" data-id="174a10e4cc03a4873239e6afcbf431ab"><div class="sl-block" data-block-type="text" style="width: 800px; left: 80px; top: 180px; height: auto;" data-block-id="b9a4bde4820f5181aac3563aef7e5715"><div class="sl-block-content" data-placeholder-tag="h1" data-placeholder-text="Title Text">
 <h1><span style="color:#FFFFFF">Questions?</span></h1>
@@ -473,95 +471,95 @@
 
 <p><span style="color:#FFFFFF">By Oleg Slobodskoi </span><a href="http://twitter.com/oleg008" target="_blank"><span style="color:#FFFFFF">@oleg008</span></a></p>
 </div></div></section>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<div class="deck-kudos">
-		<button class="kudos-button kudos-trigger" data-kudos-id="285693" data-kudoed-by-user="false">
-			<div class="kudos-heart">
-				<span class="kudos-icon icon i-heart-fill"></span>
-			</div>
-			<div class="kudos-count" data-kudos-value="15" data-kudos-id="285693"></div>
-		</button>
-	</div>
+  <div class="deck-kudos">
+    <button class="kudos-button kudos-trigger" data-kudos-id="285693" data-kudoed-by-user="false">
+      <div class="kudos-heart">
+        <span class="kudos-icon icon i-heart-fill"></span>
+      </div>
+      <div class="kudos-count" data-kudos-value="15" data-kudos-id="285693"></div>
+    </button>
+  </div>
 
-	<div class="summary-bubble">
-		<div class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></div>
-		<div class="text">
-			<h4>JSS</h4>
-			<p>By Oleg Slobodskoi</p>
-		</div>
-	</div>
+  <div class="summary-bubble">
+    <div class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></div>
+    <div class="text">
+      <h4>JSS</h4>
+      <p>By Oleg Slobodskoi</p>
+    </div>
+  </div>
 
 </div>
 
 <div class="column">
-	<header>
-		<ul class="deck-social">
-			<li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
-			<li><a href="https://twitter.com/share" class="twitter-share-button" data-text="JSS" data-url="http://slides.com/kof/jss"></a></li>
-			<li><div class="g-plusone" data-size="medium"></div></li>
-		</ul>
+  <header>
+    <ul class="deck-social">
+      <li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
+      <li><a href="https://twitter.com/share" class="twitter-share-button" data-text="JSS" data-url="http://slides.com/kof/jss"></a></li>
+      <li><div class="g-plusone" data-size="medium"></div></li>
+    </ul>
 
-		<div class="deck-promotion">
-			<a class="button cta" href="/pricing">Create a presentation like this <span class="logo"></span></a>
-		</div>
+    <div class="deck-promotion">
+      <a class="button cta" href="/pricing">Create a presentation like this <span class="logo"></span></a>
+    </div>
 
-		<div class="deck-options">
-			<a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
-			<a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
-			<a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
-		</div>
+    <div class="deck-options">
+      <a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
+      <a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
+      <a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
+    </div>
 
-		<div class="details">
-			<div class="deck-info">
-				<h3 class="title">JSS</h3>
-				<p class="description">Dynamic stylesheets for web components. </p>
-				<ul class="deck-meta">
-					<li data-tooltip="Published date" data-tooltip-delay="500">
-						<span class="icon i-clock"></span>
-						<time class="value ago" datetime="2014-11-15 21:02:13 UTC"></time>
-					</li>
-					<li data-tooltip="Kudos" data-tooltip-delay="500">
-						<span class="icon i-heart-fill"></span>
-						<span class="value" data-kudos-value="15" data-kudos-id="285693"></span>
-					</li>
-					<li data-tooltip="Views" data-tooltip-delay="500">
-						<span class="icon i-eye"></span>
-						<span class="value">10,738</span>
-					</li>
-				</ul>
-			</div>
+    <div class="details">
+      <div class="deck-info">
+        <h3 class="title">JSS</h3>
+        <p class="description">Dynamic stylesheets for web components. </p>
+        <ul class="deck-meta">
+          <li data-tooltip="Published date" data-tooltip-delay="500">
+            <span class="icon i-clock"></span>
+            <time class="value ago" datetime="2014-11-15 21:02:13 UTC"></time>
+          </li>
+          <li data-tooltip="Kudos" data-tooltip-delay="500">
+            <span class="icon i-heart-fill"></span>
+            <span class="value" data-kudos-value="15" data-kudos-id="285693"></span>
+          </li>
+          <li data-tooltip="Views" data-tooltip-delay="500">
+            <span class="icon i-eye"></span>
+            <span class="value">10,738</span>
+          </li>
+        </ul>
+      </div>
 
-			<div class="user-info">
-	<div class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></div>
-	<div class="text">
-		<h3>
-			<a href="/kof" class="username">Oleg Slobodskoi</a>
-		</h3>
-		<p class="description"></p>
-		<ul class="links">
-			
-			
-		</ul>
-	</div>
-	<div class="clear"></div>
+      <div class="user-info">
+  <div class="picture" style="background-image: url(//graph.facebook.com/100000404281672/picture?type=large)"></div>
+  <div class="text">
+    <h3>
+      <a href="/kof" class="username">Oleg Slobodskoi</a>
+    </h3>
+    <p class="description"></p>
+    <ul class="links">
+
+
+    </ul>
+  </div>
+  <div class="clear"></div>
 </div>
 
-			<div class="clear"></div>
-		</div>
-	</header>
+      <div class="clear"></div>
+    </div>
+  </header>
 
-	<section class="comments" id="comments">
-		<div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
-	</section>
+  <section class="comments" id="comments">
+    <div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
+  </section>
 
-	<section class="deck-list">
-		<h2>More from <a href="/kof">Oleg Slobodskoi</a></h2>
-		<ul class="carousel">
-			<li class="deck-thumbnail">
+  <section class="deck-list">
+    <h2>More from <a href="/kof">Oleg Slobodskoi</a></h2>
+    <ul class="carousel">
+      <li class="deck-thumbnail">
   <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/e32647/deck.jpg)">
     <a class="deck-link" href="/kof/famo-us-basics"></a>
   </div>
@@ -590,8 +588,8 @@
   </footer>
 </li>
 
-		</ul>
-	</section>
+    </ul>
+  </section>
 
 </div>
 
@@ -643,13 +641,13 @@ UserVoice.push(['set', {
 }]);
 
 </script>
-    
+
 <script>
-	var SLConfig = {"deck":{"id":285693,"slug":"jss","title":"JSS","description":"Dynamic stylesheets for web components. ","visibility":"all","published_at":"2014-11-15T21:02:13.124Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg","view_count":10738,"user":{"id":90550,"username":"kof","name":"Oleg Slobodskoi","email":"oleg008@gmail.com","description":"","thumbnail_url":"//graph.facebook.com/100000404281672/picture?type=large","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":19236,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"slide","transition":"slide","theme_id":null,"theme_font":"montserrat","theme_color":"white-blue","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":true,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":2}};
+  var SLConfig = {"deck":{"id":285693,"slug":"jss","title":"JSS","description":"Dynamic stylesheets for web components. ","visibility":"all","published_at":"2014-11-15T21:02:13.124Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/kof/ca2300/jss.jpg","view_count":10738,"user":{"id":90550,"username":"kof","name":"Oleg Slobodskoi","email":"oleg008@gmail.com","description":"","thumbnail_url":"//graph.facebook.com/100000404281672/picture?type=large","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":19236,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"slide","transition":"slide","theme_id":null,"theme_font":"montserrat","theme_color":"white-blue","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":true,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":2}};
 </script>
     <script defer="defer" src="//assets.slid.es/assets/application-56cd1e916782b5dd728a8bac69a90c7c.js"></script>
-    	<script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
-	
+      <script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
+
 
 
   </body>

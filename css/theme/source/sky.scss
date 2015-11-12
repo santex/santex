@@ -13,8 +13,6 @@
 
 
 // Include theme-specific fonts
-@import url(https://fonts.googleapis.com/css?family=Quicksand:400,700,400italic,700italic);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
 
 
 // Override theme settings (see ../template/settings.scss)
@@ -31,12 +29,12 @@ $selectionBackgroundColor: #134674;
 
 // Fix links so they are not cut off
 .reveal a {
-	line-height: 1.3em;
+  line-height: 1.3em;
 }
 
 // Background generator
 @mixin bodyBackground() {
-	@include radial-gradient( #add9e4, #f7fbfc );
+  @include radial-gradient( #add9e4, #f7fbfc );
 }
 
 

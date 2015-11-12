@@ -1,5 +1,5 @@
 @import url(../../lib/font/league-gothic/league-gothic.css);
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);
+/**@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);**/
 /**
  * Solarized Light theme for reveal.js.
  * Author: Achim Staebler
@@ -206,7 +206,7 @@ body {
  *********************************************/
 .reveal section img {
   margin: 6px 0px;
-  
+
   border: 0px solid #657b83;
   padding:2px;
    }

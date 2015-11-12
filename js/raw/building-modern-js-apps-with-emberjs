@@ -20,8 +20,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="msapplication-tap-highlight" content="no" />
 
-      <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,600,700&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic" rel="stylesheet" type="text/css">
-
     <link href="//assets.slid.es/assets/slides/slides-0c1388bc8e6e9cabec475ce55e102391.css" media="all" rel="stylesheet" />
     <link href="//assets.slid.es/assets/application-2a7020aed6e57185d8b910ed864b5ca7.css" media="all" rel="stylesheet" />
     <meta content="authenticity_token" name="csrf-param" />
@@ -39,13 +37,13 @@
     <!--[if lt IE 9]>
     <script src="//assets.slid.es/assets/html5shiv-b51d49ab0e89834a02ffce4a59905afb.js"></script>
 <![endif]-->
-    	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:site" content="@SlidesApp">
-	<meta name="twitter:title" content="Building Modern JS Apps with EmberJS">
-	<meta name="twitter:description" content="An interactive presentation created with Slides.">
-	<meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg">
+      <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@SlidesApp">
+  <meta name="twitter:title" content="Building Modern JS Apps with EmberJS">
+  <meta name="twitter:description" content="An interactive presentation created with Slides.">
+  <meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg">
 
-	<link href="//assets.slid.es/assets/deck-v1-4b1e7f4bf831e7481627df3927c08fed.css" media="all" rel="stylesheet" />
+  <link href="//assets.slid.es/assets/deck-v1-4b1e7f4bf831e7481627df3927c08fed.css" media="all" rel="stylesheet" />
 
 
 <style id="user-css-output" type="text/css">.reveal .dim {
@@ -91,19 +89,19 @@
     </ul>
   </div>
 </header>
-      
+
       <div id="main" class="main" role="main">
-        
+
 
 
 
 <div class="marquee loading">
 
-	<div class="reveal-frame">
-		<div class="reveal-viewport theme-font-league theme-color-black-mint">
-			<div class="reveal">
-				<div class="slides">
-					<section class="has-dark-background" data-id="d3616d756782069ee306579224b13103" data-background-size="cover" data-background-color="rgba( 0, 0, 0, 0.6 )" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/607051/logo.png"><h2><br></h2>
+  <div class="reveal-frame">
+    <div class="reveal-viewport theme-font-league theme-color-black-mint">
+      <div class="reveal">
+        <div class="slides">
+          <section class="has-dark-background" data-id="d3616d756782069ee306579224b13103" data-background-size="cover" data-background-color="rgba( 0, 0, 0, 0.6 )" data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/samselikoff/images/607051/logo.png"><h2><br></h2>
 <h2>building modern javascript applications with ember.js</h2>
 <div style="text-align: center;">
 <b>
@@ -551,7 +549,7 @@ export default Ember.ObjectController.extend({
   fullName: function() {
     return this.get('firstName') + ' ' + this.get('lastName');
   }.property('firstName', 'lastname')
-  
+
 });
 </code></pre>
 </div>
@@ -620,7 +618,7 @@ export default Ember.View.extend({
 
 </section><section class="" data-id="57735d9173329822ce49e2222a2db636"><h2><br></h2>
 <div><pre><code>&lt;div class="sidebar"&gt;
-  &lt;label &gt;Select a date&lt;/label&gt; 
+  &lt;label &gt;Select a date&lt;/label&gt;
   {{date-picker selectedDate=currentMonth mode='month'}}
 &lt;/div&gt;</code></pre></div>
 <br></section><section class="" data-id="72bb37b819ab0b508386527463a3c58f">
@@ -722,92 +720,92 @@ model: function() {
 <div>slides.com/samselikoff/intro-to-emberjs<br>
 </div>
 <div>@samselikoff</div></section>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<div class="deck-kudos">
-		<button class="kudos-button kudos-trigger" data-kudos-id="200125" data-kudoed-by-user="false">
-			<div class="kudos-heart">
-				<span class="kudos-icon icon i-heart-fill"></span>
-			</div>
-			<div class="kudos-count" data-kudos-value="0" data-kudos-id="200125"></div>
-		</button>
-	</div>
+  <div class="deck-kudos">
+    <button class="kudos-button kudos-trigger" data-kudos-id="200125" data-kudoed-by-user="false">
+      <div class="kudos-heart">
+        <span class="kudos-icon icon i-heart-fill"></span>
+      </div>
+      <div class="kudos-count" data-kudos-value="0" data-kudos-id="200125"></div>
+    </button>
+  </div>
 
-	<div class="summary-bubble">
-		<div class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></div>
-		<div class="text">
-			<h4>Building Modern JS Apps with EmberJS</h4>
-			<p>By Sam Selikoff</p>
-		</div>
-	</div>
+  <div class="summary-bubble">
+    <div class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></div>
+    <div class="text">
+      <h4>Building Modern JS Apps with EmberJS</h4>
+      <p>By Sam Selikoff</p>
+    </div>
+  </div>
 
 </div>
 
 <div class="column">
-	<header>
-		<ul class="deck-social">
-			<li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
-			<li><a href="https://twitter.com/share" class="twitter-share-button" data-text="Building Modern JS Apps with EmberJS" data-url="http://slides.com/samselikoff/building-modern-js-apps-with-emberjs"></a></li>
-			<li><div class="g-plusone" data-size="medium"></div></li>
-		</ul>
+  <header>
+    <ul class="deck-social">
+      <li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
+      <li><a href="https://twitter.com/share" class="twitter-share-button" data-text="Building Modern JS Apps with EmberJS" data-url="http://slides.com/samselikoff/building-modern-js-apps-with-emberjs"></a></li>
+      <li><div class="g-plusone" data-size="medium"></div></li>
+    </ul>
 
 
-		<div class="deck-options">
-			<a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
-			<a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
-			<a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
-		</div>
+    <div class="deck-options">
+      <a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
+      <a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
+      <a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
+    </div>
 
-		<div class="details">
-			<div class="deck-info">
-				<h3 class="title">Building Modern JS Apps with EmberJS</h3>
-				<ul class="deck-meta">
-					<li data-tooltip="Published date" data-tooltip-delay="500">
-						<span class="icon i-clock"></span>
-						<time class="value ago" datetime="2014-09-12 13:56:45 UTC"></time>
-					</li>
-					<li data-tooltip="Kudos" data-tooltip-delay="500">
-						<span class="icon i-heart-fill"></span>
-						<span class="value" data-kudos-value="0" data-kudos-id="200125"></span>
-					</li>
-					<li data-tooltip="Views" data-tooltip-delay="500">
-						<span class="icon i-eye"></span>
-						<span class="value">773</span>
-					</li>
-				</ul>
-			</div>
+    <div class="details">
+      <div class="deck-info">
+        <h3 class="title">Building Modern JS Apps with EmberJS</h3>
+        <ul class="deck-meta">
+          <li data-tooltip="Published date" data-tooltip-delay="500">
+            <span class="icon i-clock"></span>
+            <time class="value ago" datetime="2014-09-12 13:56:45 UTC"></time>
+          </li>
+          <li data-tooltip="Kudos" data-tooltip-delay="500">
+            <span class="icon i-heart-fill"></span>
+            <span class="value" data-kudos-value="0" data-kudos-id="200125"></span>
+          </li>
+          <li data-tooltip="Views" data-tooltip-delay="500">
+            <span class="icon i-eye"></span>
+            <span class="value">773</span>
+          </li>
+        </ul>
+      </div>
 
-			<div class="user-info">
-	<div class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></div>
-	<div class="text">
-		<h3>
-			<a href="/samselikoff" class="username">Sam Selikoff</a>
-			<a href="/pricing#pro" class="pro-badge">PRO</a>
-		</h3>
-		<p class="description"></p>
-		<ul class="links">
-			 <li><a href="http://www.samselikoff.com" target="_blank"><span class="icon i-link"></span>http://www.samselikoff.com</a></li> 
-			 <li><a href="http://twitter.com/samselikoff" target="_blank"><span class="icon i-twitter"></span>samselikoff</a></li> 
-		</ul>
-	</div>
-	<div class="clear"></div>
+      <div class="user-info">
+  <div class="picture" style="background-image: url(//graph.facebook.com/2042529/picture?type=large)"></div>
+  <div class="text">
+    <h3>
+      <a href="/samselikoff" class="username">Sam Selikoff</a>
+      <a href="/pricing#pro" class="pro-badge">PRO</a>
+    </h3>
+    <p class="description"></p>
+    <ul class="links">
+       <li><a href="http://www.samselikoff.com" target="_blank"><span class="icon i-link"></span>http://www.samselikoff.com</a></li>
+       <li><a href="http://twitter.com/samselikoff" target="_blank"><span class="icon i-twitter"></span>samselikoff</a></li>
+    </ul>
+  </div>
+  <div class="clear"></div>
 </div>
 
-			<div class="clear"></div>
-		</div>
-	</header>
+      <div class="clear"></div>
+    </div>
+  </header>
 
-	<section class="comments" id="comments">
-		<div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
-	</section>
+  <section class="comments" id="comments">
+    <div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
+  </section>
 
-	<section class="deck-list">
-		<h2>More from <a href="/samselikoff">Sam Selikoff</a></h2>
-		<ul class="carousel">
-			<li class="deck-thumbnail">
+  <section class="deck-list">
+    <h2>More from <a href="/samselikoff">Sam Selikoff</a></h2>
+    <ul class="carousel">
+      <li class="deck-thumbnail">
   <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/64fdcd/react.jpg)">
     <a class="deck-link" href="/samselikoff/react"></a>
   </div>
@@ -864,8 +862,8 @@ model: function() {
   </footer>
 </li>
 
-		</ul>
-	</section>
+    </ul>
+  </section>
 
 </div>
 
@@ -917,13 +915,13 @@ UserVoice.push(['set', {
 }]);
 
 </script>
-    
+
 <script>
-	var SLConfig = {"deck":{"id":200125,"slug":"building-modern-js-apps-with-emberjs","title":"Building Modern JS Apps with EmberJS","description":"","visibility":"all","published_at":"2014-09-12T13:56:45.309Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg","view_count":773,"user":{"id":60138,"username":"samselikoff","name":"Sam Selikoff","email":"sam.selikoff@gmail.com","description":"","thumbnail_url":"//graph.facebook.com/2042529/picture?type=large","pro":true,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":220,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"fade","transition":"slide","theme_id":null,"theme_font":"league","theme_color":"black-mint","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":false,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":0}};
+  var SLConfig = {"deck":{"id":200125,"slug":"building-modern-js-apps-with-emberjs","title":"Building Modern JS Apps with EmberJS","description":"","visibility":"all","published_at":"2014-09-12T13:56:45.309Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/samselikoff/7b4608/intro-to-emberjs.jpg","view_count":773,"user":{"id":60138,"username":"samselikoff","name":"Sam Selikoff","email":"sam.selikoff@gmail.com","description":"","thumbnail_url":"//graph.facebook.com/2042529/picture?type=large","pro":true,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":220,"present_controls":true,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"fade","transition":"slide","theme_id":null,"theme_font":"league","theme_color":"black-mint","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":false,"rolling_links":false,"center":false,"should_loop":false,"rtl":false,"version":0}};
 </script>
     <script defer="defer" src="//assets.slid.es/assets/application-56cd1e916782b5dd728a8bac69a90c7c.js"></script>
-    	<script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
-	
+      <script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
+
 
 
   </body>

@@ -20,7 +20,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="msapplication-tap-highlight" content="no" />
 
-      <link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,600,700&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic" rel="stylesheet" type="text/css">
 
     <link href="//assets.slid.es/assets/slides/slides-0c1388bc8e6e9cabec475ce55e102391.css" media="all" rel="stylesheet" />
     <link href="//assets.slid.es/assets/application-2a7020aed6e57185d8b910ed864b5ca7.css" media="all" rel="stylesheet" />
@@ -39,13 +38,13 @@
     <!--[if lt IE 9]>
     <script src="//assets.slid.es/assets/html5shiv-b51d49ab0e89834a02ffce4a59905afb.js"></script>
 <![endif]-->
-    	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:site" content="@SlidesApp">
-	<meta name="twitter:title" content="Meteor JS">
-	<meta name="twitter:description" content="An interactive presentation created with Slides.">
-	<meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/cwaring/2069c3/meteorjs-intro-0813.jpg">
+      <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@SlidesApp">
+  <meta name="twitter:title" content="Meteor JS">
+  <meta name="twitter:description" content="An interactive presentation created with Slides.">
+  <meta name="twitter:image" content="https://s3.amazonaws.com/media-p.slid.es/thumbnails/cwaring/2069c3/meteorjs-intro-0813.jpg">
 
-	<link href="//assets.slid.es/assets/deck-v1-4b1e7f4bf831e7481627df3927c08fed.css" media="all" rel="stylesheet" />
+  <link href="//assets.slid.es/assets/deck-v1-4b1e7f4bf831e7481627df3927c08fed.css" media="all" rel="stylesheet" />
 
 
 <style id="user-css-output" type="text/css"></style>
@@ -79,19 +78,19 @@
     </ul>
   </div>
 </header>
-      
+
       <div id="main" class="main" role="main">
-        
+
 
 
 
 <div class="marquee loading">
 
-	<div class="reveal-frame">
-		<div class="reveal-viewport theme-font-overpass theme-color-sand-grey">
-			<div class="reveal">
-				<div class="slides">
-					<section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/cwaring/images/187607/universe.png" class="" data-id="f1cc5271f96988529df1e8846e802f17"><h2><span><br></span></h2>
+  <div class="reveal-frame">
+    <div class="reveal-viewport theme-font-overpass theme-color-sand-grey">
+      <div class="reveal">
+        <div class="slides">
+          <section data-background-image="https://s3.amazonaws.com/media-p.slid.es/uploads/cwaring/images/187607/universe.png" class="" data-id="f1cc5271f96988529df1e8846e802f17"><h2><span><br></span></h2>
 <h2><span><br></span></h2>
 <h2><span style="background-color: rgb(255, 242, 204);"><br></span></h2>
 <h1><span style="background-color: rgb(0, 0, 0);"><font color="#ffffff"><br></font></span></h1>
@@ -284,7 +283,7 @@ Meteor.subscribe("things");</font>
   &lt;/ul&gt;</font></code><code><font style="font-size: 24px;">  {{/if}}
 &lt;/template&gt;</font></code></pre>
 </div>
-<div><pre><code><span style="font-family: monospace;"><font style="font-size: 24px;">Template.theThings.helpers({</font></span></code><code><font style="font-size: 24px;">  things: function(){ </font></code><code><font style="font-size: 24px;">    return Things.find() 
+<div><pre><code><span style="font-family: monospace;"><font style="font-size: 24px;">Template.theThings.helpers({</font></span></code><code><font style="font-size: 24px;">  things: function(){ </font></code><code><font style="font-size: 24px;">    return Things.find()
   }
 ); </font>
 </code></pre></div>
@@ -396,7 +395,7 @@ Package.on_use(function (api) {
 
   // for helpers
   api.use('ui', 'client');
- 
+
   // default ui manager
   // unordered: true because blaze-layout package weakly
   // depends on iron-router so it can register itself with
@@ -599,94 +598,94 @@ Package.on_test(function (api) {
 <h1><span style="font-size: 28px; font-weight: bold;"><font color="#434343">MEETUP.COM/METEOR-LONDON</font></span></h1>
 <div><br></div>
 <div><br></div></section></section>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<div class="deck-kudos">
-		<button class="kudos-button kudos-trigger" data-kudos-id="178330" data-kudoed-by-user="false">
-			<div class="kudos-heart">
-				<span class="kudos-icon icon i-heart-fill"></span>
-			</div>
-			<div class="kudos-count" data-kudos-value="0" data-kudos-id="178330"></div>
-		</button>
-	</div>
+  <div class="deck-kudos">
+    <button class="kudos-button kudos-trigger" data-kudos-id="178330" data-kudoed-by-user="false">
+      <div class="kudos-heart">
+        <span class="kudos-icon icon i-heart-fill"></span>
+      </div>
+      <div class="kudos-count" data-kudos-value="0" data-kudos-id="178330"></div>
+    </button>
+  </div>
 
-	<div class="summary-bubble">
-		<div class="picture" style="background-image: url(https://www.gravatar.com/avatar/c9416bb6f0ca69cf84df68b7d947a67f?s=140&amp;d=https%3A%2F%2Fs3.amazonaws.com%2Fstatic.slid.es%2Fimages%2Fdefault-profile-picture.png)"></div>
-		<div class="text">
-			<h4>Meteor JS</h4>
-			<p>By Chris Waring</p>
-		</div>
-	</div>
+  <div class="summary-bubble">
+    <div class="picture" style="background-image: url(https://www.gravatar.com/avatar/c9416bb6f0ca69cf84df68b7d947a67f?s=140&amp;d=https%3A%2F%2Fs3.amazonaws.com%2Fstatic.slid.es%2Fimages%2Fdefault-profile-picture.png)"></div>
+    <div class="text">
+      <h4>Meteor JS</h4>
+      <p>By Chris Waring</p>
+    </div>
+  </div>
 
 </div>
 
 <div class="column">
-	<header>
-		<ul class="deck-social">
-			<li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
-			<li><a href="https://twitter.com/share" class="twitter-share-button" data-text="Meteor JS" data-url="http://slides.com/cwaring/meteorjs-intro-0813"></a></li>
-			<li><div class="g-plusone" data-size="medium"></div></li>
-		</ul>
+  <header>
+    <ul class="deck-social">
+      <li><div class="fb-like" data-send="false" data-layout="button_count" data-show-faces="false"></div></li>
+      <li><a href="https://twitter.com/share" class="twitter-share-button" data-text="Meteor JS" data-url="http://slides.com/cwaring/meteorjs-intro-0813"></a></li>
+      <li><div class="g-plusone" data-size="medium"></div></li>
+    </ul>
 
-		<div class="deck-promotion">
-			<a class="button cta" href="/pricing">Create a presentation like this <span class="logo"></span></a>
-		</div>
+    <div class="deck-promotion">
+      <a class="button cta" href="/pricing">Create a presentation like this <span class="logo"></span></a>
+    </div>
 
-		<div class="deck-options">
-			<a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
-			<a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
-			<a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
-		</div>
+    <div class="deck-options">
+      <a class="fullscreen-button" data-tooltip="Fullscreen" href="#"><span class="icon i-fullscreen"></span></a>
+      <a class="comment-button" data-tooltip="Comments" data-scroll-to href="#comments" data-scroll-to data-scroll-to-offset="-90"><span class="icon i-comment-stroke"></span></a>
+      <a class="share-button" data-tooltip="Share" href="#"><span class="icon i-share"></span></a>
+    </div>
 
-		<div class="details">
-			<div class="deck-info">
-				<h3 class="title">Meteor JS</h3>
-				<ul class="deck-meta">
-					<li data-tooltip="Published date" data-tooltip-delay="500">
-						<span class="icon i-clock"></span>
-						<time class="value ago" datetime="2014-06-03 16:44:34 UTC"></time>
-					</li>
-					<li data-tooltip="Kudos" data-tooltip-delay="500">
-						<span class="icon i-heart-fill"></span>
-						<span class="value" data-kudos-value="0" data-kudos-id="178330"></span>
-					</li>
-					<li data-tooltip="Views" data-tooltip-delay="500">
-						<span class="icon i-eye"></span>
-						<span class="value">480</span>
-					</li>
-				</ul>
-			</div>
+    <div class="details">
+      <div class="deck-info">
+        <h3 class="title">Meteor JS</h3>
+        <ul class="deck-meta">
+          <li data-tooltip="Published date" data-tooltip-delay="500">
+            <span class="icon i-clock"></span>
+            <time class="value ago" datetime="2014-06-03 16:44:34 UTC"></time>
+          </li>
+          <li data-tooltip="Kudos" data-tooltip-delay="500">
+            <span class="icon i-heart-fill"></span>
+            <span class="value" data-kudos-value="0" data-kudos-id="178330"></span>
+          </li>
+          <li data-tooltip="Views" data-tooltip-delay="500">
+            <span class="icon i-eye"></span>
+            <span class="value">480</span>
+          </li>
+        </ul>
+      </div>
 
-			<div class="user-info">
-	<div class="picture" style="background-image: url(https://www.gravatar.com/avatar/c9416bb6f0ca69cf84df68b7d947a67f?s=140&amp;d=https%3A%2F%2Fs3.amazonaws.com%2Fstatic.slid.es%2Fimages%2Fdefault-profile-picture.png)"></div>
-	<div class="text">
-		<h3>
-			<a href="/cwaring" class="username">Chris Waring</a>
-		</h3>
-		<p class="description">Product Designer and Developer.</p>
-		<ul class="links">
-			 <li><a href="http://wwaves.co" target="_blank"><span class="icon i-link"></span>http://wwaves.co</a></li> 
-			 <li><a href="http://twitter.com/cwaring" target="_blank"><span class="icon i-twitter"></span>cwaring</a></li> 
-		</ul>
-	</div>
-	<div class="clear"></div>
+      <div class="user-info">
+  <div class="picture" style="background-image: url(https://www.gravatar.com/avatar/c9416bb6f0ca69cf84df68b7d947a67f?s=140&amp;d=https%3A%2F%2Fs3.amazonaws.com%2Fstatic.slid.es%2Fimages%2Fdefault-profile-picture.png)"></div>
+  <div class="text">
+    <h3>
+      <a href="/cwaring" class="username">Chris Waring</a>
+    </h3>
+    <p class="description">Product Designer and Developer.</p>
+    <ul class="links">
+       <li><a href="http://wwaves.co" target="_blank"><span class="icon i-link"></span>http://wwaves.co</a></li>
+       <li><a href="http://twitter.com/cwaring" target="_blank"><span class="icon i-twitter"></span>cwaring</a></li>
+    </ul>
+  </div>
+  <div class="clear"></div>
 </div>
 
-			<div class="clear"></div>
-		</div>
-	</header>
+      <div class="clear"></div>
+    </div>
+  </header>
 
-	<section class="comments" id="comments">
-		<div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
-	</section>
+  <section class="comments" id="comments">
+    <div id="disqus_thread"><span class="placeholder">Loading comments...</span></div>
+  </section>
 
-	<section class="deck-list">
-		<h2>More from <a href="/cwaring">Chris Waring</a></h2>
-		<ul class="carousel">
-			<li class="deck-thumbnail">
+  <section class="deck-list">
+    <h2>More from <a href="/cwaring">Chris Waring</a></h2>
+    <ul class="carousel">
+      <li class="deck-thumbnail">
   <div class="deck-image" style="background-image: url(https://s3.amazonaws.com/media-p.slid.es/thumbnails/cwaring/2155f0/deck.jpg)">
     <a class="deck-link" href="/cwaring/meteor-day-berlin"></a>
   </div>
@@ -729,8 +728,8 @@ Package.on_test(function (api) {
   </footer>
 </li>
 
-		</ul>
-	</section>
+    </ul>
+  </section>
 
 </div>
 
@@ -782,13 +781,13 @@ UserVoice.push(['set', {
 }]);
 
 </script>
-    
+
 <script>
-	var SLConfig = {"deck":{"id":178330,"slug":"meteorjs-intro-0813","title":"Meteor JS","description":"","visibility":"all","published_at":"2014-06-03T16:44:34.693Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/cwaring/2069c3/meteorjs-intro-0813.jpg","view_count":480,"user":{"id":43826,"username":"cwaring","name":"Chris Waring","email":"chris@cwaring.com","description":"Product Designer and Developer.","thumbnail_url":"https://www.gravatar.com/avatar/c9416bb6f0ca69cf84df68b7d947a67f?s=140\u0026d=https%3A%2F%2Fs3.amazonaws.com%2Fstatic.slid.es%2Fimages%2Fdefault-profile-picture.png","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":4804,"present_controls":false,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"slide","transition":"linear","theme_id":null,"theme_font":"overpass","theme_color":"sand-grey","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":false,"rolling_links":true,"center":true,"should_loop":false,"rtl":false,"version":0}};
+  var SLConfig = {"deck":{"id":178330,"slug":"meteorjs-intro-0813","title":"Meteor JS","description":"","visibility":"all","published_at":"2014-06-03T16:44:34.693Z","sanitize_messages":null,"thumbnail_url":"https://s3.amazonaws.com/media-p.slid.es/thumbnails/cwaring/2069c3/meteorjs-intro-0813.jpg","view_count":480,"user":{"id":43826,"username":"cwaring","name":"Chris Waring","email":"chris@cwaring.com","description":"Product Designer and Developer.","thumbnail_url":"https://www.gravatar.com/avatar/c9416bb6f0ca69cf84df68b7d947a67f?s=140\u0026d=https%3A%2F%2Fs3.amazonaws.com%2Fstatic.slid.es%2Fimages%2Fdefault-profile-picture.png","pro":false,"enterprise":false,"enterprise_manager":false,"notify_on_receipt":false,"billing_address":null,"editor_tutorial_completed":true,"settings":{"id":4804,"present_controls":false,"present_upsizing":true,"editor_grid":true,"editor_snap":true,"developer_mode":false},"registered":true},"background_transition":"slide","transition":"linear","theme_id":null,"theme_font":"overpass","theme_color":"sand-grey","auto_slide_interval":0,"comments_enabled":true,"forking_enabled":false,"rolling_links":true,"center":true,"should_loop":false,"rtl":false,"version":0}};
 </script>
     <script defer="defer" src="//assets.slid.es/assets/application-56cd1e916782b5dd728a8bac69a90c7c.js"></script>
-    	<script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
-	
+      <script defer="defer" src="//assets.slid.es/assets/reveal.min-bb747c79bdee2c09f91b7aedba93fb38.js"></script>
+
 
 
   </body>

@@ -13,14 +13,13 @@
 
 // Include theme-specific fonts
 @import url(../../lib/font/league-gothic/league-gothic.css);
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);
 
 /**
  * Solarized colors by Ethan Schoonover
  */
 html * {
-	color-profile: sRGB;
-	rendering-intent: auto;
+  color-profile: sRGB;
+  rendering-intent: auto;
 }
 
 // Solarized colors
