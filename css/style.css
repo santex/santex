@@ -12,13 +12,7 @@ a:link, a:hover, a:visited {
 div{
     /*background-color: white;*/
 }
-#nav {
-    position: fixed;
-    top: 40px;
-    bottom:0;
-    overflow-y: auto;
-    width: 200px;
-}
+
 .menu1-container, .menu2-container{
     padding: 4px 12px;
     background-color: rgba(250,250,250,0.92);
@@ -161,4 +155,3 @@ li a:hover {
     text-align: center;
     background-color: #CCC;
 }
-nav li a {margin-left:-10px;}

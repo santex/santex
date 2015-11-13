@@ -109,10 +109,10 @@ if(URLParser(url).hasParam('d3') ||  (URLParser(url).hasParam('d3') && URLParser
    if(next>55) next=1;
    if(prev<1) prev=55;
 
-   $("#prev").attr("href","http://santex.github.io/santex/show.html?d3="+prev);
-   $("#next").attr("href","http://santex.github.io/santex/show.html?d3="+next);
+   $("#prev").attr("href","show.html?d3="+prev);
+   $("#next").attr("href","show.html?d3="+next);
    color="#"+((1<<24)*Math.random()|0).toString(16);
-   $.getScript('http://santex.github.io/santex/js/vis/'+d3x+'.js');
+   $.getScript('js/vis/'+d3x+'.js');
 
 
 
@@ -121,7 +121,7 @@ if(URLParser(url).hasParam('d3') ||  (URLParser(url).hasParam('d3') && URLParser
 </script>
 
 <footer>
-    <a href="http://santex.github.io/santex/wall.html"><i class="fa fa-th"></i></a>
+    <a href="wall.html"><i class="fa fa-th"></i></a>
 
     <a href="https://github.com/santex/santex"><i class="fa fa-github"></i></a>
 </footer>
