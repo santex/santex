@@ -2978,7 +2978,7 @@ d3.timer(function(t) {
 });
 }
 
-    
+
 
 function graph55(color){
 var w = window.innerHeight*0.5,
@@ -3596,8 +3596,8 @@ d3.timer(function(t) {
 function graph64(color){
 
 
-var width = 500,
-    height = 500,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
     n = 25;
 
 noise.seed(Math.random());
@@ -3642,8 +3642,8 @@ d3.timer(function(t) {
 function graph65(color){
 
 
-var width = 500,
-    height = 500,
+var width = 350,
+    height = 350,
     n = 30,
     r = width / n / 2,
     dx = r * 2 * Math.sin(Math.PI / 3),
@@ -3700,8 +3700,8 @@ function hexagon(radius) {
 
 
 function graph65(color){
-var width = window.innerHeight*0.8,
-    height = window.innerHeight*0.8,
+var width = window.innerHeight*0.5,
+    height = window.innerHeight*0.5,
 
     n = 20,
     m = 20,

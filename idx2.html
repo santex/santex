@@ -19,11 +19,10 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
+    <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/solarized.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/ui.css">
-    <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
 
 
@@ -42,43 +41,113 @@
     <!--[if lt IE 9]>
     <script src="lib/js/shiv.js"></script>
     <![endif]-->
+     <style>
+
+
+      body{
+
+      zoom:80%;
+      background:#f1f1f1;
+      color:#fff;
+      }
+      svg{
+
+        border: 15px solid #0092bf;
+        }
+iframe {
+width:88%;
+
+}
+
+
+svg{zoom:110%;}
+
+a  img{
+  max-width:80px; height:auto;
+  width:5%;
+
+      }
+
+
+
+.stary{
+    margin-top:-6px;
+       border: 1px solid tranparent;
+
+
+    }
+
+    #menue{
+      margin-left:100px;
+      max-width:98%;
+      }
+
+
+    nav {
+cursor: pointer;
+min-width: 60px;
+max-width: 148px;
+margin: 0;
+padding: 0;
+font-size:1em;
+background: #0092bf;
+position: fixed;
+left: 0;
+top: 194px;
+text-align: center;
+overflow: hidden;
+color: #fff;
+
+_display: none;
+}
+user agent stylesheetarticle, aside, footer, header, hgroup, main, nav, section {
+display: block;
+}
+
+nav #navmenu {
+display: none;
+}
+
+nav h2 {
+display: block;
+width: 60px;
+margin-left: auto;
+margin-right: auto;
+font-size: 1em;
+text-transform: uppercase;
+font-family: "league-gothic-1",Impact,sans-serif;
+}
+
+
+#navmenu{
+list-style:none;
+}
+.fragment{text-align:center;}
+.fragment > background {z-index:1;}
+
+#slide{
+overflow-y:scroll;
+}
+
+.reveal section img {
+margin: 6px 0px;
+border: 5px solid #070B0C;
+padding: 2px;
+}
+    </style>
 
   </head>
 
   <body>
-<small><div style="font-size:17px;position:fixed;right:10px;top:10px;">Navigate with arrow keys</div></small>
     <nav>
       <img src="img/star-top.png" alt=" Navbar">
       <h2 id="navhdr">NAV</h2>
       <ul id="navmenu">
-
-        <li><a href="#/0/0" tabindex="0" ><b>home</b></a></li>
-        <li><a href="#/1/0" tabindex="1" ><b>profile's</b></a></li>
-
-        <li><a href="#/2/0" tabindex="2" ><b>algo-art</b></a></li>
-
-        <li><a href="#/3/0" tabindex="3" ><b>artificial inteligence</b></a></li>
-
-
-        <li><a href="#/4/0" tabindex="4" ><b>astrometrix</b></a></li>
-
-
-        <li><a href="#/5/0" tabindex="5" ><b>data visualisation</b></a></li>
-
-
-        <li><a href="#/6/0" tabindex="6" ><b>speaker's corner</b></a></li>
-
-
-
-        <li><a href="#/7/0" tabindex="7" ><b>emerging science</b></a></li>
-
-
-
-        <li><a href="#/8/0" tabindex="" ><b>science</b></a></li>
-
-
-
-
+        <li><a href="#/0/0" tabindex="0" style="color:#fff;">home</a></li>
+        <li><a href="#/1/0" tabindex="1" style="color:#fff;">animations</a></li>
+        <li><a href="#/2/0" tabindex="2" style="color:#fff;">politics</a></li>
+        <li><a href="#/3/0" tabindex="3" style="color:#fff;">science</a></li>
+        <li><a href="#/4/0" tabindex="4" style="color:#fff;">workshops</a></li>
 
       </ul>
       <img src="img/star-top.png" alt=" Navbar">
@@ -91,25 +160,118 @@
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
         <section>
-          <h4>Visualisation showcase</h4>
-
-          <br><p>discipline's
-            <small style="font-size:20px;">
-              <center>(bulk-data, algorithmic, artificial inteligence, astrometrix, science, emerging technologies)</center></small>
-            <address>Created by hagen geissler</address>
+          <h4>Data visualisation</h4> slide-show
+          <h5>A selection of work by Hagen Geissler</h5>
+          <p>
+            <address>Created by <a href="#multistagecorre">santex</a> / <a href="http://twitter.com/multistagecorre">@multistagecorre</a></address>
           </p>
+        </section>
+        <!--//
+        <section>
+          <h2>Hello There</h2>
+          <p>
+
+          </p>
+        </section>
+
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Markdown support
+
+            Write content using inline or external Markdown.
+            Instructions and more info available in the [readme](https://github.com/santex/reveal.js#markdown).
+
+            ```
+            <section data-markdown>
+              ## Markdown support
+
+              Write content using inline or external Markdown.
+              Instructions and more info available in the [readme](https://github.com/santex/reveal.js#markdown).
+            </section>
+            ```
+          </script>
         </section>
 
         <section>
-          <h2>profile's</h2>
-          <p>
-            <ul>
-          <li><a href="https://github.com/santex"  target="new" class="external" >github</a></li>
-          <li><a href="http://search.cpan.org/author/santex" target="new" class="external"  >cpan</a></li>
-</ul>
+          <section id="fragments">
+            <h2>Fragments</h2>
+            <p>Hit the next arrow...</p>
+            <p class="fragment">... to step through ...</p>
+            <p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
 
+            <aside class="notes">
+              This slide has fragments which are also stepped through in the notes window.
+            </aside>
+          </section>
+          <section>
+            <h2>Fragment Styles</h2>
+            <p>There's different types of fragments, like:</p>
+            <p class="fragment grow">grow</p>
+            <p class="fragment shrink">shrink</p>
+            <p class="fragment roll-in">roll-in</p>
+            <p class="fragment fade-out">fade-out</p>
+            <p class="fragment current-visible">current-visible</p>
+            <p class="fragment highlight-red">highlight-red</p>
+            <p class="fragment highlight-blue">highlight-blue</p>
+          </section>
+        </section>
+
+        <section id="transitions">
+          <h2>Transition Styles</h2>
+          <p>
+            You can select from different transitions, like: <br>
+            <a href="?transition=none#/transitions">None</a> -
+            <a href="?transition=fade#/transitions">Fade</a> -
+            <a href="?transition=slide#/transitions">Slide</a> -
+            <a href="?transition=convex#/transitions">Convex</a> -
+            <a href="?transition=concave#/transitions">Concave</a> -
+            <a href="?transition=zoom#/transitions">Zoom</a>
           </p>
         </section>
+
+
+        <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+          <h2>Background Transitions</h2>
+          <p>
+            Different background transitions are available via the backgroundTransition option. This one's called "zoom".
+          </p>
+          <pre><code>Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
+        </section>
+
+        <section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+          <h2>Background Transitions</h2>
+          <p>
+            You can override background transitions per-slide.
+          </p>
+          <pre><code style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
+        </section>
+
+        <section>
+          <h2>Pretty Code</h2>
+          <pre><code data-trim contenteditable>
+function linkify( selector ) {
+  if( supports3DTransforms ) {
+
+    var nodes = document.querySelectorAll( selector );
+
+    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+      var node = nodes[i];
+
+      if( !node.className ) {
+        node.className += ' roll';
+      }
+    }
+  }
+}
+          </code></pre>
+          <p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+        </section>
+
+
+
+        -->
+
 
 
 
@@ -122,7 +284,7 @@
 <script src="js/jquery.min.js"></script>
         <section id="fragments">
 
-            <div id="head">algo-art</div>
+            <div id="head">animations</div>
             <div id="menue"></div>
 
             <div id="vis"></div>
@@ -209,87 +371,60 @@
 
 
         </section>
-
-        <section>
-          <h2>artificial inteligence</h2>
-          <p>
-            <ul>
-           <li><a href="http://santex.github.io/singularity/seed/idx.html" target="new" class="external"  >seed A.I.</a></li>
-
-</ul>
-
-          </p>
-        </section>
-
-        <section>
-          <h2>astrometrix</h2>
-          <p>
-            <ul>
-           <li><a href="http://santex.github.io/exomap" target="new" class="external"  >exomap</a></li>
-
-</ul>
-
-          </p>
-        </section>
-
-        <section>
-          <h2>data visualisation</h2>
-          <p>
-            <ul>
-
-
-           <li><a href="http://santex.github.io/syria-airstriks" target="new" class="external"  >syria conflict</a></li>
-           <li><a href="http://santex.github.io/journalist-deaths" target="new" class="external"  >journalist deaths</a></li>
-           <li><a href="http://santex.github.io/ecb-stress-test" target="new" class="external"  >EU Bank's</a></li>
-
-</ul>
-
-          </p>
-        </section>
-
-
-         <section>
-             <section><h2>speaker's corner</h2>
+         <section class="fragments">
+             <section><h2>politics</h2>
 
             <ul style="list-style:none;">
+        <li><a href="#/2/1" tabindex="0">syria</a></li>
+        <li><a href="#/2/2" tabindex="1">gaza</a></li>
+        <li><a href="#/2/3" tabindex="2">journalist-deaths</a></li>
+        </ul></address></section>
 
-           <li><a href="http://santex.github.io/singularity/workshop2/idx.html" target="new" class="external"  >singularity talk</a></li>
+           <section><center><address class="fragment">syria</address></center>
+            <iframe   src="http://space-man.de/cv/visualisation/airstrikes/index.html" width="96%" height="800px" frameborder="0"></iframe>
+            </section>
+            <section>
+              <center><address class="fragment">gaza</address></center>
+            <iframe   src="http://space-man.de/cv/visualisation/gaza/index.html" width="96%" height="800px" frameborder="0"></iframe>
+            </section>
 
+            <section>
+              <div id="adjuster"></div>
+              <center><address class="fragment">journalist-deaths</address></center>
+            <iframe   src="http://space-man.de/cv/visualisation/journalist-deaths/index.html" width="90%" height="800px" frameborder="0"></iframe>
+            </section>
 
-        </ul></section>
-</section>
+        </section>
 
-
-
-         <section>
-             <section><h2>emerging science</h2>
-
-            <ul style="list-style:none;">
-          <li><a href="http://santex.github.io/cymatics/" target="new" class="external"  >cymatic's</a></li>
-
-
-
-
-
-        </ul></section>
-</section>
-
-
-
-
-         <section>
+         <section class="fragments">
              <section><h2>science</h2>
 
             <ul style="list-style:none;">
 
-           <li><a href="http://santex.github.io/Sonification/" target="new" class="external"  >Sonification</a></li>
-           <li><a href="http://santex.github.io/oscillator" target="new" class="external"  >oscillator</a></li>
+        <li><a href="#/3/1" tabindex="1">d3.js</a></li>
+        <li><a href="#/3/2" tabindex="2">A.I.</a></li>
+        </ul></address></section>
+
+        <section>
+              <center><address class="fragment">d3.js</address></center>
+            <iframe   src="http://santex.github.io/santex/gallery.html" width="96%" height="800px" frameborder="0"></iframe>
+            </section>
+        <section>
+              <center><address class="fragment">A.I.</address></center>
+            <iframe   src="http://santex.github.io/singularity/seed/idx.html" width="96%" height="800px" frameborder="0"></iframe>
+            </section>
 
 
 
+        </section>
+         <section>
+             <section><h2>workshops</h2>
 
-        </ul></section>
-</section>
+            <ul style="list-style:none;">
+
+        <li><a href="http://santex.github.io/singularity/workshop2/idx.html#0" tabindex="1" target='_new'>singularity</a></li>
+
+        </ul></address></section>
 
 
     <script>
@@ -317,7 +452,16 @@
     </script>
 
 
+<script>
+
+//setInterval(10,function{});
+
+
+
+</script>
+<small>
+<div class="info-keys icon" style="font-size:0.75em;position:fixed;right:150px;
+bottom: 0px;">Navigate with arrow keys</div></small>
 
   </body>
 </html>
-

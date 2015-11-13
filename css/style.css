@@ -31,7 +31,7 @@ div{
     border-bottom: silver 1px solid;
 }
 .menu2-search{
-    
+
     background-size: 15px 15px;
     padding: 6px;
     padding-left:20px;
@@ -76,11 +76,12 @@ li {
 li a:link {
     text-decoration: none;
     font-weight: bold;
-    
-    color: #333;
+
+    color: #000;
 }
 li a:visited {
-    color: #999;
+
+    font-weight:normal;
 }
 .menu3-container li a:visited {
     color: #888;
@@ -116,7 +117,7 @@ li a:hover {
     background-image: -ms-linear-gradient(top, rgba(243, 242, 244, 1.00), rgba(217, 216, 218, 0.75));
     background-image: linear-gradient(top, rgba(243, 242, 244, 1.00), rgba(217, 216, 218, 0.75));
     filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#f3f2f4', EndColorStr='#d9d8da');
-}   
+}
 .info{
     position: fixed;
     top: 0;
@@ -160,3 +161,4 @@ li a:hover {
     text-align: center;
     background-color: #CCC;
 }
+nav li a {margin-left:-10px;}
