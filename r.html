@@ -1,0 +1,242 @@
+ <!DOCTYPE html>
+  <html lang="en" class="no-js">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>r plots</title>
+      <meta name="description" content="News Gallery" />
+      <meta name="keywords" content="news, alien, ufos , truth" />
+      <meta name="author" content="santex" />
+      <link rel="shortcut icon" href="favicon.ico">
+      <script src="js/jquery.min.js"></script>
+
+
+      <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+      <link href="css/font-awesome.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="css/news.css" />
+      <link rel="stylesheet" type="text/css" href="css/newscomponent.css" />
+      <script src="js/modernizr.custom.js"></script>
+      <style>
+        .red{color:#ff0000;}
+        .yellow{color:#fff000;}
+      small{
+        color:#000;
+
+      }
+      a{
+        color:#000;
+      }
+
+#global-tax-box {
+background: hsl(0, 100%, 100%);
+border-radius: 5px 5px 0 0;
+border: 1px solid hsl(345, 27%, 74%);
+bottom: -3px;
+color: hsl(0, 0%, 0%);
+font-size: 0.85em;
+opacity: 1;
+max-height:15%;
+min-height:32px;
+  padding: 4px 4px 1px;
+x-overflow: hidden;
+position: fixed;
+width:90%;
+left: 5%;
+bottom:5px;
+text-align: left;
+y-overflow:scrolling;
+z-index: 9999;
+zoom:110%;
+}
+
+      </style>
+    </head>
+    <body>
+      <div class="container">
+
+      <header class="clearfix">
+
+          <nav>
+
+
+          </nav>
+        </header>
+      </div>
+
+      <div>
+
+
+        <div id="grid-gallery" class="grid-gallery">
+
+
+          <section class="grid-wrap">
+            <ul class="grid">
+              <li class="grid-sizer"></li><!-- for Masonry column width -->
+
+            </ul>
+
+          </section><!-- // grid-wrap -->
+          <section class="slideshow">
+            <ul id="slide">
+           </ul>
+            <nav>
+              <span class="icon nav-prev"></span>
+              <span class="icon nav-next"></span>
+              <span class="icon nav-close"></span>
+            </nav>
+            <div class="info-keys icon">Navigate<br>with arrow keys</div>
+
+          </section><!-- // slideshow -->
+        </div><!-- // grid-gallery -->
+      </div>
+      <script>
+
+    var photos = [
+{'id':'1','name':'view plot','url':'http://santex.github.io/santex/img/plots/1.png'},
+{'id':'2','name':'view plot','url':'http://santex.github.io/santex/img/plots/2.png'},
+{'id':'3','name':'view plot','url':'http://santex.github.io/santex/img/plots/3.png'},
+{'id':'4','name':'view plot','url':'http://santex.github.io/santex/img/plots/4.png'},
+{'id':'5','name':'view plot','url':'http://santex.github.io/santex/img/plots/5.png'},
+{'id':'6','name':'view plot','url':'http://santex.github.io/santex/img/plots/6.png'},
+{'id':'7','name':'view plot','url':'http://santex.github.io/santex/img/plots/7.png'},
+{'id':'8','name':'view plot','url':'http://santex.github.io/santex/img/plots/8.png'},
+{'id':'9','name':'view plot','url':'http://santex.github.io/santex/img/plots/9.png'},
+{'id':'10','name':'view plot','url':'http://santex.github.io/santex/img/plots/10.png'},
+{'id':'11','name':'view plot','url':'http://santex.github.io/santex/img/plots/11.png'},
+{'id':'12','name':'view plot','url':'http://santex.github.io/santex/img/plots/12.png'},
+{'id':'13','name':'view plot','url':'http://santex.github.io/santex/img/plots/13.png'},
+{'id':'14','name':'view plot','url':'http://santex.github.io/santex/img/plots/14.png'},
+{'id':'15','name':'view plot','url':'http://santex.github.io/santex/img/plots/15.png'},
+{'id':'16','name':'view plot','url':'http://santex.github.io/santex/img/plots/16.png'},
+{'id':'17','name':'view plot','url':'http://santex.github.io/santex/img/plots/17.png'},
+{'id':'18','name':'view plot','url':'http://santex.github.io/santex/img/plots/18.png'},
+{'id':'19','name':'view plot','url':'http://santex.github.io/santex/img/plots/19.png'},
+{'id':'20','name':'view plot','url':'http://santex.github.io/santex/img/plots/20.png'},
+{'id':'21','name':'view plot','url':'http://santex.github.io/santex/img/plots/21.png'},
+{'id':'22','name':'view plot','url':'http://santex.github.io/santex/img/plots/22.png'},
+{'id':'23','name':'view plot','url':'http://santex.github.io/santex/img/plots/23.png'},
+{'id':'24','name':'view plot','url':'http://santex.github.io/santex/img/plots/24.png'},
+{'id':'25','name':'view plot','url':'http://santex.github.io/santex/img/plots/25.png'},
+{'id':'26','name':'view plot','url':'http://santex.github.io/santex/img/plots/26.png'},
+{'id':'27','name':'view plot','url':'http://santex.github.io/santex/img/plots/27.png'},
+{'id':'28','name':'view plot','url':'http://santex.github.io/santex/img/plots/28.png'},
+{'id':'29','name':'view plot','url':'http://santex.github.io/santex/img/plots/29.png'},
+{'id':'30','name':'view plot','url':'http://santex.github.io/santex/img/plots/30.png'},
+{'id':'31','name':'view plot','url':'http://santex.github.io/santex/img/plots/31.png'},
+{'id':'32','name':'view plot','url':'http://santex.github.io/santex/img/plots/32.png'},
+{'id':'33','name':'view plot','url':'http://santex.github.io/santex/img/plots/33.png'},
+{'id':'34','name':'view plot','url':'http://santex.github.io/santex/img/plots/34.png'},
+{'id':'35','name':'view plot','url':'http://santex.github.io/santex/img/plots/35.png'},
+{'id':'36','name':'view plot','url':'http://santex.github.io/santex/img/plots/36.png'},
+{'id':'37','name':'view plot','url':'http://santex.github.io/santex/img/plots/37.png'},
+{'id':'38','name':'view plot','url':'http://santex.github.io/santex/img/plots/38.png'},
+{'id':'39','name':'view plot','url':'http://santex.github.io/santex/img/plots/39.png'},
+{'id':'40','name':'view plot','url':'http://santex.github.io/santex/img/plots/40.png'},
+{'id':'41','name':'view plot','url':'http://santex.github.io/santex/img/plots/41.png'},
+{'id':'42','name':'view plot','url':'http://santex.github.io/santex/img/plots/42.png'},
+{'id':'43','name':'view plot','url':'http://santex.github.io/santex/img/plots/43.png'},
+{'id':'44','name':'view plot','url':'http://santex.github.io/santex/img/plots/44.png'},
+{'id':'45','name':'view plot','url':'http://santex.github.io/santex/img/plots/45.png'},
+{'id':'46','name':'view plot','url':'http://santex.github.io/santex/img/plots/46.png'},
+{'id':'47','name':'view plot','url':'http://santex.github.io/santex/img/plots/47.png'},
+{'id':'48','name':'view plot','url':'http://santex.github.io/santex/img/plots/48.png'},
+{'id':'49','name':'view plot','url':'http://santex.github.io/santex/img/plots/49.png'},
+{'id':'50','name':'view plot','url':'http://santex.github.io/santex/img/plots/50.png'},
+{'id':'51','name':'view plot','url':'http://santex.github.io/santex/img/plots/51.png'},
+{'id':'52','name':'view plot','url':'http://santex.github.io/santex/img/plots/52.png'},
+{'id':'53','name':'view plot','url':'http://santex.github.io/santex/img/plots/53.png'},
+{'id':'54','name':'view plot','url':'http://santex.github.io/santex/img/plots/54.png'},
+{'id':'55','name':'view plot','url':'http://santex.github.io/santex/img/plots/55.png'},
+{'id':'56','name':'view plot','url':'http://santex.github.io/santex/img/plots/56.png'},
+{'id':'57','name':'view plot','url':'http://santex.github.io/santex/img/plots/57.png'},
+{'id':'58','name':'view plot','url':'http://santex.github.io/santex/img/plots/58.png'},
+{'id':'59','name':'view plot','url':'http://santex.github.io/santex/img/plots/59.png'},
+{'id':'60','name':'view plot','url':'http://santex.github.io/santex/img/plots/60.png'},
+{'id':'61','name':'view plot','url':'http://santex.github.io/santex/img/plots/61.png'},
+{'id':'62','name':'view plot','url':'http://santex.github.io/santex/img/plots/62.png'},
+{'id':'63','name':'view plot','url':'http://santex.github.io/santex/img/plots/63.png'},
+{'id':'64','name':'view plot','url':'http://santex.github.io/santex/img/plots/64.png'},
+{'id':'65','name':'view plot','url':'http://santex.github.io/santex/img/plots/65.png'},
+{'id':'66','name':'view plot','url':'http://santex.github.io/santex/img/plots/66.png'},
+{'id':'67','name':'view plot','url':'http://santex.github.io/santex/img/plots/67.png'},
+{'id':'68','name':'view plot','url':'http://santex.github.io/santex/img/plots/68.png'},
+{'id':'69','name':'view plot','url':'http://santex.github.io/santex/img/plots/69.png'},
+{'id':'70','name':'view plot','url':'http://santex.github.io/santex/img/plots/70.png'},
+{'id':'71','name':'view plot','url':'http://santex.github.io/santex/img/plots/71.png'},
+{'id':'72','name':'view plot','url':'http://santex.github.io/santex/img/plots/72.png'},
+{'id':'73','name':'view plot','url':'http://santex.github.io/santex/img/plots/73.png'},
+{'id':'74','name':'view plot','url':'http://santex.github.io/santex/img/plots/74.png'},
+{'id':'75','name':'view plot','url':'http://santex.github.io/santex/img/plots/75.png'},
+{'id':'76','name':'view plot','url':'http://santex.github.io/santex/img/plots/76.png'},
+{'id':'77','name':'view plot','url':'http://santex.github.io/santex/img/plots/77.png'},
+{'id':'78','name':'view plot','url':'http://santex.github.io/santex/img/plots/78.png'},
+{'id':'79','name':'view plot','url':'http://santex.github.io/santex/img/plots/79.png'},
+{'id':'80','name':'view plot','url':'http://santex.github.io/santex/img/plots/80.png'},
+{'id':'81','name':'view plot','url':'http://santex.github.io/santex/img/plots/81.png'},
+{'id':'82','name':'view plot','url':'http://santex.github.io/santex/img/plots/82.png'},
+{'id':'83','name':'view plot','url':'http://santex.github.io/santex/img/plots/83.png'},
+{'id':'84','name':'view plot','url':'http://santex.github.io/santex/img/plots/84.png'},
+{'id':'85','name':'view plot','url':'http://santex.github.io/santex/img/plots/85.png'},
+{'id':'86','name':'view plot','url':'http://santex.github.io/santex/img/plots/86.png'},
+{'id':'87','name':'view plot','url':'http://santex.github.io/santex/img/plots/87.png'},
+{'id':'88','name':'view plot','url':'http://santex.github.io/santex/img/plots/88.png'},
+{'id':'89','name':'view plot','url':'http://santex.github.io/santex/img/plots/89.png'},
+{'id':'90','name':'view plot','url':'http://santex.github.io/santex/img/plots/90.png'},
+{'id':'91','name':'view plot','url':'http://santex.github.io/santex/img/plots/91.png'},
+{'id':'92','name':'view plot','url':'http://santex.github.io/santex/img/plots/92.png'},
+{'id':'93','name':'view plot','url':'http://santex.github.io/santex/img/plots/93.png'},
+{'id':'94','name':'view plot','url':'http://santex.github.io/santex/img/plots/94.png'},
+{'id':'95','name':'view plot','url':'http://santex.github.io/santex/img/plots/95.png'},
+{'id':'96','name':'view plot','url':'http://santex.github.io/santex/img/plots/96.png'},
+{'id':'97','name':'view plot','url':'http://santex.github.io/santex/img/plots/97.png'},
+{'id':'98','name':'view plot','url':'http://santex.github.io/santex/img/plots/98.png'},
+{'id':'99','name':'view plot','url':'http://santex.github.io/santex/img/plots/99.png'},
+{'id':'100','name':'view plot','url':'http://santex.github.io/santex/img/plots/100.png'},
+{'id':'101','name':'view plot','url':'http://santex.github.io/santex/img/plots/101.png'},
+{'id':'102','name':'view plot','url':'http://santex.github.io/santex/img/plots/102.png'},
+{'id':'103','name':'view plot','url':'http://santex.github.io/santex/img/plots/103.png'},
+{'id':'104','name':'view plot','url':'http://santex.github.io/santex/img/plots/104.png'},
+{'id':'105','name':'view plot','url':'http://santex.github.io/santex/img/plots/105.png'},
+{'id':'106','name':'view plot','url':'http://santex.github.io/santex/img/plots/106.png'},
+{'id':'107','name':'view plot','url':'http://santex.github.io/santex/img/plots/107.png'},
+{'id':'108','name':'view plot','url':'http://santex.github.io/santex/img/plots/108.png'},
+{'id':'109','name':'view plot','url':'http://santex.github.io/santex/img/plots/109.png'},
+{'id':'110','name':'view plot','url':'http://santex.github.io/santex/img/plots/110.png'},
+{'id':'111','name':'view plot','url':'http://santex.github.io/santex/img/plots/111.png'},
+{'id':'112','name':'view plot','url':'http://santex.github.io/santex/img/plots/112.png'},
+{'id':'113','name':'view plot','url':'http://santex.github.io/santex/img/plots/113.png'},
+{'id':'114','name':'view plot','url':'http://santex.github.io/santex/img/plots/114.png'},
+{'id':'115','name':'view plot','url':'http://santex.github.io/santex/img/plots/115.png'},
+{'id':'116','name':'view plot','url':'http://santex.github.io/santex/img/plots/116.png'},
+{'id':'117','name':'view plot','url':'http://santex.github.io/santex/img/plots/117.png'},
+{'id':'118','name':'view plot','url':'http://santex.github.io/santex/img/plots/118.png'},
+{'id':'119','name':'view plot','url':'http://santex.github.io/santex/img/plots/119.png'},
+{'id':'120','name':'view plot','url':'http://santex.github.io/santex/img/plots/120.png'},
+{'id':'121','name':'view plot','url':'http://santex.github.io/santex/img/plots/121.png'},
+{'id':'122','name':'view plot','url':'http://santex.github.io/santex/img/plots/122.png'},
+{'id':'123','name':'view plot','url':'http://santex.github.io/santex/img/plots/123.png'}
+];
+
+
+$(document).ready(function() {
+
+
+
+$.each( photos, function( value ){
+$(".grid").append("<li><figure><a href='showr.html?d3="+photos[value].id+"' target='_new'> <img src='"+photos[value].url+"' alt='"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"' style='width:100%;overflow-y:scroll;max-height:80%;'/>  <figcaption> <center>  <p>"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"</p></center>  </figcaption></a></figure> </li> ");
+//("#slide").append("<li><figure><img src='"+photos[value].url+"' alt='"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"' style='width:100%;overflow-y:scroll;max-height:94%;'/>  <figcaption> <center><p>"+photos[value].name.replace(/(\.jpg|-|_|\/)/g," ")+"</p> </center>  </figcaption></figure> </li> ");
+
+
+});
+
+//new CBPGridGallery( document.getElementById( 'grid-gallery' ) );
+
+
+
+    });
+
+</script>
+      </center>
+    </body>
+  </html>
