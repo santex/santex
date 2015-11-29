@@ -418,7 +418,7 @@ function showMenu(x){
 
       if(next){
 
-        next.innerHTML+=' <a href="#/'+x+'/'+i+'"><img src="js/vis/jpg/'+i+'.jpg"></a>';
+        next.innerHTML+=' <a href="#/'+x+'/'+i+'"><img src="js/vis/jpg/'+i+'.jpg" style="background-color:silver;"></a>';
 
 
       }
