@@ -25,8 +25,8 @@ var svg = d3.select("body")
 	.append("g").attr("transform","translate("+ margin.l+","+margin.t+")");
 
 var data = [ 
-	{data:bP.partData(sales_data,2), id:'SalesAttempts', header:["Channel","State", "Sales Attempts"]},
-	{data:bP.partData(sales_data,3), id:'Sales', header:["Channel","State", "Sales"]}
+	{data:bP.partData(sales_data,2), id:'SalesAttempts', header:["Channel","cID", "Sales Attempts"]},
+	{data:bP.partData(sales_data,3), id:'Sales', header:["Channel","cID", "Sales"]}
 ];
 
 bP.draw(data, svg);
