@@ -4,9 +4,10 @@
 body{
 	width:100%;
 	margin:10px auto;
+	overflow:hidden;
 }
 svg text{
-	font-size:15px;
+	font-size:13px;
 }
 rect{
 	shape-rendering:crispEdges;
@@ -16,9 +17,8 @@ rect{
 <script src="d3.v3.min.js"></script>
 <script src="biPartite.js"></script>
 <script src="data.js"></script>
-<center>
 <script>
-	var width = window.innerWidth*1.96, height = window.innerHeight*0.96, margin ={b:0, t:40, l:1, r:1};
+	var width = window.innerWidth*1.49, height = window.innerHeight*0.9, margin ={b:100, t:40, l:400, r:301};
 
 var svg = d3.select("body")
 	.append("svg").attr('width',width).attr('height',(height+margin.b+margin.t))
@@ -32,5 +32,4 @@ var data = [
 bP.draw(data, svg);
 
 </script>
-</center>
 </body>
